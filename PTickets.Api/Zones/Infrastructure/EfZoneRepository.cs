@@ -53,6 +53,7 @@ public class EfZoneRepository : IZoneRepository
     public async Task<bool> IsPaidAtDateTimeAsync(ZoneId zoneId, DateTime dateTime, CancellationToken ct = default)
     {
         var zone = await _context.Zones
+            .AsNoTracking()
             .Where(z => z.Id == zoneId)
             .Select(z => new { z.Id, z.PaidParkingSchedule })
             .FirstOrDefaultAsync(ct);

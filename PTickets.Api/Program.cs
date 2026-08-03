@@ -4,7 +4,9 @@ using PTickets.Api.Database;
 using PTickets.Api.Inspections;
 using PTickets.Api.Inspections.ConductInspection;
 using PTickets.Api.Inspectors;
+using PTickets.Api.Inspectors.AddInspector;
 using PTickets.Api.Zones;
+using PTickets.Api.Zones.AddZone;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
@@ -23,6 +25,8 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.MapConductInspection();
+app.MapAddInspector();
+app.MapAddZone();
 
 
 
