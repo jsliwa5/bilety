@@ -3,5 +3,6 @@
 public enum InspectionDecision
 {
     Approved,
-    PenaltyIssued
+    PenaltyIssued,
+    PaymentNotRequired,
 }

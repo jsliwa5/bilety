@@ -6,16 +6,24 @@ public class Zone
 {
     public ZoneId Id { get; private set; }
     public string Name { get; private set; }
+    public PaidParkingSchedule? PaidParkingSchedule { get; private set; }
 
     private readonly List<Street> _streets = new();
     public IReadOnlyCollection<Street> Streets => _streets.AsReadOnly();
 
     public bool HasStreets => _streets.Count > 0;
 
-    public Zone(ZoneId id, string name)
+    // Konstruktor dla EF Core
+    private Zone()
+    {
+        Name = string.Empty;
+    }
+
+    public Zone(ZoneId id, string name, PaidParkingSchedule? paidParkingSchedule = null)
     {
         Id = id;
         Name = name;
+        PaidParkingSchedule = paidParkingSchedule;
     }
 
     public void AddStreet(Street street)
@@ -28,4 +36,9 @@ public class Zone
 
     public bool ContainsStreet(StreetId streetId)
         => _streets.Any(s => s.Id == streetId);
+
+    public bool IsPaid(DateTime dateTime)
+    {
+        return PaidParkingSchedule?.IsPaidTime(dateTime) ?? false;
+    }
 }

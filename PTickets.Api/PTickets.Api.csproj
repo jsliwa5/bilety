@@ -15,10 +15,4 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="10.2.3" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Inspections\ConductInspection\" />
-    <Folder Include="Inspections\Contracts\" />
-    <Folder Include="Inspectors\Infrastructure\" />
-  </ItemGroup>
-
 </Project>

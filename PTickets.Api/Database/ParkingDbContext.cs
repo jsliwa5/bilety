@@ -87,6 +87,18 @@ public class ParkingDbContext : DbContext
             builder.Property(x => x.Id)
                 .HasConversion(id => id.Value, value => new ZoneId(value));
 
+            // Mapowanie PaidParkingSchedule jako Owned Value Object
+            builder.OwnsOne(x => x.PaidParkingSchedule, scheduleBuilder =>
+            {
+                scheduleBuilder.Property(s => s.StartTime).HasColumnName("PaidParkingSchedule_StartTime");
+                scheduleBuilder.Property(s => s.EndTime).HasColumnName("PaidParkingSchedule_EndTime");
+                scheduleBuilder.Property(s => s.PaidDays).HasColumnName("PaidParkingSchedule_PaidDays")
+                    .HasConversion(
+                        days => string.Join(",", days.Cast<int>()),
+                        value => value.Split(",").Select(s => (DayOfWeek)int.Parse(s)).ToArray()
+                    );
+            });
+
             // Mapowanie ulic jako kolekcji wewnątrz Agregatu Strefy (Owned Collection)
             builder.OwnsMany(x => x.Streets, streetBuilder =>
             {
