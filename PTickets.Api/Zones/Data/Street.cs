@@ -1,20 +1,42 @@
-﻿
+﻿using PTickets.Api.Common;
+using PTickets.Api.Zones.Data;
 
-using PTickets.Api.Common;
-
-namespace PTickets.Api.Zones.Data;
-
-public class Street
+public sealed class Street
 {
-    public StreetId Id { get; private set; }
-    public string Name { get; private set; }
+    public StreetId Id { get; }
 
-    public Street(StreetId id, string name)
+    public ZoneId ZoneId { get; }
+
+    public string Name { get; }
+
+    public bool RepresentsWholeZone { get; }
+
+    public PaidParkingSchedule? PaidParkingSchedule { get; private set; }
+
+    private Street()
     {
-        if (string.IsNullOrWhiteSpace(name))
-            throw new ArgumentException("Nazwa ulicy nie może być pusta.");
-
-        Id = id;
-        Name = name;
     }
+
+    public Street(
+        StreetId id,
+        ZoneId zoneId,
+        string name,
+        bool representsWholeZone = false,
+        PaidParkingSchedule? paidParkingSchedule = null)
+    {
+        Id = id;
+        ZoneId = zoneId;
+        Name = name;
+        RepresentsWholeZone = representsWholeZone;
+        PaidParkingSchedule = paidParkingSchedule;
+    }
+
+    public void ChangeParkingSchedule(
+        PaidParkingSchedule? schedule)
+    {
+        PaidParkingSchedule = schedule;
+    }
+
+    public bool IsPaid(DateTime dateTime)
+        => PaidParkingSchedule?.IsPaidTime(dateTime) ?? false;
 }
