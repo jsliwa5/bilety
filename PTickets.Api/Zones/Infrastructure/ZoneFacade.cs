@@ -4,28 +4,43 @@ using PTickets.Api.Zones.Data;
 
 namespace PTickets.Api.Zones.Infrastructure;
 
-public class ZoneFacade : IZoneFacade
+public sealed class ZoneFacade : IZoneFacade
 {
-
     private readonly IZoneRepository _zoneRepository;
+    private readonly IStreetRepository _streetRepository;
 
-    public ZoneFacade(IZoneRepository zoneRepository)
+    public ZoneFacade(
+        IZoneRepository zoneRepository,
+        IStreetRepository streetRepository)
     {
         _zoneRepository = zoneRepository;
+        _streetRepository = streetRepository;
     }
 
-    public async Task<bool> ExistsByIdAsync(ZoneId zoneId)
+    public Task<bool> ExistsByIdAsync(
+        ZoneId zoneId)
+        => _zoneRepository.ExistsAsync(zoneId);
+
+    public async Task<bool> StreetBelongsToZoneAsync(
+        ZoneId zoneId,
+        StreetId streetId)
     {
-        return await _zoneRepository.ExistsByIdAsync(zoneId);
+        var street = await _streetRepository.GetAsync(streetId);
+
+        return street is not null &&
+               street.ZoneId == zoneId;
     }
 
-    public async Task<bool> StreetBelongsToZoneAsync(ZoneId zoneId, StreetId streetId)
+    public async Task<bool> IsPaidAtDateTimeAsync(
+        StreetId streetId,
+        DateTime dateTime)
     {
-        return await _zoneRepository.StreetBelongsToZoneAsync(zoneId, streetId);
-    }
+        var street = await _streetRepository.GetAsync(streetId);
 
-    public async Task<bool> IsPaidAtDateTimeAsync(ZoneId zoneId, DateTime dateTime)
-    {
-        return await _zoneRepository.IsPaidAtDateTimeAsync(zoneId, dateTime);
+        if (street is null)
+            throw new InvalidOperationException(
+                $"Street '{streetId}' does not exist.");
+
+        return street.IsPaid(dateTime);
     }
 }

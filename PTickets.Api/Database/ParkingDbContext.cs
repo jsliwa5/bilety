@@ -13,6 +13,8 @@ public class ParkingDbContext : DbContext
     public DbSet<Penalty> Penalties => Set<Penalty>();
     public DbSet<Inspector> Inspectors => Set<Inspector>();
     public DbSet<Zone> Zones => Set<Zone>();
+
+    public DbSet<Street> Streets => Set<Street>();
     public ParkingDbContext(DbContextOptions<ParkingDbContext> options) : base(options)
     {
     }
@@ -31,13 +33,13 @@ public class ParkingDbContext : DbContext
             builder.Property(x => x.ConductedBy)
                 .HasConversion(id => id.Value, value => new InspectorId(value));
 
-            builder.Property(x => x.ZoneId)
-                .HasConversion(id => id.Value, value => new ZoneId(value));
-
             builder.Property(x => x.StreetId)
+                .HasConversion(id => id.Value, value => new StreetId(value));
+
+            builder.Property(x => x.ZoneId)
                 .HasConversion(
                     id => id.HasValue ? id.Value.Value : (Guid?)null,
-                    value => value.HasValue ? new StreetId(value.Value) : null);
+                    value => value.HasValue ? new ZoneId(value.Value) : null);
 
             // Mapowanie Value Object: RegistrationNumber -> string
             builder.Property(x => x.RegistrationNumber)
@@ -87,7 +89,31 @@ public class ParkingDbContext : DbContext
             builder.Property(x => x.Id)
                 .HasConversion(id => id.Value, value => new ZoneId(value));
 
-            // Mapowanie PaidParkingSchedule jako Owned Value Object
+            // Usunięto OwnsOne (PaidParkingSchedule) i OwnsMany (Streets)
+        });
+
+        modelBuilder.Entity<Street>(builder =>
+        {
+            // Opcjonalnie zmieniamy nazwę tabeli na liczbę mnogą dla spójności
+            builder.ToTable("Streets");
+
+            builder.HasKey(x => x.Id);
+            builder.Property(x => x.Id)
+                .HasConversion(id => id.Value, value => new StreetId(value));
+
+            builder.Property(x => x.ZoneId)
+                .HasConversion(id => id.Value, value => new ZoneId(value));
+
+            builder.Property(x => x.Name).IsRequired();
+            builder.Property(x => x.RepresentsWholeZone).IsRequired();
+
+            // Relacja z Zone (opcjonalnie, zależy czy chcesz trzymać klucz obcy w bazie dla agregatów)
+            builder.HasOne<Zone>()
+                .WithMany()
+                .HasForeignKey(x => x.ZoneId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Mapowanie PaidParkingSchedule jako Owned Value Object, przeniesione z Zone
             builder.OwnsOne(x => x.PaidParkingSchedule, scheduleBuilder =>
             {
                 scheduleBuilder.Property(s => s.StartTime).HasColumnName("PaidParkingSchedule_StartTime");
@@ -95,21 +121,9 @@ public class ParkingDbContext : DbContext
                 scheduleBuilder.Property(s => s.PaidDays).HasColumnName("PaidParkingSchedule_PaidDays")
                     .HasConversion(
                         days => string.Join(",", days.Cast<int>()),
-                        value => value.Split(",").Select(s => (DayOfWeek)int.Parse(s)).ToArray()
+                        value => value.Split(",", StringSplitOptions.RemoveEmptyEntries).Select(s => (DayOfWeek)int.Parse(s)).ToArray()
                     );
             });
-
-            // Mapowanie ulic jako kolekcji wewnątrz Agregatu Strefy (Owned Collection)
-            builder.OwnsMany(x => x.Streets, streetBuilder =>
-            {
-                streetBuilder.WithOwner().HasForeignKey("ZoneId");
-                streetBuilder.HasKey(s => s.Id);
-                streetBuilder.Property(s => s.Id)
-                    .HasConversion(id => id.Value, value => new StreetId(value));
-            });
-
-            // Pozwala EF Core na dostęp do prywatnego pola _streets
-            builder.Navigation(x => x.Streets).Metadata.SetPropertyAccessMode(PropertyAccessMode.Field);
         });
     }
 }

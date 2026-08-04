@@ -8,6 +8,6 @@ public interface ITicketProviderClient
 {
     public Task<TicketCheckResult> CheckTicketAsync(
         RegistrationNumber registrationNumber,
-        ZoneId zoneId,
+        StreetId streetId,
         CancellationToken ct = default);
 }

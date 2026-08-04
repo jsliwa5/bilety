@@ -6,8 +6,8 @@ public class Inspection
 {
     public InspectionId Id { get; private set; }
     public InspectorId ConductedBy { get; private set; }
-    public ZoneId ZoneId { get; private set; }
-    public StreetId? StreetId { get; private set; } 
+    public ZoneId? ZoneId { get; private set; }
+    public StreetId StreetId { get; private set; } 
     public RegistrationNumber RegistrationNumber { get; private set; }
     public DateTime InspectionDate { get; private set; }
     public TicketCheckResult Result { get; private set; }
@@ -18,8 +18,8 @@ public class Inspection
 
     public static Inspection Conduct(
         InspectorId inspectorId,
-        ZoneId zoneId,
-        StreetId? streetId,
+        ZoneId? zoneId,
+        StreetId streetId,
         RegistrationNumber registrationNumber,
         TicketCheckResult result,
         DateTime inspectionDate)

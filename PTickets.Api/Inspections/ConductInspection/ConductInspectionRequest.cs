@@ -4,7 +4,6 @@ namespace PTickets.Api.Inspections.ConductInspection;
 
 public record ConductInspectionRequest(
     string InspectorId,
-    string ZoneId,
-    string? StreetId,
+    string StreetId,
     string RegistrationNumber
 );

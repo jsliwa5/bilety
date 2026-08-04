@@ -8,7 +8,7 @@ public class RandomTicketProviderClient : ITicketProviderClient
 {
     public Task<TicketCheckResult> CheckTicketAsync(
         RegistrationNumber registrationNumber,
-        ZoneId zoneId,
+        StreetId streetId,
         CancellationToken ct = default)
     {
         // Losujemy 0 lub 1 (50% szans)
@@ -17,15 +17,15 @@ public class RandomTicketProviderClient : ITicketProviderClient
 
         TicketCheckResult result = isValid
             ? new TicketCheckResult(
-                IsValid: true,
-                ValidFrom: now.AddHours(-1),
-                ValidTo: now.AddHours(2),
-                TicketProviderMessage: "Bilet opłacony w parkomacie / aplikacji mobilnej.")
+                true,
+                now.AddHours(-1),
+                now.AddHours(2),
+                "Bilet opłacony w parkomacie / aplikacji mobilnej.")
             : new TicketCheckResult(
-                IsValid: false,
-                ValidFrom: null,
-                ValidTo: null,
-                TicketProviderMessage: "Brak aktywnego biletu dla podanego numeru rejestracyjnego.");
+                false,
+                null,
+                null,
+                "Brak aktywnego biletu dla podanego numeru rejestracyjnego.");
 
         return Task.FromResult(result);
     }

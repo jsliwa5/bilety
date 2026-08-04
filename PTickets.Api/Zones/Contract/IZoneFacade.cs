@@ -11,5 +11,5 @@ public interface IZoneFacade
     /// Sprawdza, czy dla danej strefy jest płatny czas parkowania w podanym momencie.
     /// Rzuca wyjątek jeśli strefa nie istnieje.
     /// </summary>
-    Task<bool> IsPaidAtDateTimeAsync(ZoneId zoneId, DateTime dateTime);
+    Task<bool> IsPaidAtDateTimeAsync(StreetId streetId, DateTime dateTime);
 }

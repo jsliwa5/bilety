@@ -73,7 +73,7 @@ public static class AddZoneEndpoint
             }
         }
 
-        var zone = new Zone(new ZoneId(Guid.NewGuid()), request.Name, schedule);
+        var zone = new Zone(new ZoneId(Guid.NewGuid()), request.Name);
 
         await zoneRepository.AddAsync(zone);
 

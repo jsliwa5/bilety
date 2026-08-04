@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PTickets.Api.Database;
 
@@ -10,9 +11,11 @@ using PTickets.Api.Database;
 namespace PTickets.Api.Migrations
 {
     [DbContext(typeof(ParkingDbContext))]
-    partial class ParkingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260804173002_MoveScheduleToStreet")]
+    partial class MoveScheduleToStreet
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.10");

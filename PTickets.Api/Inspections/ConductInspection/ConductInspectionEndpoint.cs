@@ -26,29 +26,21 @@ public static class ConductInspectionEndpoint
         if (!Guid.TryParse(request.InspectorId, out var inspectorIdValue))
             throw new ArgumentException("InspectorId musi być poprawnym GUID.");
 
-        if (!Guid.TryParse(request.ZoneId, out var zoneIdValue))
-            throw new ArgumentException("ZoneId musi być poprawnym GUID.");
+        if (!Guid.TryParse(request.StreetId, out var streetIdValue))
+            throw new ArgumentException("StreetId musi być poprawnym GUID.");
 
         var inspectorId = new InspectorId(inspectorIdValue);
-        var zoneId = new ZoneId(zoneIdValue);
-
-        StreetId? streetId = null;
-        if (!string.IsNullOrWhiteSpace(request.StreetId))
-        {
-            if (!Guid.TryParse(request.StreetId, out var streetIdValue))
-                throw new ArgumentException("StreetId musi być poprawnym GUID.");
-            streetId = new StreetId(streetIdValue);
-        }
+        var streetId = new StreetId(streetIdValue);
 
         var registrationNumber = new RegistrationNumber(request.RegistrationNumber);
 
-        var isPaymentRequired = await zoneFacade.IsPaidAtDateTimeAsync(zoneId, dateTimeProvider.UtcNow);
+        var isPaymentRequired = await zoneFacade.IsPaidAtDateTimeAsync(streetId, dateTimeProvider.UtcNow);
 
         var ticketCheckResult = isPaymentRequired
-            ? await ticketProviderClient.CheckTicketAsync(registrationNumber, zoneId)
+            ? await ticketProviderClient.CheckTicketAsync(registrationNumber, streetId)
             : TicketCheckResult.TicketNotRequired();
 
-        var inspection = Inspection.Conduct(inspectorId, zoneId, streetId, registrationNumber, ticketCheckResult, dateTimeProvider.UtcNow);
+        var inspection = Inspection.Conduct(inspectorId, null, streetId, registrationNumber, ticketCheckResult, dateTimeProvider.UtcNow);
 
         await inspectionRepository.AddAsync(inspection);
         return new ConductInspectionResponse(inspection.Id, inspection.Decision, ticketCheckResult);
