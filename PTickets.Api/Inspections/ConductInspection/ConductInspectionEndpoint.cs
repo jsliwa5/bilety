@@ -22,7 +22,7 @@ public static class ConductInspectionEndpoint
         ITicketProviderClient ticketProviderClient,
         IInspectionRepository inspectionRepository)
     {
-        // Konwersja stringów na domeny typy
+
         if (!Guid.TryParse(request.InspectorId, out var inspectorIdValue))
             throw new ArgumentException("InspectorId musi być poprawnym GUID.");
 
@@ -46,7 +46,7 @@ public static class ConductInspectionEndpoint
 
         var ticketCheckResult = isPaymentRequired
             ? await ticketProviderClient.CheckTicketAsync(registrationNumber, zoneId)
-            : new TicketCheckResult(true, null, null, "Payment not required in this zone at this time.");
+            : TicketCheckResult.TicketNotRequired();
 
         var inspection = Inspection.Conduct(inspectorId, zoneId, streetId, registrationNumber, ticketCheckResult, dateTimeProvider.UtcNow);
 
