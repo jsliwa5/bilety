@@ -12,6 +12,14 @@ public sealed class Zone
     {
     }
 
+    public static Zone Create(
+        string name)
+    {
+        return new Zone(
+            new ZoneId(Guid.NewGuid()),
+            name);
+    }
+
     public Zone(
         ZoneId id,
         string name)

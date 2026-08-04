@@ -1,8 +1,5 @@
-namespace PTickets.Api.Zones.AddZone;
+﻿namespace PTickets.Api.Zones.AddZone;
 
 public record AddZoneRequest(
-    string Name,
-    string? StartTime,
-    string? EndTime,
-    string? PaidDays
+    string Name
 );

@@ -1,8 +1,8 @@
-using PTickets.Api.Common;
+﻿using PTickets.Api.Common;
 
 namespace PTickets.Api.Zones.AddZone;
 
 public record AddZoneResponse(
-    ZoneId Id,
-    string Name
-);
+    ZoneId ZoneId
+    );
+

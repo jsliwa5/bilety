@@ -17,7 +17,7 @@ public sealed class Street
     {
     }
 
-    public Street(
+    private Street(
         StreetId id,
         ZoneId zoneId,
         string name,
@@ -29,6 +29,20 @@ public sealed class Street
         Name = name;
         RepresentsWholeZone = representsWholeZone;
         PaidParkingSchedule = paidParkingSchedule;
+    }
+
+    public static Street Create(
+        ZoneId zoneId,
+        string name,
+        bool representsWholeZone = false,
+        PaidParkingSchedule? paidParkingSchedule = null)
+    {
+        return new Street(
+            new StreetId(Guid.NewGuid()),
+            zoneId,
+            name,
+            representsWholeZone,
+            paidParkingSchedule);
     }
 
     public void ChangeParkingSchedule(

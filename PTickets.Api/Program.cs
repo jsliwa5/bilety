@@ -6,6 +6,7 @@ using PTickets.Api.Inspections.ConductInspection;
 using PTickets.Api.Inspectors;
 using PTickets.Api.Inspectors.AddInspector;
 using PTickets.Api.Zones;
+using PTickets.Api.Zones.AddStreet;
 using PTickets.Api.Zones.AddZone;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,6 +28,7 @@ app.UseSwaggerUI();
 app.MapConductInspection();
 app.MapAddInspector();
 app.MapAddZone();
+app.MapAddStreet();
 
 
 
