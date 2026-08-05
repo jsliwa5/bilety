@@ -5,6 +5,8 @@ using PTickets.Api.Inspections;
 using PTickets.Api.Inspections.ConductInspection;
 using PTickets.Api.Inspectors;
 using PTickets.Api.Inspectors.AddInspector;
+using PTickets.Api.Penalties;
+using PTickets.Api.Penalties.IssuePenalty;
 using PTickets.Api.Zones;
 using PTickets.Api.Zones.AddStreet;
 using PTickets.Api.Zones.AddZone;
@@ -18,6 +20,7 @@ builder.Services.AddDbContext<ParkingDbContext>(options =>
 builder.Services.AddZonesServices();
 builder.Services.AddInspectorsServices();
 builder.Services.AddInspectionsServices();
+builder.Services.AddPenaltiesServices();
 builder.Services.AddSingleton<IDateTimeProvider, SystemDateTimeProvider>();
 
 var app = builder.Build();
@@ -29,6 +32,7 @@ app.MapConductInspection();
 app.MapAddInspector();
 app.MapAddZone();
 app.MapAddStreet();
+app.MapIssuePenalty();
 
 
 

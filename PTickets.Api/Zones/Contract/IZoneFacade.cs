@@ -12,4 +12,6 @@ public interface IZoneFacade
     /// Rzuca wyjątek jeśli strefa nie istnieje.
     /// </summary>
     Task<bool> IsPaidAtDateTimeAsync(StreetId streetId, DateTime dateTime);
+
+    Task<decimal> CalculatePenaltyAmountAsync(StreetId streetid, DateTime inspectionDate);
 }

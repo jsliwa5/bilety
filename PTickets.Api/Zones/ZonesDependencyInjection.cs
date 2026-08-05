@@ -12,6 +12,7 @@ public static class ZonesDependencyInjection
         services.AddScoped<IZoneRepository, EfZoneRepository>();
         services.AddScoped<IZoneFacade, ZoneFacade>();
         services.AddScoped<IStreetRepository, EfStreetRepository>();
+        services.AddScoped<IPenaltyCalculator, FlatRatePenaltyCalculator>();
 
         return services;
     }

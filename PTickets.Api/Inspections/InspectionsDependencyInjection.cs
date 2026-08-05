@@ -11,6 +11,7 @@ public static class InspectionsDependencyInjection
     {
         services.AddScoped<IInspectionRepository, EfInspectionRepository>();
         services.AddSingleton<ITicketProviderClient, RandomTicketProviderClient>();
+        services.AddScoped<IInspectionFacade, InspectionFacade>();
 
         return services;
     }

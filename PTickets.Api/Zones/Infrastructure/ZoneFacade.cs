@@ -8,13 +8,16 @@ public sealed class ZoneFacade : IZoneFacade
 {
     private readonly IZoneRepository _zoneRepository;
     private readonly IStreetRepository _streetRepository;
+    private readonly IPenaltyCalculator _penaltyCalculator;
 
     public ZoneFacade(
         IZoneRepository zoneRepository,
-        IStreetRepository streetRepository)
+        IStreetRepository streetRepository,
+        IPenaltyCalculator penaltyCalculator)
     {
         _zoneRepository = zoneRepository;
         _streetRepository = streetRepository;
+        _penaltyCalculator = penaltyCalculator;
     }
 
     public Task<bool> ExistsByIdAsync(
@@ -42,5 +45,10 @@ public sealed class ZoneFacade : IZoneFacade
                 $"Street '{streetId}' does not exist.");
 
         return street.IsPaid(dateTime);
+    }
+
+    public async Task<decimal> CalculatePenaltyAmountAsync(StreetId streetid, DateTime inspectionDate)
+    {
+        return await Task.FromResult(_penaltyCalculator.CalculateAmount(streetid, inspectionDate));
     }
 }
