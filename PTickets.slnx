@@ -1,6 +1,19 @@
 <Solution>
-  <Folder Name="/Elementy rozwiązania/">
+  <Folder Name="/src/">
     <File Path=".gitignore" />
+    <Project Path="src/PTickets.Api/PTickets.Api.csproj" />
+    <Project Path="src/PTickets.Modules.FileStorage/PTickets.Modules.FileStorage.csproj" />
+    <Project Path="src/PTickets.Modules.Inspections/PTickets.Modules.Inspections.csproj" />
+    <Project Path="src/PTickets.Modules.InspectorTracking/PTickets.Modules.InspectorTracking.csproj" />
+    <Project Path="src/PTickets.Modules.Notices/PTickets.Modules.Notices.csproj" />
+    <Project Path="src/PTickets.Modules.Notifications/PTickets.Modules.Notifications.csproj" />
+    <Project Path="src/PTickets.Modules.Tickets/PTickets.Modules.Tickets.csproj" />
+    <Project Path="src/PTickets.Modules.Violations/PTickets.Modules.Violations.csproj" />
+    <Project Path="src/PTickets.Modules.Zones/PTickets.Modules.Zones.csproj" />
+    <Project Path="src/PTickets.Shared/PTickets.Shared.csproj" />
   </Folder>
-  <Project Path="PTickets.Api/PTickets.Api.csproj" />
+  <Folder Name="/tests/">
+    <Project Path="tests/PTickets.Modules.Violations.Tests/PTickets.Modules.Violations.Tests.csproj" />
+    <Project Path="tests/PTickets.Modules.Zones.Tests/PTickets.Modules.Zones.Tests.csproj" />
+  </Folder>
 </Solution>

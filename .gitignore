@@ -73,3 +73,6 @@ yarn.lock
 .env
 .env.local
 *.env.*.local
+
+implementation_plan.md
+task.md

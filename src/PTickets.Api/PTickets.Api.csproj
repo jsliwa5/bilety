@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <ItemGroup>
+    <ProjectReference Include="..\PTickets.Modules.Zones\PTickets.Modules.Zones.csproj" />
+    <ProjectReference Include="..\PTickets.Modules.Violations\PTickets.Modules.Violations.csproj" />
+    <ProjectReference Include="..\PTickets.Modules.InspectorTracking\PTickets.Modules.InspectorTracking.csproj" />
+    <ProjectReference Include="..\PTickets.Modules.Tickets\PTickets.Modules.Tickets.csproj" />
+    <ProjectReference Include="..\PTickets.Modules.Inspections\PTickets.Modules.Inspections.csproj" />
+    <ProjectReference Include="..\PTickets.Modules.Notices\PTickets.Modules.Notices.csproj" />
+    <ProjectReference Include="..\PTickets.Modules.Notifications\PTickets.Modules.Notifications.csproj" />
+    <ProjectReference Include="..\PTickets.Modules.FileStorage\PTickets.Modules.FileStorage.csproj" />
+    <ProjectReference Include="..\PTickets.Shared\PTickets.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.1" />
+    <PackageReference Include="MediatR" Version="14.2.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.11" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.3" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="10.2.3" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+</Project>
