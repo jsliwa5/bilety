@@ -7,6 +7,20 @@ public readonly record struct ZoneId(Guid Value)
     public override string ToString() => Value.ToString();
 }
 
+public readonly record struct InspectionLogId(Guid Value)
+{
+    public static InspectionLogId New() => new(Guid.NewGuid());
+    public static InspectionLogId Empty => new(Guid.Empty);
+    public override string ToString() => Value.ToString();
+}
+
+public readonly record struct LocationLogId(Guid Value)
+{
+    public static LocationLogId New() => new(Guid.NewGuid());
+    public static LocationLogId Empty => new(Guid.Empty);
+    public override string ToString() => Value.ToString();
+}
+
 public readonly record struct StreetId(Guid Value)
 {
     public static StreetId New() => new(Guid.NewGuid());
