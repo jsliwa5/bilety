@@ -6,13 +6,17 @@
     <Project Path="src/PTickets.Modules.Inspections/PTickets.Modules.Inspections.csproj" />
     <Project Path="src/PTickets.Modules.Notices/PTickets.Modules.Notices.csproj" />
     <Project Path="src/PTickets.Modules.Notifications/PTickets.Modules.Notifications.csproj" />
-    <Project Path="src/PTickets.Modules.Tickets/PTickets.Modules.Tickets.csproj" />
     <Project Path="src/PTickets.Modules.Violations/PTickets.Modules.Violations.csproj" />
     <Project Path="src/PTickets.Modules.Zones/PTickets.Modules.Zones.csproj" />
     <Project Path="src/PTickets.Shared/PTickets.Shared.csproj" />
   </Folder>
   <Folder Name="/src/InspectorTracking/">
     <Project Path="src/PTickets.Modules.InspectorTracking/PTickets.Modules.InspectorTracking.csproj" />
+  </Folder>
+  <Folder Name="/src/PTickets.Modules.Tickets/">
+    <Project Path="src/PTickets.Modules.Tickets/PTickets.Modules.Tickets.Application/PTickets.Modules.Tickets.Application.csproj" />
+    <Project Path="src/PTickets.Modules.Tickets/PTickets.Modules.Tickets.Domain/PTickets.Modules.Tickets.Domain.csproj" />
+    <Project Path="src/PTickets.Modules.Tickets/PTickets.Modules.Tickets.Infrastructure/PTickets.Modules.Tickets.Infrastructure.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/PTickets.Modules.Violations.Tests/PTickets.Modules.Violations.Tests.csproj" />

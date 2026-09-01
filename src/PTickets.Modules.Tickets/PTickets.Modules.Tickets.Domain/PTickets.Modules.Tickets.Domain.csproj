@@ -1,7 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\PTickets.Shared\PTickets.Shared.csproj" />
+    <ProjectReference Include="..\..\PTickets.Shared\PTickets.Shared.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
@@ -10,8 +10,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
-  </ItemGroup>
 </Project>
-

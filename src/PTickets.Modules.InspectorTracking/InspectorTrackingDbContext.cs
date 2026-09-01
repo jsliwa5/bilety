@@ -1,6 +1,7 @@
-namespace PTickets.Modules.InspectorTracking.Data;
+namespace PTickets.Modules.InspectorTracking;
 
 using Microsoft.EntityFrameworkCore;
+using PTickets.Modules.InspectorTracking.Data;
 using PTickets.Shared;
 using System.Reflection.Emit;
 

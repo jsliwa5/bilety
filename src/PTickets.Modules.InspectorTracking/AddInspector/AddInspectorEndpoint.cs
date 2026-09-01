@@ -8,10 +8,6 @@ using PTickets.Shared.Contracts.Zones;
 
 namespace PTickets.Modules.InspectorTracking.AddInspector;
 
-public record AddInspectorRequest(string FirstName, string LastName);
-
-public record AddInspectorResponse(Guid Id);
-
 public static class AddInspectorEndpoint
 {
     public static void MapAddInspector(this IEndpointRouteBuilder app)

@@ -26,6 +26,8 @@ public sealed record RegistrationNumber
         Value = trimmed;
     }
 
+    public static RegistrationNumber Create(string number) => new(number);
+
     public static implicit operator string(RegistrationNumber registrationNumber) => registrationNumber.Value;
 
     public override string ToString() => Value;

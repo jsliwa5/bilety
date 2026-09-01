@@ -4,12 +4,12 @@
     <ProjectReference Include="..\PTickets.Modules.Zones\PTickets.Modules.Zones.csproj" />
     <ProjectReference Include="..\PTickets.Modules.Violations\PTickets.Modules.Violations.csproj" />
     <ProjectReference Include="..\PTickets.Modules.InspectorTracking\PTickets.Modules.InspectorTracking.csproj" />
-    <ProjectReference Include="..\PTickets.Modules.Tickets\PTickets.Modules.Tickets.csproj" />
     <ProjectReference Include="..\PTickets.Modules.Inspections\PTickets.Modules.Inspections.csproj" />
     <ProjectReference Include="..\PTickets.Modules.Notices\PTickets.Modules.Notices.csproj" />
     <ProjectReference Include="..\PTickets.Modules.Notifications\PTickets.Modules.Notifications.csproj" />
     <ProjectReference Include="..\PTickets.Modules.FileStorage\PTickets.Modules.FileStorage.csproj" />
     <ProjectReference Include="..\PTickets.Shared\PTickets.Shared.csproj" />
+    <ProjectReference Include="..\PTickets.Modules.Tickets\PTickets.Modules.Tickets.Infrastructure\PTickets.Modules.Tickets.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>
