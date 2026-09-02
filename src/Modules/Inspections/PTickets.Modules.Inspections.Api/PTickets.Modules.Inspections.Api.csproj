@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\PTickets.Modules.Inspections.Application\PTickets.Modules.Inspections.Application.csproj" />
+    <ProjectReference Include="..\PTickets.Modules.Inspections.Infrastructure\PTickets.Modules.Inspections.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\..\PTickets.Shared\PTickets.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>
+
