@@ -1,10 +1,11 @@
-namespace PTickets.Modules.Inspections.Domain;
-
 using PTickets.Shared;
+
+namespace PTickets.Modules.Inspections.Domain;
 
 public interface IInspectionRepository
 {
-    Task<Inspection?> GetByIdAsync(InspectionId id, CancellationToken cancellationToken = default);
-    Task AddAsync(Inspection inspection, CancellationToken cancellationToken = default);
+    Task<Inspection?> GetByIdAsync(InspectionId id, CancellationToken ct);
+    Task AddAsync(Inspection inspection, CancellationToken ct);
+    Task SaveChangesAsync(CancellationToken ct);
 }
 

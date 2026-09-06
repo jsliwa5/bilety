@@ -1,0 +1,6 @@
+using MediatR;
+
+namespace PTickets.Modules.Inspections.Application.Commands.StartInspection;
+
+public record StartInspectionCommand(Guid SessionId, string RegistrationNumber, double Latitude, double Longitude) : IRequest<Guid>;
+
