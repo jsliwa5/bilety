@@ -13,7 +13,7 @@ public class InspectionsDbContext : DbContext
 
     public DbSet<Inspection> Inspections { get; set; } = null!;
     public DbSet<Session> Sessions { get; set; } = null!;
-    public DbSet<Notice> Notices { get; set; } = null!;
+    
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -74,24 +74,7 @@ public class InspectionsDbContext : DbContext
             b.Property(x => x.Source).HasConversion<string>();
         });
 
-        modelBuilder.Entity<Notice>(b =>
-        {
-            b.HasKey(x => x.Id);
-            b.Property(x => x.Id).HasConversion(x => x.Value, x => new NoticeId(x));
-            b.Property(x => x.InspectionId).HasConversion(x => x.Value, x => new InspectionId(x));
-            b.Property(x => x.RegistrationNumber).HasConversion(x => x.Value, x => new RegistrationNumber(x));
-            b.Ignore(x => x.TotalAmount);
-            
-            b.HasMany(x => x.Items).WithOne().HasForeignKey(x => x.NoticeId);
-        });
 
-        modelBuilder.Entity<NoticeItem>(b =>
-        {
-            b.HasKey(x => x.Id);
-            b.Property(x => x.NoticeId).HasConversion(x => x.Value, x => new NoticeId(x));
-            b.Property(x => x.ViolationTypeId).HasConversion(x => x.Value, x => new ViolationTypeId(x));
-            b.Property(x => x.Status).HasConversion<string>();
-        });
     }
 }
 

@@ -2,9 +2,9 @@ using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using PTickets.Modules.Inspections.Application.Queries.GetNotice;
+using PTickets.Modules.Notices.Application.Queries.GetNotice;
 
-namespace PTickets.Modules.Inspections.Api.Endpoints;
+namespace PTickets.Modules.Notices.Endpoints;
 
 public static class NoticeEndpoints
 {

@@ -9,13 +9,11 @@ namespace PTickets.Modules.Inspections.Application.Commands.IssueNotice;
 public class IssueNoticeHandler : IRequestHandler<IssueNoticeCommand, Guid>
 {
     private readonly IInspectionRepository _inspectionRepository;
-    private readonly INoticeRepository _noticeRepository;
     private readonly IMediator _mediator;
 
-    public IssueNoticeHandler(IInspectionRepository inspectionRepository, INoticeRepository noticeRepository, IMediator mediator)
+    public IssueNoticeHandler(IInspectionRepository inspectionRepository, IMediator mediator)
     {
         _inspectionRepository = inspectionRepository;
-        _noticeRepository = noticeRepository;
         _mediator = mediator;
     }
 
@@ -30,7 +28,8 @@ public class IssueNoticeHandler : IRequestHandler<IssueNoticeCommand, Guid>
         if (inspection.Violations.Count == 0)
             throw new InvalidOperationException("No violations found to issue a notice for.");
 
-        var notice = Notice.Create(inspection.Id, inspection.RegistrationNumber, DateTime.UtcNow);
+        decimal totalPenaltyAmount = 0;
+        decimal totalSurcharge = 0;
 
         foreach (var violation in inspection.Violations)
         {
@@ -38,8 +37,6 @@ public class IssueNoticeHandler : IRequestHandler<IssueNoticeCommand, Guid>
             // Default violation type for auto-added ticket checks
             if (violation.Source == ViolationSource.TicketCheck && violationTypeId == ViolationTypeId.Empty)
             {
-                // Assign some known ID, assuming it exists or can be matched.
-                // Normally this would be looked up or configured.
                 violationTypeId = new ViolationTypeId(Guid.Empty);
             }
 
@@ -48,30 +45,27 @@ public class IssueNoticeHandler : IRequestHandler<IssueNoticeCommand, Guid>
             decimal surcharge = 0;
             if (violation.Source == ViolationSource.TicketCheck)
             {
-                // Simply calculate based on some overtime for ticket checks if desired, or skip.
-                // Assuming CalculateSurchargeQuery can be called (maybe pass 0 for now as it's not well defined here without valid ticket end time).
                 surcharge = await _mediator.Send(new CalculateSurchargeQuery(0), cancellationToken);
             }
 
-            notice.AddItem(violationTypeId, amount, surcharge);
+            totalPenaltyAmount += amount;
+            totalSurcharge += surcharge;
         }
 
-        await _noticeRepository.AddAsync(notice, cancellationToken);
-        
-        inspection.MarkNoticeIssued(notice.Id);
+        var noticeId = NoticeId.New();
+        inspection.MarkNoticeIssued(noticeId);
         
         await _inspectionRepository.SaveChangesAsync(cancellationToken);
-        await _noticeRepository.SaveChangesAsync(cancellationToken);
 
         await _mediator.Publish(new NoticeIssuedEvent(
-            notice.Id,
+            noticeId,
             inspection.Id,
             inspection.RegistrationNumber,
-            notice.TotalAmount,
-            notice.Items.Sum(i => i.Surcharge),
-            notice.IssuedAt), cancellationToken);
+            totalPenaltyAmount,
+            totalSurcharge,
+            DateTime.UtcNow), cancellationToken);
 
-        return notice.Id.Value;
+        return noticeId.Value;
     }
 }
 

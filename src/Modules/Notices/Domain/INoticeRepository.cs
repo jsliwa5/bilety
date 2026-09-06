@@ -1,6 +1,6 @@
 using PTickets.Shared;
 
-namespace PTickets.Modules.Inspections.Domain;
+namespace PTickets.Modules.Notices.Domain;
 
 public interface INoticeRepository
 {

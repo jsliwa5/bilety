@@ -1,14 +1,14 @@
 using Microsoft.EntityFrameworkCore;
-using PTickets.Modules.Inspections.Domain;
+using PTickets.Modules.Notices.Domain;
 using PTickets.Shared;
 
-namespace PTickets.Modules.Inspections.Infrastructure.Persistence;
+namespace PTickets.Modules.Notices.Infrastructure.Persistence;
 
 public class NoticeRepository : INoticeRepository
 {
-    private readonly InspectionsDbContext _dbContext;
+    private readonly NoticesDbContext _dbContext;
 
-    public NoticeRepository(InspectionsDbContext dbContext)
+    public NoticeRepository(NoticesDbContext dbContext)
     {
         _dbContext = dbContext;
     }
@@ -16,7 +16,7 @@ public class NoticeRepository : INoticeRepository
     public async Task<Notice?> GetByIdAsync(NoticeId id, CancellationToken ct)
     {
         return await _dbContext.Notices
-            .Include(n => n.Items)
+            
             .FirstOrDefaultAsync(n => n.Id == id, ct);
     }
 

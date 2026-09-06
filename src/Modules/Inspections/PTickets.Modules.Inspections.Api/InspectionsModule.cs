@@ -3,8 +3,9 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using PTickets.Modules.Inspections.Api.Endpoints;
+
 using PTickets.Modules.Inspections.Application.Commands.StartSession;
+using PTickets.Modules.Inspections.Api.Endpoints;
 using PTickets.Modules.Inspections.Domain;
 using PTickets.Modules.Inspections.Infrastructure.Persistence;
 
@@ -19,7 +20,7 @@ public static class InspectionsModule
 
         services.AddScoped<IInspectionRepository, InspectionRepository>();
         services.AddScoped<ISessionRepository, SessionRepository>();
-        services.AddScoped<INoticeRepository, NoticeRepository>();
+        
 
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(StartSessionCommand).Assembly));
 
@@ -30,7 +31,7 @@ public static class InspectionsModule
     {
         endpoints.MapSessionEndpoints();
         endpoints.MapInspectionEndpoints();
-        endpoints.MapNoticeEndpoints();
+        
         
         return endpoints;
     }
