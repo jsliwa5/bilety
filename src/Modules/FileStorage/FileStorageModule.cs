@@ -10,16 +10,11 @@ public static class FileStorageModule
 {
     public static IServiceCollection AddFileStorageModule(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContext<FileStorageDbContext>((sp, options) =>
-        {
-            if (!options.IsConfigured)
-            {
-                var connectionString = configuration.GetConnectionString("FileStorageConnection")
-                    ?? configuration.GetConnectionString("DefaultConnection")
-                    ?? configuration.GetConnectionString("Database")
-                    ?? "Data Source=ptickets.db";
-            }
-        });
+        var connectionString = configuration.GetConnectionString("FileStorageConnection")
+            ?? configuration.GetConnectionString("DefaultConnection")
+            ?? "Data Source=ptickets.db";
+        services.AddDbContext<FileStorageDbContext>(options =>
+            options.UseSqlite(connectionString));
 
         services.AddSingleton<IFileStorageService, LocalFileStorageService>();
 

@@ -12,16 +12,11 @@ public static class ZonesModule
 {
     public static IServiceCollection AddZonesModule(this IServiceCollection services, IConfiguration config)
     {
-        services.AddDbContext<ZonesDbContext>((sp, options) =>
-        {
-            if (!options.IsConfigured)
-            {
-                var connectionString = config.GetConnectionString("ZonesConnection")
-                    ?? config.GetConnectionString("DefaultConnection")
-                    ?? config.GetConnectionString("Database")
-                    ?? "Data Source=ptickets.db";
-            }
-        });
+        var connectionString = config.GetConnectionString("ZonesConnection")
+            ?? config.GetConnectionString("DefaultConnection")
+            ?? "Data Source=ptickets.db";
+        services.AddDbContext<ZonesDbContext>(options =>
+            options.UseSqlite(connectionString));
 
         services.AddScoped<ZoneManagementService>();
 

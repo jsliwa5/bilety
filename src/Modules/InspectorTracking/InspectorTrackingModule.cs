@@ -11,10 +11,11 @@ public static class InspectorTrackingModule
 {
     public static IServiceCollection AddInspectorTrackingModule(this IServiceCollection services, IConfiguration config)
     {
+        var connectionString = config.GetConnectionString("InspectorTrackingConnection")
+            ?? config.GetConnectionString("DefaultConnection")
+            ?? "Data Source=ptickets.db";
         services.AddDbContext<InspectorTrackingDbContext>(options =>
-        {
-            // Provider konfigurowany w PTickets.Api (SQLite/PostgreSQL)
-        });
+            options.UseSqlite(connectionString));
 
         return services;
     }

@@ -1,6 +1,7 @@
 namespace PTickets.Modules.Tickets;
 
 using Microsoft.AspNetCore.Routing;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PTickets.Modules.Tickets.Application.Services;
@@ -13,7 +14,11 @@ public static class TicketsModule
 {
     public static IServiceCollection AddTicketsModule(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContext<TicketsDbContext>();
+        var connectionString = configuration.GetConnectionString("TicketsConnection")
+            ?? configuration.GetConnectionString("DefaultConnection")
+            ?? "Data Source=ptickets.db";
+        services.AddDbContext<TicketsDbContext>(options =>
+            options.UseSqlite(connectionString));
         services.AddScoped<ITicketRepository, EfTicketRepository>();
         services.AddScoped<ITicketProvider, MockTicketProvider>();
         services.AddScoped<TicketProviderRegistry>();

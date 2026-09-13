@@ -23,6 +23,7 @@ public class NoticesDbContext : DbContext
             b.Property(x => x.RegistrationNumber).HasConversion(x => x.Value, x => new RegistrationNumber(x));
             b.Property(x => x.PenaltyAmount);
             b.Property(x => x.Surcharge);
+            b.Property(x => x.Status).HasConversion<string>();
         });
     }
 }

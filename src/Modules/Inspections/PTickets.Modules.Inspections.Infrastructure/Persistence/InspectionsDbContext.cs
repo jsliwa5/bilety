@@ -67,7 +67,6 @@ public class InspectionsDbContext : DbContext
             b.HasMany(x => x.Violations)
                 .WithOne()
                 .HasForeignKey(x => x.InspectionId);
-            b.Navigation(x => x.Violations).UsePropertyAccessMode(PropertyAccessMode.Field);
         });
 
         modelBuilder.Entity<ViolationEntry>(b =>

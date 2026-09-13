@@ -1,6 +1,7 @@
 namespace PTickets.Modules.Violations;
 
 using Microsoft.AspNetCore.Routing;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PTickets.Modules.Violations.Application.Services;
@@ -11,7 +12,11 @@ public static class ViolationsModule
 {
     public static IServiceCollection AddViolationsModule(this IServiceCollection services, IConfiguration config)
     {
-        services.AddDbContext<ViolationsDbContext>();
+        var connectionString = config.GetConnectionString("ViolationsConnection")
+            ?? config.GetConnectionString("DefaultConnection")
+            ?? "Data Source=ptickets.db";
+        services.AddDbContext<ViolationsDbContext>(options =>
+            options.UseSqlite(connectionString));
         services.AddScoped<PenaltyCalculationService>();
 
         return services;

@@ -19,8 +19,7 @@ public class Inspection
     public TicketCheckResult? TicketResult { get; private set; }
     public TicketCheckResult? SecondCheckResult { get; private set; }
     
-    private readonly List<ViolationEntry> _violations = new();
-    public IReadOnlyCollection<ViolationEntry> Violations => _violations.AsReadOnly();
+    public List<ViolationEntry> Violations { get; private set; } = new();
     
     private readonly List<FileId> _photoIds = new();
     public IReadOnlyCollection<FileId> PhotoIds => _photoIds.AsReadOnly();
@@ -55,7 +54,7 @@ public class Inspection
         }
         else
         {
-            _violations.Add(ViolationEntry.Create(Id, ViolationTypeId.Empty, ViolationSource.TicketCheck));
+            Violations.Add(ViolationEntry.Create(Id, ViolationTypeId.Empty, ViolationSource.TicketCheck));
             Status = requiresSecondCheck ? InspectionStatus.AwaitingSecondCheck : InspectionStatus.ViolationFound;
         }
     }
@@ -65,7 +64,7 @@ public class Inspection
         SecondCheckResult = result;
         if (result.IsValid)
         {
-            _violations.RemoveAll(v => v.Source == ViolationSource.TicketCheck);
+            Violations.RemoveAll(v => v.Source == ViolationSource.TicketCheck);
             Status = InspectionStatus.Approved;
         }
         else
@@ -76,14 +75,14 @@ public class Inspection
     
     public void AddVisualViolation(ViolationTypeId typeId)
     {
-        _violations.Add(ViolationEntry.Create(Id, typeId, ViolationSource.Visual));
+        Violations.Add(ViolationEntry.Create(Id, typeId, ViolationSource.Visual));
         Status = InspectionStatus.ViolationFound;
     }
     
     public void RemoveViolation(Guid violationEntryId)
     {
-        _violations.RemoveAll(v => v.Id == violationEntryId);
-        if (_violations.Count == 0 && Status == InspectionStatus.ViolationFound)
+        Violations.RemoveAll(v => v.Id == violationEntryId);
+        if (Violations.Count == 0 && Status == InspectionStatus.ViolationFound)
         {
             Status = InspectionStatus.Approved;
         }
@@ -106,7 +105,7 @@ public class Inspection
     
     public void Approve()
     {
-        if (_violations.Count > 0)
+        if (Violations.Count > 0)
             throw new InvalidOperationException("Cannot approve an inspection with violations.");
             
         Status = InspectionStatus.Approved;

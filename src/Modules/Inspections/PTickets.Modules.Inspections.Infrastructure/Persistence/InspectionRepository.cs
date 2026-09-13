@@ -27,8 +27,12 @@ public class InspectionRepository : IInspectionRepository
 
     public async Task SaveChangesAsync(CancellationToken ct)
     {
+        // Debug: log all entity states
+        foreach (var entry in _dbContext.ChangeTracker.Entries())
+        {
+            Console.WriteLine($"[EF DEBUG] Entity: {entry.Entity.GetType().Name}, State: {entry.State}, Key: {string.Join(",", entry.Properties.Where(p => p.Metadata.IsPrimaryKey()).Select(p => p.CurrentValue))}");
+        }
         await _dbContext.SaveChangesAsync(ct);
     }
 }
-
 

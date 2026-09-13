@@ -13,6 +13,7 @@ public class Notice
     public decimal Surcharge { get; private set; }
     
     public decimal TotalAmount => PenaltyAmount + Surcharge;
+    public NoticeStatus Status { get; private set; } = NoticeStatus.Issued;
 
     private Notice() { }
 
@@ -25,8 +26,29 @@ public class Notice
             RegistrationNumber = registrationNumber,
             PenaltyAmount = penaltyAmount,
             Surcharge = surcharge,
-            IssuedAt = issuedAt
+            IssuedAt = issuedAt,
+            Status = NoticeStatus.Issued
         };
+    }
+
+    public void MarkAsPaid()
+    {
+        if (Status != NoticeStatus.Issued)
+        {
+            throw new InvalidOperationException($"Cannot pay notice with status {Status}. Only notices in Issued status can be paid.");
+        }
+
+        Status = NoticeStatus.Paid;
+    }
+
+    public void Cancel()
+    {
+        if (Status != NoticeStatus.Issued)
+        {
+            throw new InvalidOperationException($"Cannot cancel notice with status {Status}. Only notices in Issued status can be cancelled.");
+        }
+
+        Status = NoticeStatus.Cancelled;
     }
 }
 

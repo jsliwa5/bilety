@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using PTickets.Modules.FileStorage;
 using PTickets.Modules.Inspections;
 using PTickets.Modules.InspectorTracking;
@@ -11,7 +12,20 @@ using PTickets.Shared.Abstractions;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+// Swagger z grupowaniem per moduł
+builder.Services.AddSwaggerGen(c =>
+{
+    c.TagActionsBy(api =>
+    {
+        var path = api.RelativePath ?? "";
+        var segments = path.Split('/');
+        if (segments.Length >= 2)
+            return new[] { segments[1].Replace("-", " ").ToUpper() };
+        return new[] { "OTHER" };
+    });
+});
+
 builder.Services.AddControllers();
 
 // MediatR – skanuje wszystkie moduły
@@ -40,8 +54,36 @@ builder.Services.AddFileStorageModule(builder.Configuration);
 
 var app = builder.Build();
 
+// Auto-create databases (dev only)
+if (app.Environment.IsDevelopment())
+{
+    using var scope = app.Services.CreateScope();
+    var sp = scope.ServiceProvider;
+
+    // EnsureCreated for each module's DbContext
+    sp.GetRequiredService<PTickets.Modules.Zones.Infrastructure.Persistence.ZonesDbContext>().Database.EnsureCreated();
+    sp.GetRequiredService<PTickets.Modules.Violations.Infrastructure.Persistence.ViolationsDbContext>().Database.EnsureCreated();
+    sp.GetRequiredService<PTickets.Modules.Inspections.Infrastructure.Persistence.InspectionsDbContext>().Database.EnsureCreated();
+    sp.GetRequiredService<PTickets.Modules.Notices.Infrastructure.Persistence.NoticesDbContext>().Database.EnsureCreated();
+    sp.GetRequiredService<PTickets.Modules.Notifications.Infrastructure.Persistence.NotificationsDbContext>().Database.EnsureCreated();
+    sp.GetRequiredService<PTickets.Modules.Tickets.Infrastructure.Persistence.TicketsDbContext>().Database.EnsureCreated();
+    sp.GetRequiredService<PTickets.Modules.FileStorage.Infrastructure.Persistence.FileStorageDbContext>().Database.EnsureCreated();
+    // InspectorTrackingDbContext is internal – resolved via generic method
+    var itDbType = typeof(PTickets.Modules.InspectorTracking.InspectorTrackingModule).Assembly
+        .GetTypes().FirstOrDefault(t => t.IsSubclassOf(typeof(DbContext)) && !t.IsAbstract);
+    if (itDbType != null)
+    {
+        var itDb = (DbContext)sp.GetRequiredService(itDbType);
+        itDb.Database.EnsureCreated();
+    }
+}
+
 app.UseSwagger();
-app.UseSwaggerUI();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "PTickets API v1");
+    c.DocumentTitle = "PTickets – Swagger UI";
+});
 
 app.MapControllers();
 app.MapZonesEndpoints();
@@ -53,4 +95,3 @@ app.MapNoticesEndpoints();
 app.MapNotificationsEndpoints();
 
 app.Run();
-
