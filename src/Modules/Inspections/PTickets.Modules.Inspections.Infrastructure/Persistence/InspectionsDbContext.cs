@@ -13,6 +13,7 @@ public class InspectionsDbContext : DbContext
 
     public DbSet<Inspection> Inspections { get; set; } = null!;
     public DbSet<Session> Sessions { get; set; } = null!;
+    public DbSet<ViolationEntry> ViolationEntries { get; set; } = null!;
     
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -21,7 +22,7 @@ public class InspectionsDbContext : DbContext
 
         modelBuilder.Entity<Session>(b =>
         {
-            b.HasKey(x => x.Id);
+            b.HasKey(x => x.Id); b.Property(x => x.Id).ValueGeneratedNever();
             b.Property(x => x.Id).HasConversion(x => x.Value, x => new SessionId(x));
             b.Property(x => x.InspectorId).HasConversion(x => x.Value, x => new InspectorId(x));
             b.Property(x => x.SelectedZoneId).HasConversion(x => x.HasValue ? (Guid?)x.Value.Value : null, x => x.HasValue ? new ZoneId(x.Value) : null);
@@ -30,7 +31,7 @@ public class InspectionsDbContext : DbContext
 
         modelBuilder.Entity<Inspection>(b =>
         {
-            b.HasKey(x => x.Id);
+            b.HasKey(x => x.Id); b.Property(x => x.Id).ValueGeneratedNever();
             b.Property(x => x.Id).HasConversion(x => x.Value, x => new InspectionId(x));
             b.Property(x => x.SessionId).HasConversion(x => x.Value, x => new SessionId(x));
             b.Property(x => x.InspectorId).HasConversion(x => x.Value, x => new InspectorId(x));
@@ -63,12 +64,15 @@ public class InspectionsDbContext : DbContext
                 )
                 .HasColumnName("PhotoIds");
 
-            b.HasMany(x => x.Violations).WithOne().HasForeignKey(x => x.InspectionId);
+            b.HasMany(x => x.Violations)
+                .WithOne()
+                .HasForeignKey(x => x.InspectionId);
+            b.Navigation(x => x.Violations).UsePropertyAccessMode(PropertyAccessMode.Field);
         });
 
         modelBuilder.Entity<ViolationEntry>(b =>
         {
-            b.HasKey(x => x.Id);
+            b.HasKey(x => x.Id); b.Property(x => x.Id).ValueGeneratedNever();
             b.Property(x => x.InspectionId).HasConversion(x => x.Value, x => new InspectionId(x));
             b.Property(x => x.ViolationTypeId).HasConversion(x => x.Value, x => new ViolationTypeId(x));
             b.Property(x => x.Source).HasConversion<string>();
