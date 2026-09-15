@@ -9,13 +9,18 @@ public class IsPaidAtDateTimeQueryHandler(ZonesDbContext dbContext) : IRequestHa
 {
     public async Task<bool> Handle(IsPaidAtDateTimeQuery request, CancellationToken cancellationToken)
     {
-        var street = await dbContext.Streets
-            .AsNoTracking()
-            .FirstOrDefaultAsync(s => s.Id == request.StreetId, cancellationToken);
+        var query = from s in dbContext.Streets
+                    join z in dbContext.Zones on s.ZoneId equals z.Id
+                    where s.Id == request.StreetId
+                    select new { StreetSchedule = s.PaidParkingSchedule, ZoneSchedule = z.PaidParkingSchedule };
 
-        if (street is null)
+        var result = await query.AsNoTracking().FirstOrDefaultAsync(cancellationToken);
+
+        if (result is null)
             return false;
 
-        return street.IsPaidAt(request.DateTime);
+        var schedule = result.StreetSchedule ?? result.ZoneSchedule;
+        
+        return schedule?.IsPaidAt(request.DateTime) ?? false;
     }
 }

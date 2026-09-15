@@ -10,13 +10,38 @@ using PTickets.Shared.Contracts.Zones;
 
 public class ZoneManagementService(ZonesDbContext dbContext, IMediator mediator)
 {
-    public async Task<ZoneId> CreateZoneAsync(string name, CancellationToken cancellationToken = default)
+    public async Task<ZoneId> CreateZoneAsync(
+        string name, 
+        ZoneType type, 
+        TimeOnly? startTime = null,
+        TimeOnly? endTime = null,
+        DayOfWeek[]? paidDays = null,
+        CancellationToken cancellationToken = default)
     {
-        var zone = Zone.Create(name);
+        PaidParkingSchedule? schedule = null;
+        if (startTime.HasValue && endTime.HasValue)
+        {
+            schedule = new PaidParkingSchedule(startTime.Value, endTime.Value, paidDays ?? []);
+        }
+
+        var zone = Zone.Create(name, type, schedule);
         dbContext.Zones.Add(zone);
+        
+        Street? autoStreet = null;
+        if (type == ZoneType.Single)
+        {
+            autoStreet = Street.CreateZoneRepresentative(zone.Id, name);
+            dbContext.Streets.Add(autoStreet);
+        }
+
         await dbContext.SaveChangesAsync(cancellationToken);
 
         await mediator.Publish(new ZoneCreatedEvent(zone.Id, zone.Name), cancellationToken);
+
+        if (autoStreet != null)
+        {
+            await mediator.Publish(new StreetCreatedEvent(autoStreet.Id, zone.Id, autoStreet.Name), cancellationToken);
+        }
 
         return zone.Id;
     }
@@ -24,15 +49,17 @@ public class ZoneManagementService(ZonesDbContext dbContext, IMediator mediator)
     public async Task<StreetId> CreateStreetAsync(
         ZoneId zoneId,
         string name,
-        bool representsWholeZone = false,
         TimeOnly? startTime = null,
         TimeOnly? endTime = null,
         DayOfWeek[]? paidDays = null,
         CancellationToken cancellationToken = default)
     {
-        var zoneExists = await dbContext.Zones.AnyAsync(z => z.Id == zoneId, cancellationToken);
-        if (!zoneExists)
+        var zone = await dbContext.Zones.FirstOrDefaultAsync(z => z.Id == zoneId, cancellationToken);
+        if (zone == null)
             throw new InvalidOperationException($"Strefa o ID {zoneId} nie istnieje.");
+            
+        if (zone.Type == ZoneType.Single)
+            throw new InvalidOperationException($"Nie można dodawać nowych ulic do pojedynczej strefy (Single).");
 
         PaidParkingSchedule? schedule = null;
         if (startTime.HasValue && endTime.HasValue)
@@ -40,7 +67,7 @@ public class ZoneManagementService(ZonesDbContext dbContext, IMediator mediator)
             schedule = new PaidParkingSchedule(startTime.Value, endTime.Value, paidDays ?? []);
         }
 
-        var street = Street.Create(zoneId, name, representsWholeZone, schedule);
+        var street = Street.CreateNormalStreet(zoneId, name, schedule);
         dbContext.Streets.Add(street);
         await dbContext.SaveChangesAsync(cancellationToken);
 
@@ -95,6 +122,12 @@ public class ZoneManagementService(ZonesDbContext dbContext, IMediator mediator)
         return zones.Select(z => new ZoneResponse(
             z.Id.Value,
             z.Name,
+            z.Type,
+            z.PaidParkingSchedule != null ? new ScheduleResponse(
+                z.PaidParkingSchedule.StartTime,
+                z.PaidParkingSchedule.EndTime,
+                z.PaidParkingSchedule.PaidDays
+            ) : null,
             z.Streets.Select(s => new StreetResponse(
                 s.Id.Value,
                 s.Name,

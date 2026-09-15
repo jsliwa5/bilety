@@ -25,6 +25,31 @@ public class ZonesDbContext(DbContextOptions<ZonesDbContext> options) : DbContex
             builder.Property(z => z.Name)
                 .IsRequired()
                 .HasMaxLength(200);
+            builder.Property(z => z.Type)
+                .HasConversion<string>();
+
+            builder.OwnsOne(z => z.PaidParkingSchedule, scheduleBuilder =>
+            {
+                scheduleBuilder.Property(p => p.StartTime)
+                    .HasColumnName("PaidStartTime");
+                scheduleBuilder.Property(p => p.EndTime)
+                    .HasColumnName("PaidEndTime");
+                scheduleBuilder.Property(p => p.PaidDays)
+                    .HasColumnName("PaidDays")
+                    .HasConversion(
+                        days => string.Join(",", days.Select(d => (int)d)),
+                        value => string.IsNullOrWhiteSpace(value)
+                            ? Array.Empty<DayOfWeek>()
+                            : value.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                                   .Select(s => (DayOfWeek)int.Parse(s))
+                                   .ToArray(),
+                        new ValueComparer<DayOfWeek[]>(
+                            (c1, c2) => (c1 == null && c2 == null) || (c1 != null && c2 != null && c1.SequenceEqual(c2)),
+                            c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+                            c => c.ToArray()
+                        )
+                    );
+            });
 
             builder.HasMany(z => z.Streets)
                 .WithOne()

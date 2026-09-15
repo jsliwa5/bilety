@@ -20,6 +20,8 @@ public static class TicketsModule
         services.AddDbContext<TicketsDbContext>(options =>
             options.UseSqlite(connectionString));
         services.AddScoped<ITicketRepository, EfTicketRepository>();
+        services.AddScoped<IResidentCardRepository, EfResidentCardRepository>();
+        services.AddScoped<IStreetZoneMappingRepository, EfStreetZoneMappingRepository>();
         services.AddScoped<ITicketProvider, MockTicketProvider>();
         services.AddScoped<TicketProviderRegistry>();
         services.AddScoped<TicketVerificationService>();
@@ -34,6 +36,7 @@ public static class TicketsModule
     public static IEndpointRouteBuilder MapTicketsEndpoints(this IEndpointRouteBuilder app)
     {
         TicketsEndpoints.MapTicketsEndpoints(app);
+        ResidentCardEndpoints.MapResidentCardEndpoints(app);
         return app;
     }
 }
