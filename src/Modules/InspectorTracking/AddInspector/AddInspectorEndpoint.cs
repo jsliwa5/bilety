@@ -1,10 +1,8 @@
-using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using PTickets.Modules.InspectorTracking.Data;
 using PTickets.Shared;
-using PTickets.Shared.Contracts.Zones;
 
 namespace PTickets.Modules.InspectorTracking.AddInspector;
 

@@ -27,6 +27,7 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 builder.Services.AddControllers();
+builder.Services.AddCors();
 
 // MediatR – skanuje wszystkie moduły
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(
@@ -84,6 +85,8 @@ app.UseSwaggerUI(c =>
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "PTickets API v1");
     c.DocumentTitle = "PTickets – Swagger UI";
 });
+
+app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
 app.MapControllers();
 app.MapZonesEndpoints();

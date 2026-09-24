@@ -2,7 +2,7 @@ namespace PTickets.Modules.Tickets.Application.EventHandlers;
 
 using MediatR;
 using PTickets.Modules.Tickets.Domain;
-using PTickets.Shared.Contracts.Zones;
+using PTickets.Modules.Zones.Contracts.Events;
 
 public class StreetCreatedEventHandler(IStreetZoneMappingRepository mappingRepository) : INotificationHandler<StreetCreatedEvent>
 {

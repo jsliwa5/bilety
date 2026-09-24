@@ -1,7 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <PropertyGroup>
+    <DefaultItemExcludes>$(DefaultItemExcludes);PTickets.Modules.InspectorTracking.Contracts\**</DefaultItemExcludes>
+  </PropertyGroup>
+
   <ItemGroup>
+    <ProjectReference Include="..\Inspections\PTickets.Modules.Inspections.Contracts\PTickets.Modules.Inspections.Contracts.csproj" />
     <ProjectReference Include="..\..\PTickets.Shared\PTickets.Shared.csproj" />
+    <ProjectReference Include="PTickets.Modules.InspectorTracking.Contracts\PTickets.Modules.InspectorTracking.Contracts.csproj" />
+    <ProjectReference Include="..\Zones\PTickets.Modules.Zones.Contracts\PTickets.Modules.Zones.Contracts.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
@@ -19,6 +26,9 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.12" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.12" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.12" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="PTickets.Modules.InspectorTracking.Tests" />
   </ItemGroup>
 </Project>
 

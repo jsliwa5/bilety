@@ -4,35 +4,45 @@
     <Project Path="src/PTickets.Api/PTickets.Api.csproj" />
     <Project Path="src/PTickets.Shared/PTickets.Shared.csproj" />
   </Folder>
+  <Folder Name="/src/Modules/" />
   <Folder Name="/src/Modules/FileStorage/">
+    <Project Path="src/Modules/FileStorage/PTickets.Modules.FileStorage.Contracts/PTickets.Modules.FileStorage.Contracts.csproj" />
     <Project Path="src/Modules/FileStorage/PTickets.Modules.FileStorage.csproj" />
   </Folder>
   <Folder Name="/src/Modules/Inspections/">
     <Project Path="src/Modules/Inspections/PTickets.Modules.Inspections.Api/PTickets.Modules.Inspections.Api.csproj" />
     <Project Path="src/Modules/Inspections/PTickets.Modules.Inspections.Application/PTickets.Modules.Inspections.Application.csproj" />
+    <Project Path="src/Modules/Inspections/PTickets.Modules.Inspections.Contracts/PTickets.Modules.Inspections.Contracts.csproj" />
     <Project Path="src/Modules/Inspections/PTickets.Modules.Inspections.Domain/PTickets.Modules.Inspections.Domain.csproj" />
     <Project Path="src/Modules/Inspections/PTickets.Modules.Inspections.Infrastructure/PTickets.Modules.Inspections.Infrastructure.csproj" />
   </Folder>
   <Folder Name="/src/Modules/InspectorTracking/">
+    <Project Path="src/Modules/InspectorTracking/PTickets.Modules.InspectorTracking.Contracts/PTickets.Modules.InspectorTracking.Contracts.csproj" />
     <Project Path="src/Modules/InspectorTracking/PTickets.Modules.InspectorTracking.csproj" />
   </Folder>
   <Folder Name="/src/Modules/Notices/">
     <Project Path="src/Modules/Notices/PTickets.Modules.Notices.csproj" />
   </Folder>
   <Folder Name="/src/Modules/Notifications/">
+    <Project Path="src/Modules/Notifications/PTickets.Modules.Notifications.Contracts/PTickets.Modules.Notifications.Contracts.csproj" />
     <Project Path="src/Modules/Notifications/PTickets.Modules.Notifications.csproj" />
   </Folder>
   <Folder Name="/src/Modules/Tickets/">
     <Project Path="src/Modules/Tickets/PTickets.Modules.Tickets.Application/PTickets.Modules.Tickets.Application.csproj" />
+    <Project Path="src/Modules/Tickets/PTickets.Modules.Tickets.Contracts/PTickets.Modules.Tickets.Contracts.csproj" />
     <Project Path="src/Modules/Tickets/PTickets.Modules.Tickets.Domain/PTickets.Modules.Tickets.Domain.csproj" />
     <Project Path="src/Modules/Tickets/PTickets.Modules.Tickets.Infrastructure/PTickets.Modules.Tickets.Infrastructure.csproj" />
   </Folder>
   <Folder Name="/src/Modules/Violations/">
+    <Project Path="src/Modules/Violations/PTickets.Modules.Violations.Contracts/PTickets.Modules.Violations.Contracts.csproj" />
     <Project Path="src/Modules/Violations/PTickets.Modules.Violations.csproj" />
   </Folder>
   <Folder Name="/src/Modules/Zones/">
+    <Project Path="src/Modules/Zones/PTickets.Modules.Zones.Contracts/PTickets.Modules.Zones.Contracts.csproj" />
     <Project Path="src/Modules/Zones/PTickets.Modules.Zones.csproj" />
   </Folder>
+  <Folder Name="/tests/" />
+  <Folder Name="/tests/Modules/" />
   <Folder Name="/tests/Modules/Violations/">
     <Project Path="tests/Modules/Violations/PTickets.Modules.Violations.Tests/PTickets.Modules.Violations.Tests.csproj" />
   </Folder>

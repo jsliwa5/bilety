@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PTickets.Modules.Violations.Application.Services;
+using PTickets.Modules.Violations.Application;
+using PTickets.Modules.Violations.Contracts;
 using PTickets.Modules.Violations.Endpoints;
 using PTickets.Modules.Violations.Infrastructure.Persistence;
 
@@ -18,6 +20,7 @@ public static class ViolationsModule
         services.AddDbContext<ViolationsDbContext>(options =>
             options.UseSqlite(connectionString));
         services.AddScoped<PenaltyCalculationService>();
+        services.AddScoped<IViolationsModule, ViolationsModuleFacade>();
 
         return services;
     }

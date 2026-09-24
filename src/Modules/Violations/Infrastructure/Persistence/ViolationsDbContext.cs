@@ -42,6 +42,14 @@ public class ViolationsDbContext : DbContext
             entity.Property(e => e.EffectiveFrom).IsRequired();
         });
 
+        modelBuilder.Entity<ViolationType>().HasData(
+            new { Id = ViolationTypeId.NoTicket, Name = "Brak ważnego biletu", Description = "Postój bez wniesienia opłaty" }
+        );
+
+        modelBuilder.Entity<PenaltyAmount>().HasData(
+            new { Id = Guid.Parse("22222222-2222-2222-2222-222222222222"), ViolationTypeId = ViolationTypeId.NoTicket, Amount = 150.00m, EffectiveFrom = DateTime.MinValue.ToUniversalTime() }
+        );
+
         modelBuilder.Entity<SurchargeTier>(entity =>
         {
             entity.ToTable("surcharge_tiers");

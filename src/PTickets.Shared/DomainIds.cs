@@ -53,6 +53,7 @@ public readonly record struct ViolationTypeId(Guid Value)
 {
     public static ViolationTypeId New() => new(Guid.NewGuid());
     public static ViolationTypeId Empty => new(Guid.Empty);
+    public static ViolationTypeId NoTicket => new(Guid.Parse("11111111-1111-1111-1111-111111111111"));
     public override string ToString() => Value.ToString();
 }
 

@@ -2,7 +2,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using PTickets.Modules.InspectorTracking.Data;
 using PTickets.Shared;
-using PTickets.Shared.Contracts.Inspections;
+using PTickets.Modules.Inspections.Contracts.Events;
 
 namespace PTickets.Modules.InspectorTracking.EventHandlers;
 

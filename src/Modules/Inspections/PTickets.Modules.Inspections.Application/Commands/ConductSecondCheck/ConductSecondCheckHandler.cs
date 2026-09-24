@@ -1,20 +1,20 @@
 using MediatR;
 using PTickets.Modules.Inspections.Application.Commands.CheckTicket;
 using PTickets.Modules.Inspections.Domain;
+using PTickets.Modules.Tickets.Contracts;
 using PTickets.Shared;
-using PTickets.Shared.Contracts.Tickets;
 
 namespace PTickets.Modules.Inspections.Application.Commands.ConductSecondCheck;
 
 public class ConductSecondCheckHandler : IRequestHandler<ConductSecondCheckCommand, TicketCheckResultDto>
 {
     private readonly IInspectionRepository _repository;
-    private readonly IMediator _mediator;
+    private readonly ITicketsModule _tickets;
 
-    public ConductSecondCheckHandler(IInspectionRepository repository, IMediator mediator)
+    public ConductSecondCheckHandler(IInspectionRepository repository, ITicketsModule tickets)
     {
         _repository = repository;
-        _mediator = mediator;
+        _tickets = tickets;
     }
 
     public async Task<TicketCheckResultDto> Handle(ConductSecondCheckCommand request, CancellationToken cancellationToken)
@@ -25,10 +25,10 @@ public class ConductSecondCheckHandler : IRequestHandler<ConductSecondCheckComma
         if (inspection.Status != InspectionStatus.AwaitingSecondCheck)
             throw new InvalidOperationException("Inspection is not awaiting second check.");
 
-        var result = await _mediator.Send(new CheckRegistrationQuery(
+        var result = await _tickets.CheckRegistrationAsync(
             inspection.RegistrationNumber, 
             inspection.StreetId, 
-            DateTime.UtcNow), cancellationToken);
+            DateTime.UtcNow, cancellationToken);
 
         inspection.RecordSecondCheck(result);
         await _repository.SaveChangesAsync(cancellationToken);

@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PTickets.Modules.Tickets.Application.Services;
+using PTickets.Modules.Tickets.Contracts;
 using PTickets.Modules.Tickets.Domain;
 using PTickets.Modules.Tickets.Infrastructure.Endpoints;
 using PTickets.Modules.Tickets.Infrastructure.Persistence;
@@ -25,6 +26,7 @@ public static class TicketsModule
         services.AddScoped<ITicketProvider, MockTicketProvider>();
         services.AddScoped<TicketProviderRegistry>();
         services.AddScoped<TicketVerificationService>();
+        services.AddScoped<ITicketsModule, TicketsModuleFacade>();
 
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(
             typeof(TicketVerificationService).Assembly,

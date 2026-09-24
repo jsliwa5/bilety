@@ -1,7 +1,7 @@
 using MediatR;
 using PTickets.Modules.Inspections.Domain;
 using PTickets.Shared;
-using PTickets.Shared.Contracts.Inspections;
+using PTickets.Modules.Inspections.Contracts.Events;
 
 namespace PTickets.Modules.Inspections.Application.Commands.AttachPhotos;
 

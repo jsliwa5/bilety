@@ -1,6 +1,5 @@
 namespace PTickets.Modules.Violations.Endpoints;
 
-using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -8,8 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using PTickets.Modules.Violations.Application.Dtos;
 using PTickets.Modules.Violations.Domain;
 using PTickets.Modules.Violations.Infrastructure.Persistence;
+using PTickets.Modules.Violations.Contracts;
 using PTickets.Shared;
-using PTickets.Shared.Contracts.Violations;
 
 public static class ViolationsEndpoints
 {
@@ -26,9 +25,9 @@ public static class ViolationsEndpoints
             return Results.Created($"/api/violation-types/{violationType.Id.Value}", new { id = violationType.Id.Value });
         });
 
-        group.MapGet("/violation-types", async (IMediator mediator, CancellationToken ct) =>
+        group.MapGet("/violation-types", async (IViolationsModule module, CancellationToken ct) =>
         {
-            var violationTypes = await mediator.Send(new GetAllViolationTypesQuery(), ct);
+            var violationTypes = await module.GetAllViolationTypesAsync(ct);
             return Results.Ok(violationTypes);
         });
 

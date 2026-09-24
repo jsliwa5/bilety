@@ -1,19 +1,19 @@
 using MediatR;
 using PTickets.Modules.Inspections.Domain;
+using PTickets.Modules.Tickets.Contracts;
 using PTickets.Shared;
-using PTickets.Shared.Contracts.Tickets;
 
 namespace PTickets.Modules.Inspections.Application.Commands.CheckTicket;
 
 public class CheckTicketHandler : IRequestHandler<CheckTicketCommand, TicketCheckResultDto>
 {
     private readonly IInspectionRepository _repository;
-    private readonly IMediator _mediator;
+    private readonly ITicketsModule _tickets;
 
-    public CheckTicketHandler(IInspectionRepository repository, IMediator mediator)
+    public CheckTicketHandler(IInspectionRepository repository, ITicketsModule tickets)
     {
         _repository = repository;
-        _mediator = mediator;
+        _tickets = tickets;
     }
 
     public async Task<TicketCheckResultDto> Handle(CheckTicketCommand request, CancellationToken cancellationToken)
@@ -21,12 +21,12 @@ public class CheckTicketHandler : IRequestHandler<CheckTicketCommand, TicketChec
         var inspection = await _repository.GetByIdAsync(new InspectionId(request.InspectionId), cancellationToken)
             ?? throw new InvalidOperationException("Inspection not found.");
 
-        var result = await _mediator.Send(new CheckRegistrationQuery(
+        var result = await _tickets.CheckRegistrationAsync(
             inspection.RegistrationNumber, 
             inspection.StreetId, 
-            DateTime.UtcNow), cancellationToken);
+            DateTime.UtcNow, cancellationToken);
 
-        inspection.RecordTicketCheck(result, requiresSecondCheck: true);
+        inspection.RecordTicketCheck(result);
         await _repository.SaveChangesAsync(cancellationToken);
 
         return new TicketCheckResultDto(result.IsValid, result.ProviderMessage);

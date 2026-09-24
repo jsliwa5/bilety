@@ -1,6 +1,6 @@
 using MediatR;
 using PTickets.Modules.Notices.Domain;
-using PTickets.Shared.Contracts.Inspections;
+using PTickets.Modules.Inspections.Contracts.Events;
 
 namespace PTickets.Modules.Notices.Application.EventHandlers;
 

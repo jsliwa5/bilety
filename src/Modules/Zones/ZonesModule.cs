@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using PTickets.Modules.Zones.Application;
+using PTickets.Modules.Zones.Contracts;
 using PTickets.Modules.Zones.Application.Services;
 using PTickets.Modules.Zones.Endpoints;
 using PTickets.Modules.Zones.Infrastructure.Persistence;
@@ -19,6 +21,7 @@ public static class ZonesModule
             options.UseSqlite(connectionString));
 
         services.AddScoped<ZoneManagementService>();
+        services.AddScoped<IZonesModule, ZonesModuleFacade>();
 
         return services;
     }

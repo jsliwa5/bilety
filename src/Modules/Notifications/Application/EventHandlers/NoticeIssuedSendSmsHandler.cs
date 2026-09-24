@@ -6,8 +6,8 @@ using PTickets.Modules.Notifications.Domain;
 using PTickets.Modules.Notifications.Infrastructure.External;
 using PTickets.Modules.Notifications.Infrastructure.Persistence;
 using PTickets.Shared.Abstractions;
-using PTickets.Shared.Contracts.Inspections;
-using PTickets.Shared.Contracts.Notifications;
+using PTickets.Modules.Inspections.Contracts.Events;
+using PTickets.Modules.Notifications.Contracts.Events;
 
 public class NoticeIssuedSendSmsHandler(
     NotificationsDbContext dbContext,

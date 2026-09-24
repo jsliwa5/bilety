@@ -8,7 +8,7 @@ public class ZoneTests
     [Fact]
     public void Create_WithValidName_ShouldSucceed()
     {
-        var zone = Zone.Create("Strefa A");
+        var zone = Zone.Create("Strefa A", ZoneType.MultiStreet, null);
 
         Assert.NotEqual(default, zone.Id);
         Assert.Equal("Strefa A", zone.Name);
@@ -24,6 +24,6 @@ public class ZoneTests
     [InlineData("   ")]
     public void Create_WithEmptyOrWhitespaceName_ShouldThrowArgumentException(string? name)
     {
-        Assert.Throws<ArgumentException>(() => Zone.Create(name!));
+        Assert.Throws<ArgumentException>(() => Zone.Create(name!, ZoneType.MultiStreet, null));
     }
 }

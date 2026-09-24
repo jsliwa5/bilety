@@ -9,15 +9,14 @@ public class StreetTests
     public void Create_WithValidData_ShouldSucceed()
     {
         var zoneId = ZoneId.New();
-        var schedule = new PaidParkingSchedule(new TimeOnly(8, 0), new TimeOnly(18, 0), [DayOfWeek.Monday]);
 
-        var street = Street.Create(zoneId, "Marszałkowska", representsWholeZone: true, schedule: schedule);
+        var street = Street.CreateZoneRepresentative(zoneId, "Marszałkowska");
 
         Assert.NotEqual(default, street.Id);
         Assert.Equal(zoneId, street.ZoneId);
         Assert.Equal("Marszałkowska", street.Name);
         Assert.True(street.RepresentsWholeZone);
-        Assert.Equal(schedule, street.PaidParkingSchedule);
+        Assert.Null(street.PaidParkingSchedule);
     }
 
     [Fact]
@@ -25,7 +24,7 @@ public class StreetTests
     {
         var zoneId = ZoneId.New();
 
-        var street = Street.Create(zoneId, "Floriańska");
+        var street = Street.CreateNormalStreet(zoneId, "Floriańska", null);
 
         Assert.NotEqual(default, street.Id);
         Assert.Equal(zoneId, street.ZoneId);
@@ -42,7 +41,7 @@ public class StreetTests
     {
         var zoneId = ZoneId.New();
 
-        Assert.Throws<ArgumentException>(() => Street.Create(zoneId, name!));
+        Assert.Throws<ArgumentException>(() => Street.CreateNormalStreet(zoneId, name!, null));
     }
 
     [Fact]
@@ -50,7 +49,7 @@ public class StreetTests
     {
         var zoneId = ZoneId.New();
         var schedule = new PaidParkingSchedule(new TimeOnly(8, 0), new TimeOnly(18, 0), [DayOfWeek.Monday]);
-        var street = Street.Create(zoneId, "Marszałkowska", schedule: schedule);
+        var street = Street.CreateNormalStreet(zoneId, "Marszałkowska", schedule);
 
         var mondayMidday = new DateTime(2026, 8, 31, 12, 0, 0); // Monday 12:00
         var mondayNight = new DateTime(2026, 8, 31, 20, 0, 0);  // Monday 20:00
@@ -65,7 +64,7 @@ public class StreetTests
     public void IsPaidAt_WithoutSchedule_ShouldReturnFalse()
     {
         var zoneId = ZoneId.New();
-        var street = Street.Create(zoneId, "Floriańska", schedule: null);
+        var street = Street.CreateNormalStreet(zoneId, "Floriańska", null);
 
         var mondayMidday = new DateTime(2026, 8, 31, 12, 0, 0);
 

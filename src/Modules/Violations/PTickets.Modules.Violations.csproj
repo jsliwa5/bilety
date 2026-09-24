@@ -1,7 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <PropertyGroup>
+    <DefaultItemExcludes>$(DefaultItemExcludes);PTickets.Modules.Violations.Contracts\**</DefaultItemExcludes>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\..\PTickets.Shared\PTickets.Shared.csproj" />
+    <ProjectReference Include="PTickets.Modules.Violations.Contracts\PTickets.Modules.Violations.Contracts.csproj" />
   </ItemGroup>
 
   <ItemGroup>

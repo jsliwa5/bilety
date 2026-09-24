@@ -6,6 +6,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PTickets.Modules.InspectorTracking.AddInspector;
 using PTickets.Modules.InspectorTracking.AssignToZone;
+using PTickets.Modules.InspectorTracking.Contracts;
+using PTickets.Modules.InspectorTracking.GetAllInspectors;
 
 public static class InspectorTrackingModule
 {
@@ -17,6 +19,8 @@ public static class InspectorTrackingModule
         services.AddDbContext<InspectorTrackingDbContext>(options =>
             options.UseSqlite(connectionString));
 
+        services.AddScoped<IInspectorTrackingModule, InspectorTrackingModuleFacade>();
+
         return services;
     }
 
@@ -24,6 +28,7 @@ public static class InspectorTrackingModule
     {
         app.MapAddInspector();
         app.MapAssignToZone();
+        app.MapGetAllInspectors();
         return app;
     }
 }

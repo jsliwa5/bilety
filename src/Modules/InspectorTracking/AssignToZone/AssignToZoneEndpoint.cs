@@ -1,10 +1,9 @@
-using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
+using PTickets.Modules.Zones.Contracts;
 using PTickets.Shared;
-using PTickets.Shared.Contracts.Zones;
 
 namespace PTickets.Modules.InspectorTracking.AssignToZone;
 
@@ -30,7 +29,7 @@ public static class AssignToZoneEndpoint
         Guid inspectorId,
         AssignToZoneRequest request,
         InspectorTrackingDbContext dbContext,
-        IMediator mediator,
+        IZonesModule zonesModule,
         CancellationToken ct)
     {
         var inspector = await dbContext.Inspectors
@@ -40,7 +39,7 @@ public static class AssignToZoneEndpoint
             return Results.NotFound("Inspektor nie został znaleziony.");
 
         var zoneId = new ZoneId(request.ZoneId);
-        var zoneExists = await mediator.Send(new ZoneExistsQuery(zoneId), ct);
+        var zoneExists = await zonesModule.ZoneExistsAsync(zoneId, ct);
         if (!zoneExists)
             return Results.BadRequest("Podana strefa nie istnieje.");
 

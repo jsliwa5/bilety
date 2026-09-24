@@ -1,19 +1,21 @@
 using MediatR;
 using PTickets.Modules.Inspections.Domain;
+using PTickets.Modules.Violations.Contracts;
 using PTickets.Shared;
-using PTickets.Shared.Contracts.Inspections;
-using PTickets.Shared.Contracts.Violations;
+using PTickets.Modules.Inspections.Contracts.Events;
 
 namespace PTickets.Modules.Inspections.Application.Commands.IssueNotice;
 
 public class IssueNoticeHandler : IRequestHandler<IssueNoticeCommand, Guid>
 {
     private readonly IInspectionRepository _inspectionRepository;
+    private readonly IViolationsModule _violations;
     private readonly IMediator _mediator;
 
-    public IssueNoticeHandler(IInspectionRepository inspectionRepository, IMediator mediator)
+    public IssueNoticeHandler(IInspectionRepository inspectionRepository, IViolationsModule violations, IMediator mediator)
     {
         _inspectionRepository = inspectionRepository;
+        _violations = violations;
         _mediator = mediator;
     }
 
@@ -37,15 +39,15 @@ public class IssueNoticeHandler : IRequestHandler<IssueNoticeCommand, Guid>
             // Default violation type for auto-added ticket checks
             if (violation.Source == ViolationSource.TicketCheck && violationTypeId == ViolationTypeId.Empty)
             {
-                violationTypeId = new ViolationTypeId(Guid.Empty);
+                violationTypeId = ViolationTypeId.NoTicket;
             }
 
-            var amount = await _mediator.Send(new GetPenaltyAmountQuery(violationTypeId), cancellationToken);
+            var amount = await _violations.GetPenaltyAmountAsync(violationTypeId, cancellationToken);
             
             decimal surcharge = 0;
             if (violation.Source == ViolationSource.TicketCheck)
             {
-                surcharge = await _mediator.Send(new CalculateSurchargeQuery(0), cancellationToken);
+                surcharge = await _violations.CalculateSurchargeAsync(0, cancellationToken);
             }
 
             totalPenaltyAmount += amount;

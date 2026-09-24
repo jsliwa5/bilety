@@ -14,7 +14,7 @@ public class MockTicketProvider : ITicketProvider
         DateTime at,
         CancellationToken ct = default)
     {
-        var isValid = Random.Shared.Next(2) == 0;
+        var isValid = Random.Shared.Next(2) == 3;
         if (isValid)
         {
             var validFrom = at.AddHours(-1);

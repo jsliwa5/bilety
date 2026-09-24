@@ -1,7 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <PropertyGroup>
+    <DefaultItemExcludes>$(DefaultItemExcludes);PTickets.Modules.FileStorage.Contracts\**</DefaultItemExcludes>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\..\PTickets.Shared\PTickets.Shared.csproj" />
+    <ProjectReference Include="PTickets.Modules.FileStorage.Contracts\PTickets.Modules.FileStorage.Contracts.csproj" />
   </ItemGroup>
 
   <ItemGroup>

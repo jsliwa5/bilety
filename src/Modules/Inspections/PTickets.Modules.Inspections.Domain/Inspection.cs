@@ -50,11 +50,11 @@ public class Inspection
         TicketResult = result;
         if (result.IsValid)
         {
-            Status = InspectionStatus.Approved;
+            //Status = InspectionStatus.Approved;
         }
         else
         {
-            Violations.Add(ViolationEntry.Create(Id, ViolationTypeId.Empty, ViolationSource.TicketCheck));
+            Violations.Add(ViolationEntry.Create(Id, ViolationTypeId.NoTicket, ViolationSource.TicketCheck));
             Status = requiresSecondCheck ? InspectionStatus.AwaitingSecondCheck : InspectionStatus.ViolationFound;
         }
     }

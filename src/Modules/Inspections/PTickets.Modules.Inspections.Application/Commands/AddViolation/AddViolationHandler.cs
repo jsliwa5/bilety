@@ -1,19 +1,19 @@
 using MediatR;
 using PTickets.Modules.Inspections.Domain;
+using PTickets.Modules.Violations.Contracts;
 using PTickets.Shared;
-using PTickets.Shared.Contracts.Violations;
 
 namespace PTickets.Modules.Inspections.Application.Commands.AddViolation;
 
 public class AddViolationHandler : IRequestHandler<AddViolationCommand>
 {
     private readonly IInspectionRepository _repository;
-    private readonly IMediator _mediator;
+    private readonly IViolationsModule _violations;
 
-    public AddViolationHandler(IInspectionRepository repository, IMediator mediator)
+    public AddViolationHandler(IInspectionRepository repository, IViolationsModule violations)
     {
         _repository = repository;
-        _mediator = mediator;
+        _violations = violations;
     }
 
     public async Task Handle(AddViolationCommand request, CancellationToken cancellationToken)
@@ -25,7 +25,7 @@ public class AddViolationHandler : IRequestHandler<AddViolationCommand>
             throw new InvalidOperationException("Cannot add violation in current state.");
 
         var violationTypeId = new ViolationTypeId(request.ViolationTypeId);
-        var typeExists = await _mediator.Send(new ViolationTypeExistsQuery(violationTypeId), cancellationToken);
+        var typeExists = await _violations.ViolationTypeExistsAsync(violationTypeId, cancellationToken);
         if (!typeExists)
             throw new InvalidOperationException("Violation type does not exist.");
 

@@ -6,7 +6,7 @@ using PTickets.Modules.Zones.Application.Dtos;
 using PTickets.Modules.Zones.Domain;
 using PTickets.Modules.Zones.Infrastructure.Persistence;
 using PTickets.Shared;
-using PTickets.Shared.Contracts.Zones;
+using PTickets.Modules.Zones.Contracts.Events;
 
 public class ZoneManagementService(ZonesDbContext dbContext, IMediator mediator)
 {
