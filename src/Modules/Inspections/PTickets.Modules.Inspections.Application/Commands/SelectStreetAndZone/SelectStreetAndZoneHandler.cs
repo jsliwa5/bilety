@@ -1,28 +1,28 @@
-using MediatR;
-using PTickets.Modules.Inspections.Domain;
-using PTickets.Shared;
+//using MediatR;
+//using PTickets.Modules.Inspections.Domain;
+//using PTickets.Shared;
 
-namespace PTickets.Modules.Inspections.Application.Commands.SelectStreetAndZone;
+//namespace PTickets.Modules.Inspections.Application.Commands.SelectStreetAndZone;
 
-public class SelectStreetAndZoneHandler : IRequestHandler<SelectStreetAndZoneCommand>
-{
-    private readonly ISessionRepository _repository;
+//public class SelectStreetAndZoneHandler : IRequestHandler<SelectStreetAndZoneCommand>
+//{
+//    private readonly ISessionRepository _repository;
 
-    public SelectStreetAndZoneHandler(ISessionRepository repository)
-    {
-        _repository = repository;
-    }
+//    public SelectStreetAndZoneHandler(ISessionRepository repository)
+//    {
+//        _repository = repository;
+//    }
 
-    public async Task Handle(SelectStreetAndZoneCommand request, CancellationToken cancellationToken)
-    {
-        var session = await _repository.GetByIdAsync(new SessionId(request.SessionId), cancellationToken)
-            ?? throw new InvalidOperationException("Session not found.");
+//    public async Task Handle(SelectStreetAndZoneCommand request, CancellationToken cancellationToken)
+//    {
+//        var session = await _repository.GetByIdAsync(new SessionId(request.SessionId), cancellationToken)
+//            ?? throw new InvalidOperationException("Session not found.");
             
-        if (session.IsClosed)
-            throw new InvalidOperationException("Session is closed.");
+//        if (session.IsClosed)
+//            throw new InvalidOperationException("Session is closed.");
 
-        session.SelectStreetAndZone(new ZoneId(request.ZoneId), new StreetId(request.StreetId));
-        await _repository.SaveChangesAsync(cancellationToken);
-    }
-}
+//        session.SelectStreetAndZone(new ZoneId(request.ZoneId), new StreetId(request.StreetId));
+//        await _repository.SaveChangesAsync(cancellationToken);
+//    }
+//}
 

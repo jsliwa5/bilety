@@ -22,11 +22,11 @@ public static class SessionEndpoints
             return Results.Ok(id);
         });
 
-        group.MapPut("/{sessionId:guid}/street", async (Guid sessionId, [FromBody] SelectStreetAndZoneCommand command, IMediator mediator) =>
-        {
-            await mediator.Send(command with { SessionId = sessionId });
-            return Results.Ok();
-        });
+        //group.MapPut("/{sessionId:guid}/street", async (Guid sessionId, [FromBody] SelectStreetAndZoneCommand command, IMediator mediator) =>
+        //{
+        //    await mediator.Send(command with { SessionId = sessionId });
+        //    return Results.Ok();
+        //});
 
         group.MapPost("/{sessionId:guid}/close", async (Guid sessionId, IMediator mediator) =>
         {

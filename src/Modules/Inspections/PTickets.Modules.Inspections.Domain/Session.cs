@@ -6,8 +6,6 @@ public class Session
 {
     public SessionId Id { get; private set; }
     public InspectorId InspectorId { get; private set; }
-    public ZoneId? SelectedZoneId { get; private set; }
-    public StreetId? SelectedStreetId { get; private set; }
     public DateTime StartedAt { get; private set; }
     public DateTime? ClosedAt { get; private set; }
     
@@ -25,11 +23,6 @@ public class Session
         };
     }
     
-    public void SelectStreetAndZone(ZoneId zoneId, StreetId streetId)
-    {
-        SelectedZoneId = zoneId;
-        SelectedStreetId = streetId;
-    }
     
     public void Close(DateTime closedAt)
     {

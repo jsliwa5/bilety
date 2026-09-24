@@ -44,7 +44,13 @@ public class Inspection
             Status = InspectionStatus.AwaitingDecision
         };
     }
-    
+
+    public void SelectZoneAndStreet(ZoneId zoneId, StreetId streetId)
+    {
+        ZoneId = zoneId;
+        StreetId = streetId;
+    }
+
     public void RecordTicketCheck(TicketCheckResult result, bool requiresSecondCheck = false)
     {
         TicketResult = result;
@@ -54,6 +60,9 @@ public class Inspection
         }
         else
         {
+            if (Status == InspectionStatus.ViolationFound)
+                throw new InvalidOperationException("Violation already found.");
+
             Violations.Add(ViolationEntry.Create(Id, ViolationTypeId.NoTicket, ViolationSource.TicketCheck));
             Status = requiresSecondCheck ? InspectionStatus.AwaitingSecondCheck : InspectionStatus.ViolationFound;
         }

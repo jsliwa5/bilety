@@ -21,8 +21,6 @@ public class GetSessionHandler : IRequestHandler<GetSessionQuery, SessionDto?>
         return new SessionDto(
             session.Id.Value,
             session.InspectorId.Value,
-            session.SelectedZoneId?.Value,
-            session.SelectedStreetId?.Value,
             session.StartedAt,
             session.ClosedAt);
     }

@@ -29,16 +29,20 @@ public class StartInspectionHandler : IRequestHandler<StartInspectionCommand, Gu
             
         if (session.IsClosed)
             throw new InvalidOperationException("Session is closed.");
-            
-        if (session.SelectedZoneId == null || session.SelectedStreetId == null)
-            throw new InvalidOperationException("Street and zone must be selected before starting inspection.");
+
+        var wasVehicleInspectedToday = await _inspectionRepository.HasInspectionForVehicleTodayAsync(
+            new RegistrationNumber(request.RegistrationNumber),
+            cancellationToken);
+
+        if(wasVehicleInspectedToday)
+            throw new InvalidOperationException("Vehicle has already been inspected today.");
 
         var inspection = Inspection.Create(
             session.Id,
             session.InspectorId,
             new RegistrationNumber(request.RegistrationNumber),
-            session.SelectedZoneId.Value,
-            session.SelectedStreetId.Value,
+            new ZoneId(request.ZoneId),
+            new StreetId(request.StreetId),
             request.Latitude,
             request.Longitude,
             DateTime.UtcNow);
