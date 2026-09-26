@@ -1,8 +1,7 @@
-namespace PTickets.Modules.Zones.Application;
+namespace PTickets.Modules.Zones;
 
 using Microsoft.EntityFrameworkCore;
 using PTickets.Modules.Zones.Contracts;
-using PTickets.Modules.Zones.Infrastructure.Persistence;
 using PTickets.Shared;
 
 internal class ZonesModuleFacade : IZonesModule

@@ -1,6 +1,6 @@
-namespace PTickets.Modules.Zones.Application.Dtos;
+namespace PTickets.Modules.Zones.GetAllZones;
 
-using PTickets.Modules.Zones.Domain;
+using PTickets.Modules.Zones.Data;
 
 public record ZoneResponse(
     Guid Id,

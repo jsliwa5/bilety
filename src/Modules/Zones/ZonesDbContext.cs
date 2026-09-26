@@ -1,8 +1,8 @@
-namespace PTickets.Modules.Zones.Infrastructure.Persistence;
+namespace PTickets.Modules.Zones;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using PTickets.Modules.Zones.Domain;
+using PTickets.Modules.Zones.Data;
 using PTickets.Shared;
 
 public class ZonesDbContext(DbContextOptions<ZonesDbContext> options) : DbContext(options)
@@ -55,11 +55,15 @@ public class ZonesDbContext(DbContextOptions<ZonesDbContext> options) : DbContex
                 .WithOne()
                 .HasForeignKey(s => s.ZoneId)
                 .OnDelete(DeleteBehavior.Cascade);
+            builder.Navigation(z => z.Streets)
+                .UsePropertyAccessMode(PropertyAccessMode.Field);
 
             builder.HasMany(z => z.Exclusions)
                 .WithOne()
                 .HasForeignKey(e => e.ZoneId)
                 .OnDelete(DeleteBehavior.Cascade);
+            builder.Navigation(z => z.Exclusions)
+                .UsePropertyAccessMode(PropertyAccessMode.Field);
         });
 
         modelBuilder.Entity<Street>(builder =>

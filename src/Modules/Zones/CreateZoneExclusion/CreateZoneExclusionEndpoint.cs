@@ -1,0 +1,35 @@
+using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
+using PTickets.Shared;
+using PTickets.Modules.Zones.Data;
+using Microsoft.AspNetCore.Http;
+
+namespace PTickets.Modules.Zones.CreateZoneExclusion;
+
+public static class CreateZoneExclusionEndpoint
+{
+    public static void MapCreateZoneExclusionEndpoint(this IEndpointRouteBuilder app)
+    {
+        app.MapPost("/api/zones/{zoneId:guid}/exclusions", async (Guid zoneId, CreateZoneExclusionRequest request, ZonesDbContext dbContext, CancellationToken ct) =>
+        {
+            var zone = await dbContext.Zones
+                .Include(z => z.Exclusions)
+                .FirstOrDefaultAsync(z => z.Id == new ZoneId(zoneId), ct);
+
+            if (zone is null)
+                return Results.NotFound("Zone with given Id not found");
+
+            var newExclusion = zone.AddExclusion(
+                request.StartDate,
+                request.EndDate,
+                request.Reason
+            );
+
+            await dbContext.SaveChangesAsync(ct);
+
+            return Results.Created($"/api/zones/{zoneId}/exclusions/{newExclusion.Id}", newExclusion);
+
+        });
+    }
+}

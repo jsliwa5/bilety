@@ -1,4 +1,4 @@
-namespace PTickets.Modules.Zones.Application.Dtos;
+namespace PTickets.Modules.Zones.CreateStreet;
 
 public record CreateStreetRequest(
     string Name,

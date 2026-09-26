@@ -4,11 +4,12 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using PTickets.Modules.Zones.Application;
 using PTickets.Modules.Zones.Contracts;
-using PTickets.Modules.Zones.Application.Services;
-using PTickets.Modules.Zones.Endpoints;
-using PTickets.Modules.Zones.Infrastructure.Persistence;
+using PTickets.Modules.Zones.CreateStreet;
+using PTickets.Modules.Zones.CreateStreetExclusion;
+using PTickets.Modules.Zones.CreateZone;
+using PTickets.Modules.Zones.CreateZoneExclusion;
+using PTickets.Modules.Zones.GetAllZones;
 
 public static class ZonesModule
 {
@@ -20,7 +21,6 @@ public static class ZonesModule
         services.AddDbContext<ZonesDbContext>(options =>
             options.UseSqlite(connectionString));
 
-        services.AddScoped<ZoneManagementService>();
         services.AddScoped<IZonesModule, ZonesModuleFacade>();
 
         return services;
@@ -28,8 +28,11 @@ public static class ZonesModule
 
     public static IEndpointRouteBuilder MapZonesEndpoints(this IEndpointRouteBuilder app)
     {
-        app.MapZonesApiEndpoints();
-        app.MapExclusionsApiEndpoints();
+        app.MapCreateStreetEndpoint();
+        app.MapCreateZoneEndpoint();
+        app.MapGetAllZonesEndpoint();
+        app.MapCreateStreetExclusionEndpoint();
+        app.MapCreateZoneExclusionEndpoint();
         return app;
     }
 }

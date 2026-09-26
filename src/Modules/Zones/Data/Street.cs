@@ -1,4 +1,4 @@
-namespace PTickets.Modules.Zones.Domain;
+namespace PTickets.Modules.Zones.Data;
 
 using PTickets.Shared;
 

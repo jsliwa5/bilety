@@ -4,9 +4,9 @@ using PTickets.Modules.InspectorTracking.Data;
 using PTickets.Shared;
 using PTickets.Modules.Inspections.Contracts.Events;
 
-namespace PTickets.Modules.InspectorTracking.EventHandlers;
+namespace PTickets.Modules.InspectorTracking.RegisterInspectionAttempt;
 
-internal class InspectionStartedEventHandler(InspectorTrackingDbContext db)
+internal class RegisterInspectionAttemptEventHandler(InspectorTrackingDbContext db)
     : INotificationHandler<InspectionStartedEvent>
 {
     public async Task Handle(InspectionStartedEvent notification, CancellationToken ct)

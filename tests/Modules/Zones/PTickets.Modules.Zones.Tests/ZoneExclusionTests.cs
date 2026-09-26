@@ -1,6 +1,6 @@
 namespace PTickets.Modules.Zones.Tests;
 
-using PTickets.Modules.Zones.Domain;
+using PTickets.Modules.Zones.Data;
 using PTickets.Shared;
 
 public class ZoneExclusionTests
