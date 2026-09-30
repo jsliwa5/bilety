@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
-using PTickets.Modules.Notices.Domain;
+using PTickets.Modules.Notices.Data;
 using PTickets.Shared;
 using PTickets.Shared.ValueObjects;
 
-namespace PTickets.Modules.Notices.Infrastructure.Persistence;
+namespace PTickets.Modules.Notices;
 
 public class NoticesDbContext : DbContext
 {

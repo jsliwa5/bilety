@@ -1,3 +1,3 @@
-namespace PTickets.Modules.Notices.Application.Queries.GetNotice;
+namespace PTickets.Modules.Notices.Data;
 
 public record NoticeDto(Guid Id, Guid InspectionId, string RegistrationNumber, decimal TotalAmount, DateTime IssuedAt);

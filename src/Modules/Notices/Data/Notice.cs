@@ -1,7 +1,7 @@
 using PTickets.Shared;
 using PTickets.Shared.ValueObjects;
 
-namespace PTickets.Modules.Notices.Domain;
+namespace PTickets.Modules.Notices.Data;
 
 public class Notice
 {

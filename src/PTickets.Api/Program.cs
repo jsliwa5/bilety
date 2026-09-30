@@ -65,7 +65,7 @@ if (app.Environment.IsDevelopment())
     sp.GetRequiredService<ZonesDbContext>().Database.EnsureCreated();
     sp.GetRequiredService<PTickets.Modules.Violations.Infrastructure.Persistence.ViolationsDbContext>().Database.EnsureCreated();
     sp.GetRequiredService<PTickets.Modules.Inspections.Infrastructure.Persistence.InspectionsDbContext>().Database.EnsureCreated();
-    sp.GetRequiredService<PTickets.Modules.Notices.Infrastructure.Persistence.NoticesDbContext>().Database.EnsureCreated();
+    sp.GetRequiredService<NoticesDbContext>().Database.EnsureCreated();
     sp.GetRequiredService<PTickets.Modules.Notifications.Infrastructure.Persistence.NotificationsDbContext>().Database.EnsureCreated();
     sp.GetRequiredService<PTickets.Modules.Tickets.Infrastructure.Persistence.TicketsDbContext>().Database.EnsureCreated();
     sp.GetRequiredService<PTickets.Modules.FileStorage.Infrastructure.Persistence.FileStorageDbContext>().Database.EnsureCreated();

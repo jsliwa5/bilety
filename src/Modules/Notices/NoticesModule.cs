@@ -2,9 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Routing;
-using PTickets.Modules.Notices.Domain;
-using PTickets.Modules.Notices.Infrastructure.Persistence;
-using PTickets.Modules.Notices.Endpoints;
+using PTickets.Modules.Notices.PayNotice;
+using PTickets.Modules.Notices.CancelNotice;
+using PTickets.Modules.Notices.GetNotice;
 
 namespace PTickets.Modules.Notices;
 
@@ -14,8 +14,7 @@ public static class NoticesModule
     {
         services.AddDbContext<NoticesDbContext>(options =>
             options.UseSqlite(configuration.GetConnectionString("NoticesModule")));
-        
-        services.AddScoped<INoticeRepository, NoticeRepository>();
+      
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(NoticesModule).Assembly));
 
         return services;
@@ -23,7 +22,9 @@ public static class NoticesModule
 
     public static IEndpointRouteBuilder MapNoticesEndpoints(this IEndpointRouteBuilder app)
     {
-        app.MapNoticeEndpoints();
+        app.MapPayNoticeEndpoint();
+        app.MapCancelNoticeEndpoint();
+        app.MapGetNoticeEndpoint();
         return app;
     }
 }

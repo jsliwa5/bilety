@@ -1,16 +1,16 @@
 using MediatR;
-using PTickets.Modules.Notices.Domain;
 using PTickets.Modules.Inspections.Contracts.Events;
+using PTickets.Modules.Notices.Data;
 
-namespace PTickets.Modules.Notices.Application.EventHandlers;
+namespace PTickets.Modules.Notices.IssueNotice;
 
 public class NoticeIssuedEventHandler : INotificationHandler<NoticeIssuedEvent>
 {
-    private readonly INoticeRepository _noticeRepository;
+    private readonly NoticesDbContext _dbContext;
 
-    public NoticeIssuedEventHandler(INoticeRepository noticeRepository)
+    public NoticeIssuedEventHandler(NoticesDbContext dbContext)
     {
-        _noticeRepository = noticeRepository;
+        _dbContext = dbContext;
     }
 
     public async Task Handle(NoticeIssuedEvent notification, CancellationToken cancellationToken)
@@ -24,7 +24,7 @@ public class NoticeIssuedEventHandler : INotificationHandler<NoticeIssuedEvent>
             notification.IssuedAt
         );
 
-        await _noticeRepository.AddAsync(notice, cancellationToken);
-        await _noticeRepository.SaveChangesAsync(cancellationToken);
+        await _dbContext.Notices.AddAsync(notice, cancellationToken);
+        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 }

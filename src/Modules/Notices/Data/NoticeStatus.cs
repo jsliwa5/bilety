@@ -1,4 +1,4 @@
-namespace PTickets.Modules.Notices.Domain;
+namespace PTickets.Modules.Notices.Data;
 
 public enum NoticeStatus
 {
