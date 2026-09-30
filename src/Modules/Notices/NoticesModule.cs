@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Routing;
 using PTickets.Modules.Notices.PayNotice;
 using PTickets.Modules.Notices.CancelNotice;
 using PTickets.Modules.Notices.GetNotice;
+using PTickets.Modules.Notices.GetNoticesForCarForGivenDate;
 
 namespace PTickets.Modules.Notices;
 
@@ -25,6 +26,7 @@ public static class NoticesModule
         app.MapPayNoticeEndpoint();
         app.MapCancelNoticeEndpoint();
         app.MapGetNoticeEndpoint();
+        app.MapGetNoticesForCarForGivenDateEndpoint();
         return app;
     }
 }

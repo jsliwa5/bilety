@@ -25,6 +25,7 @@ export default function Inspections() {
   // Results state
   const [ticketResult, setTicketResult] = useState<any>(null);
   const [notice, setNotice] = useState<any>(null);
+  const [existingNotices, setExistingNotices] = useState<any[]>([]);
 
   useEffect(() => {
     const loadData = async () => {
@@ -65,6 +66,7 @@ export default function Inspections() {
       setInspectionId(null);
       setTicketResult(null);
       setNotice(null);
+      setExistingNotices([]);
       alert('Session closed!');
     } catch (e) {
       console.error(e);
@@ -84,6 +86,7 @@ export default function Inspections() {
     try {
       setTicketResult(null);
       setNotice(null);
+      setExistingNotices([]);
       const payload = {
         sessionId,
         registrationNumber: regNumber,
@@ -95,6 +98,18 @@ export default function Inspections() {
       const res = await api.post('/inspections', payload);
       setInspectionId(res.data?.id || res.data); // Adjust based on API
       alert('Inspection started!');
+      
+      // Fetch existing notices for today
+      try {
+        const todayStr = new Date().toISOString().split('T')[0]; // format yyyy-mm-dd
+        const noticesRes = await api.get(`/notices/car/${regNumber}/date/${todayStr}`);
+        setExistingNotices(noticesRes.data);
+      } catch (err: any) {
+        if (err.response?.status !== 404) {
+          console.error("Failed to check existing notices:", err);
+        }
+      }
+
     } catch (e) {
       console.error(e);
       alert('Error starting inspection');
@@ -238,6 +253,30 @@ export default function Inspections() {
         <div className="bg-white p-6 rounded-lg shadow mb-8 border-l-4 border-blue-500">
           <h3 className="text-lg font-bold mb-4">Active Inspection Actions</h3>
           <p className="text-sm text-gray-600 mb-6">Inspection ID: {inspectionId}</p>
+
+          {existingNotices.length > 0 && (
+            <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
+              <div className="flex">
+                <div className="flex-shrink-0">
+                  <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <div className="ml-3">
+                  <h3 className="text-sm font-medium text-red-800">
+                    Warning: This vehicle already has {existingNotices.length} notice(s) issued today!
+                  </h3>
+                  <div className="mt-2 text-sm text-red-700">
+                    <ul className="list-disc pl-5 space-y-1">
+                      {existingNotices.map((n, idx) => (
+                        <li key={idx}>Notice ID: {n.id} | Amount: {n.totalAmount} PLN | Time: {new Date(n.issuedAt).toLocaleTimeString()}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
           
           <div className="space-y-6">
             <div className="flex gap-4 items-center">
@@ -280,7 +319,7 @@ export default function Inspections() {
 
             <div className="flex gap-4 items-center">
               <button onClick={issueNotice} className="bg-red-600 text-white px-4 py-2 rounded flex-1">Issue Notice</button>
-              <button onClick={() => { setInspectionId(null); setTicketResult(null); setNotice(null); }} className="bg-gray-200 text-gray-800 px-4 py-2 rounded">Finish / Next Vehicle</button>
+              <button onClick={() => { setInspectionId(null); setTicketResult(null); setNotice(null); setExistingNotices([]); }} className="bg-gray-200 text-gray-800 px-4 py-2 rounded">Finish / Next Vehicle</button>
             </div>
             
             {notice && (

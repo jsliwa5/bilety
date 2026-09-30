@@ -10,7 +10,7 @@ public static class GetNoticesForCarForGivenDateEndpoint
 {
     public static void MapGetNoticesForCarForGivenDateEndpoint(this IEndpointRouteBuilder app)
     {
-        app.MapGet("/api/notices/car/{registrationNumber:string}/date/{date:datetime}", async (string registrationNumber, DateTime date, NoticesDbContext dbContext, CancellationToken ct) =>
+        app.MapGet("/api/notices/car/{registrationNumber}/date/{date:datetime}", async (string registrationNumber, DateTime date, NoticesDbContext dbContext, CancellationToken ct) =>
         {
             var notices = await dbContext.Notices
                 .Where(n => n.RegistrationNumber.Value == registrationNumber && n.IssuedAt.Date == date.Date)
