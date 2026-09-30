@@ -20,14 +20,22 @@ public class TicketsDbContext(DbContextOptions<TicketsDbContext> options) : DbCo
             builder.ToTable("Tickets", "tickets");
             builder.HasKey(t => t.Id);
 
+            builder.Property(t => t.ExternalTicketId)
+                .HasMaxLength(100)
+                .IsRequired(false);
+
+            builder.Property(t => t.ParkingZone)
+                .HasMaxLength(50)
+                .IsRequired(false);
+
             builder.Property(t => t.RegistrationNumber)
                 .HasConversion(rn => rn.Value, v => RegistrationNumber.Create(v))
                 .IsRequired()
                 .HasMaxLength(20);
 
             builder.Property(t => t.StreetId)
-                .HasConversion(id => id.Value, value => new StreetId(value))
-                .IsRequired();
+                .HasConversion(id => id.HasValue ? id.Value.Value : Guid.Empty, value => value == Guid.Empty ? null : new StreetId(value))
+                .IsRequired(false);
 
             builder.Property(t => t.ValidFrom)
                 .IsRequired();
@@ -43,6 +51,7 @@ public class TicketsDbContext(DbContextOptions<TicketsDbContext> options) : DbCo
                 .IsRequired();
                 
             builder.HasIndex(t => new { t.RegistrationNumber, t.StreetId, t.ValidTo });
+            builder.HasIndex(t => t.ExternalTicketId).IsUnique();
         });
 
         modelBuilder.Entity<ResidentCard>(builder =>

@@ -60,7 +60,7 @@ public class Inspection
         }
         else
         {
-            if (Status == InspectionStatus.ViolationFound)
+            if (Status != InspectionStatus.AwaitingDecision && Status != InspectionStatus.AwaitingSecondCheck)
                 throw new InvalidOperationException("Violation already found.");
 
             Violations.Add(ViolationEntry.Create(Id, ViolationTypeId.NoTicket, ViolationSource.TicketCheck));

@@ -27,6 +27,7 @@ public static class TicketsModule
         services.AddScoped<TicketProviderRegistry>();
         services.AddScoped<TicketVerificationService>();
         services.AddScoped<ITicketsModule, TicketsModuleFacade>();
+        services.AddHostedService<PTickets.Modules.Tickets.Infrastructure.Messaging.RabbitMqTicketConsumer>();
 
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(
             typeof(TicketVerificationService).Assembly,

@@ -26,11 +26,18 @@ public class TicketVerificationService(
             return TicketCheckResult.Valid(residentCard.ValidFrom, residentCard.ValidTo, "Karta Mieszkańca");
         }
 
-        // 2. Check local tickets
+        // 2. Check local tickets (specific to street)
         var localTicket = await ticketRepository.FindActiveTicketAsync(registration, streetId, at, ct);
         if (localTicket is not null && localTicket.IsValidAt(at))
         {
             return TicketCheckResult.Valid(localTicket.ValidFrom, localTicket.ValidTo, localTicket.ProviderName);
+        }
+
+        // 3. Check local tickets (any street - e.g. from RabbitMQ)
+        var localTicketAny = await ticketRepository.FindActiveTicketByRegistrationAsync(registration, at, ct);
+        if (localTicketAny is not null && localTicketAny.IsValidAt(at))
+        {
+            return TicketCheckResult.Valid(localTicketAny.ValidFrom, localTicketAny.ValidTo, localTicketAny.ProviderName);
         }
 
         foreach (var provider in ticketProviders)
