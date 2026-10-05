@@ -50,5 +50,17 @@ public class InspectionRepository : IInspectionRepository
                         && i.StartedAt >= todayUtc
                         && i.StartedAt < tomorrowUtc, ct);
     }
-}
 
+    public async Task<Inspection?> GetInspectionAwaitingForSecondCheckAsync(RegistrationNumber registrationNumber, DateTime date, CancellationToken ct)
+    {
+        var day = date.Date;
+        var nextDay = day.AddDays(1);
+
+        return await _dbContext.Inspections
+            .Include(i => i.Violations)
+            .FirstOrDefaultAsync(i => i.RegistrationNumber == registrationNumber
+                                    && i.StartedAt >= day
+                                    && i.StartedAt < nextDay
+                                    && i.Status == InspectionStatus.AwaitingSecondCheck, ct);
+    }
+}

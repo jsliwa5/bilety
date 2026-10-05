@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\PTickets.Modules.Notices.Contracts\PTickets.Modules.Notices.Contracts.csproj" />
     <ProjectReference Include="..\Inspections\PTickets.Modules.Inspections.Contracts\PTickets.Modules.Inspections.Contracts.csproj" />
     <ProjectReference Include="..\..\PTickets.Shared\PTickets.Shared.csproj" />
   </ItemGroup>

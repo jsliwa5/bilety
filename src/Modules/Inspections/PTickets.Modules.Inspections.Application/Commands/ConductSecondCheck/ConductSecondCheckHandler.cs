@@ -6,6 +6,7 @@ using PTickets.Shared;
 
 namespace PTickets.Modules.Inspections.Application.Commands.ConductSecondCheck;
 
+[Obsolete("Use CheckTicketHandler instead. The second check is now handled automatically via StartInspection + CheckTicket flow.")]
 public class ConductSecondCheckHandler : IRequestHandler<ConductSecondCheckCommand, TicketCheckResultDto>
 {
     private readonly IInspectionRepository _repository;

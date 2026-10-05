@@ -15,15 +15,16 @@ public class Inspection
     public double Longitude { get; private set; }
     public DateTime StartedAt { get; private set; }
     public InspectionStatus Status { get; private set; }
-    
+    public DateTime? TimeOfFirstCheck { get; private set; }
+    public DateTime? TimeOfSecondCheck { get; private set; }
     public TicketCheckResult? TicketResult { get; private set; }
     public TicketCheckResult? SecondCheckResult { get; private set; }
-    
+
     public List<ViolationEntry> Violations { get; private set; } = new();
-    
+
     private readonly List<FileId> _photoIds = new();
     public IReadOnlyCollection<FileId> PhotoIds => _photoIds.AsReadOnly();
-    
+
     public NoticeId? NoticeId { get; private set; }
 
     private Inspection() { }
@@ -51,23 +52,57 @@ public class Inspection
         StreetId = streetId;
     }
 
-    public void RecordTicketCheck(TicketCheckResult result, bool requiresSecondCheck = false)
+    public void RecordTicketCheck(TicketCheckResult result, bool requiresSecondCheck = true)
     {
-        TicketResult = result;
-        if (result.IsValid)
+        if (Status == InspectionStatus.AwaitingDecision)
         {
-            //Status = InspectionStatus.Approved;
+            TicketResult = result;
+            TimeOfFirstCheck = DateTime.UtcNow;
+
+            if (result.IsValid)
+            {
+                Status = InspectionStatus.Approved;
+            }
+            else
+            {
+                if (requiresSecondCheck)
+                {
+                    Status = InspectionStatus.AwaitingSecondCheck;
+                }
+                else
+                {
+                    Violations.Add(ViolationEntry.Create(Id, ViolationTypeId.NoTicket, ViolationSource.TicketCheck));
+                    Status = InspectionStatus.ViolationFound;
+                }
+            }
+        }
+        else if (Status == InspectionStatus.AwaitingSecondCheck)
+        {
+            if (_photoIds.Count == 0)
+            {
+                throw new InvalidOperationException("First check photos must be attached before conducting second check.");
+            }
+
+            SecondCheckResult = result;
+            TimeOfSecondCheck = DateTime.UtcNow;
+
+            if (result.IsValid)
+            {
+                Status = InspectionStatus.Approved;
+            }
+            else
+            {
+                Violations.Add(ViolationEntry.Create(Id, ViolationTypeId.NoTicket, ViolationSource.TicketCheck));
+                Status = InspectionStatus.ViolationFound;
+            }
         }
         else
         {
-            if (Status != InspectionStatus.AwaitingDecision && Status != InspectionStatus.AwaitingSecondCheck)
-                throw new InvalidOperationException("Violation already found.");
-
-            Violations.Add(ViolationEntry.Create(Id, ViolationTypeId.NoTicket, ViolationSource.TicketCheck));
-            Status = requiresSecondCheck ? InspectionStatus.AwaitingSecondCheck : InspectionStatus.ViolationFound;
+            throw new InvalidOperationException("Ticket cannot be checked when inspection is already approved or violation already found!");
         }
     }
-    
+
+    [Obsolete("Use RecordTicketCheck instead. This method will be removed in a future version.")]
     public void RecordSecondCheck(TicketCheckResult result)
     {
         SecondCheckResult = result;
@@ -81,13 +116,20 @@ public class Inspection
             Status = InspectionStatus.ViolationFound;
         }
     }
-    
+
     public void AddVisualViolation(ViolationTypeId typeId)
     {
-        Violations.Add(ViolationEntry.Create(Id, typeId, ViolationSource.Visual));
-        Status = InspectionStatus.ViolationFound;
+        if (Status == InspectionStatus.AwaitingDecision || Status == InspectionStatus.AwaitingSecondCheck)
+        {
+            Violations.Add(ViolationEntry.Create(Id, typeId, ViolationSource.Visual));
+            Status = InspectionStatus.ViolationFound;
+        }
+        else
+        {
+            throw new InvalidOperationException("Cannot add visual violation when inspection is already approved or violation already found!");
+        }
     }
-    
+
     public void RemoveViolation(Guid violationEntryId)
     {
         Violations.RemoveAll(v => v.Id == violationEntryId);
@@ -96,27 +138,35 @@ public class Inspection
             Status = InspectionStatus.Approved;
         }
     }
-    
+
     public void AttachPhotos(List<FileId> fileIds)
     {
+        if (fileIds == null || fileIds.Count == 0)
+            throw new ArgumentException("At least one photo must be provided.", nameof(fileIds));
+
+        if (Status != InspectionStatus.AwaitingSecondCheck && Status != InspectionStatus.ViolationFound)
+        {
+            throw new InvalidOperationException("Photos can only be attached when awaiting second check or when a violation is found.");
+        }
+
         _photoIds.AddRange(fileIds);
         if (Status == InspectionStatus.ViolationFound)
         {
             Status = InspectionStatus.PhotosAttached;
         }
     }
-    
+
     public void MarkNoticeIssued(NoticeId noticeId)
     {
         NoticeId = noticeId;
         Status = InspectionStatus.NoticeIssued;
     }
-    
+
     public void Approve()
     {
         if (Violations.Count > 0)
             throw new InvalidOperationException("Cannot approve an inspection with violations.");
-            
+
         Status = InspectionStatus.Approved;
     }
 }

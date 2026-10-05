@@ -21,6 +21,7 @@
     <Project Path="src/Modules/InspectorTracking/PTickets.Modules.InspectorTracking.csproj" />
   </Folder>
   <Folder Name="/src/Modules/Notices/">
+    <Project Path="PTickets.Modules.Notices.Contracts/PTickets.Modules.Notices.Contracts.csproj" Id="8e3a923a-989f-402a-a5dc-01fdc07d1fab" />
     <Project Path="src/Modules/Notices/PTickets.Modules.Notices.csproj" />
   </Folder>
   <Folder Name="/src/Modules/Notifications/">

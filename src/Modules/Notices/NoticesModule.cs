@@ -6,6 +6,7 @@ using PTickets.Modules.Notices.PayNotice;
 using PTickets.Modules.Notices.CancelNotice;
 using PTickets.Modules.Notices.GetNotice;
 using PTickets.Modules.Notices.GetNoticesForCarForGivenDate;
+using PTickets.Modules.Notices.Contracts;
 
 namespace PTickets.Modules.Notices;
 
@@ -16,6 +17,8 @@ public static class NoticesModule
         services.AddDbContext<NoticesDbContext>(options =>
             options.UseSqlite(configuration.GetConnectionString("NoticesModule")));
       
+        services.AddScoped<INoticesModule, NoticeFacade>();
+
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(NoticesModule).Assembly));
 
         return services;
@@ -30,3 +33,4 @@ public static class NoticesModule
         return app;
     }
 }
+

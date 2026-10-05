@@ -10,3 +10,49 @@ body {
   background-color: #f3f4f6;
 }
 
+/* Global button styles for tactile and interactive feel across the whole app */
+button {
+  cursor: pointer;
+  user-select: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+button:not(:disabled):hover {
+  filter: brightness(0.92);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.12), 0 2px 4px -2px rgba(0, 0, 0, 0.08);
+}
+
+button:not(:disabled):active {
+  filter: brightness(0.84);
+  transform: translateY(1px) scale(0.98);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.08);
+}
+
+button:disabled {
+  cursor: not-allowed !important;
+  opacity: 0.55;
+  filter: none !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Link transitions */
+a {
+  transition: all 0.15s ease-in-out;
+}
+
+/* Form inputs focus styles */
+input, select {
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+

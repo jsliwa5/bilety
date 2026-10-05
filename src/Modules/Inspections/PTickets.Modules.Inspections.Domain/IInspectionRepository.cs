@@ -10,5 +10,7 @@ public interface IInspectionRepository
     Task SaveChangesAsync(CancellationToken ct);
 
     Task<bool> HasInspectionForVehicleTodayAsync(RegistrationNumber registrationNumber, CancellationToken ct);
+
+    Task<Inspection?> GetInspectionAwaitingForSecondCheckAsync(RegistrationNumber registrationNumber, DateTime date, CancellationToken ct); 
 }
 

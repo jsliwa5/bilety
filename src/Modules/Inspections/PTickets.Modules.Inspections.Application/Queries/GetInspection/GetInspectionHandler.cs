@@ -31,7 +31,8 @@ public class GetInspectionHandler : IRequestHandler<GetInspectionQuery, Inspecti
             inspection.RegistrationNumber.Value,
             inspection.Status.ToString(),
             violations,
-            inspection.NoticeId?.Value);
+            inspection.NoticeId?.Value,
+            inspection.PhotoIds.Count);
     }
 }
 

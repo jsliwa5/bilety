@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using PTickets.Shared;
 using PTickets.Modules.Notices.Data;
+using PTickets.Modules.Notices.Contracts;
 
 namespace PTickets.Modules.Notices.GetNotice;
 

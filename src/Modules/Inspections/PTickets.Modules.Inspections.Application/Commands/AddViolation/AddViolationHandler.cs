@@ -21,12 +21,6 @@ public class AddViolationHandler : IRequestHandler<AddViolationCommand>
         var inspection = await _repository.GetByIdAsync(new InspectionId(request.InspectionId), cancellationToken)
             ?? throw new InvalidOperationException("Inspection not found.");
 
-        if (inspection.Status == InspectionStatus.ViolationFound)
-            throw new InvalidOperationException("Violation already found.");
-
-        if (inspection.Status != InspectionStatus.AwaitingDecision)
-            throw new InvalidOperationException("Cannot add violation in current state.");
-
         var violationTypeId = new ViolationTypeId(request.ViolationTypeId);
         var typeExists = await _violations.ViolationTypeExistsAsync(violationTypeId, cancellationToken);
         if (!typeExists)
