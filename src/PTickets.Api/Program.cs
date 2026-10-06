@@ -77,6 +77,10 @@ if (app.Environment.IsDevelopment())
         var itDb = (DbContext)sp.GetRequiredService(itDbType);
         itDb.Database.EnsureCreated();
     }
+
+    var mediator = sp.GetRequiredService<MediatR.IMediator>();
+    var zonesDb = sp.GetRequiredService<ZonesDbContext>();
+    await ZonesSeeder.SeedAsync(zonesDb, mediator);
 }
 
 app.UseSwagger();

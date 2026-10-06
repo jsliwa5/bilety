@@ -12,7 +12,7 @@ public static class GetNoticeEndpoint
 {
     public static void MapGetNoticeEndpoint(this IEndpointRouteBuilder app) 
     {
-        app.MapGet("/notices/{noticeId:guid}", async (Guid noticeId, NoticesDbContext context, CancellationToken ct) =>
+        app.MapGet("api/notices/{noticeId:guid}", async (Guid noticeId, NoticesDbContext context, CancellationToken ct) =>
         {
             var notice = await context.Notices.FirstOrDefaultAsync(n => n.Id == new NoticeId(noticeId), ct);
 
