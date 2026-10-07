@@ -23,18 +23,18 @@ public class EfTicketRepository(TicketsDbContext dbContext) : ITicketRepository
                 ct);
     }
 
-    public async Task<Ticket?> FindActiveTicketByRegistrationAsync(
+    public async Task<IReadOnlyList<Ticket>> FindActiveTicketsByRegistrationAsync(
         RegistrationNumber reg,
         DateTime at,
         CancellationToken ct = default)
     {
         return await dbContext.Tickets
             .AsNoTracking()
-            .FirstOrDefaultAsync(t =>
+            .Where(t =>
                 t.RegistrationNumber == reg &&
                 t.ValidFrom <= at &&
-                t.ValidTo >= at,
-                ct);
+                t.ValidTo >= at)
+            .ToListAsync(ct);
     }
 
     public async Task<bool> ExistsByExternalIdAsync(string externalTicketId, CancellationToken ct = default)

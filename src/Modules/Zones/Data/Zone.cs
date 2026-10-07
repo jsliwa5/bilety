@@ -17,51 +17,51 @@ public class Zone
 
     private Zone() { } // EF Core
 
-    public static Zone CreateSingle(string name, PaidParkingSchedule? schedule = null)
+    public static Zone CreateSingle(string name, PaidParkingSchedule? schedule = null, Guid? id = null, Guid? streetId = null)
     {
         if (string.IsNullOrWhiteSpace(name))
             throw new ArgumentException("Nazwa strefy nie może być pusta.", nameof(name));
 
         var zone = new Zone
         {
-            Id = ZoneId.New(),
+            Id = id.HasValue ? new ZoneId(id.Value) : ZoneId.New(),
             Name = name.Trim(),
             Type = ZoneType.Single,
             PaidParkingSchedule = schedule
         };
 
-        zone._streets.Add(Street.CreateZoneRepresentative(zone.Id, zone.Name));
+        zone._streets.Add(Street.CreateZoneRepresentative(zone.Id, zone.Name, streetId));
         return zone;
     }
 
-    public static Zone CreateMultiStreet(string name, PaidParkingSchedule? schedule = null)
+    public static Zone CreateMultiStreet(string name, PaidParkingSchedule? schedule = null, Guid? id = null)
     {
         if (string.IsNullOrWhiteSpace(name))
             throw new ArgumentException("Nazwa strefy nie może być pusta.", nameof(name));
 
         return new Zone
         {
-            Id = ZoneId.New(),
+            Id = id.HasValue ? new ZoneId(id.Value) : ZoneId.New(),
             Name = name.Trim(),
             Type = ZoneType.MultiStreet,
             PaidParkingSchedule = schedule
         };
     }
 
-    public static Zone Create(string name, ZoneType type, PaidParkingSchedule? schedule = null) =>
+    public static Zone Create(string name, ZoneType type, PaidParkingSchedule? schedule = null, Guid? id = null, Guid? streetId = null) =>
         type switch
         {
-            ZoneType.Single => CreateSingle(name, schedule),
-            ZoneType.MultiStreet => CreateMultiStreet(name, schedule),
+            ZoneType.Single => CreateSingle(name, schedule, id, streetId),
+            ZoneType.MultiStreet => CreateMultiStreet(name, schedule, id),
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, "Nieznany typ strefy.")
         };
 
-    public Street AddStreet(string name, PaidParkingSchedule? schedule = null)
+    public Street AddStreet(string name, PaidParkingSchedule? schedule = null, Guid? id = null)
     {
         if (Type == ZoneType.Single)
             throw new InvalidOperationException("Nie można dodawać nowych ulic do pojedynczej strefy (Single).");
 
-        var street = Street.CreateNormalStreet(Id, name, schedule);
+        var street = Street.CreateNormalStreet(Id, name, schedule, id);
         _streets.Add(street);
         return street;
     }

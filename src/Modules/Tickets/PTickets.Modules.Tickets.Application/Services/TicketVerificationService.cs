@@ -34,10 +34,25 @@ public class TicketVerificationService(
         }
 
         // 3. Check local tickets (any street - e.g. from RabbitMQ)
-        var localTicketAny = await ticketRepository.FindActiveTicketByRegistrationAsync(registration, at, ct);
-        if (localTicketAny is not null && localTicketAny.IsValidAt(at))
+        var mapping = await mappingRepository.GetByStreetIdAsync(streetId, ct);
+        var activeTicketsAny = await ticketRepository.FindActiveTicketsByRegistrationAsync(registration, at, ct);
+        
+        foreach (var ticket in activeTicketsAny)
         {
-            return TicketCheckResult.Valid(localTicketAny.ValidFrom, localTicketAny.ValidTo, localTicketAny.ProviderName);
+            if (string.IsNullOrEmpty(ticket.ParkingZone))
+                continue;
+
+            var parkingZoneUpper = ticket.ParkingZone.ToUpperInvariant();
+            var matchesStreetId = parkingZoneUpper == streetId.Value.ToString().ToUpperInvariant();
+            var matchesZoneId = mapping != null && parkingZoneUpper == mapping.ZoneId.Value.ToString().ToUpperInvariant();
+
+            if (matchesStreetId || matchesZoneId)
+            {
+                if (ticket.IsValidAt(at))
+                {
+                    return TicketCheckResult.Valid(ticket.ValidFrom, ticket.ValidTo, ticket.ProviderName);
+                }
+            }
         }
 
         foreach (var provider in ticketProviders)

@@ -36,7 +36,7 @@ public class RabbitMqTicketConsumer : BackgroundService
     {
         var factory = new ConnectionFactory
         {
-            HostName = /*_configuration["RabbitMQ:HostName"] ?? */ "172.0.0.1",
+            HostName = /*_configuration["RabbitMQ:HostName"] ?? */ "127.0.0.1",
             Port = /*int.TryParse(_configuration["RabbitMQ:Port"], out var port) ? port : */ 5672,
             VirtualHost = /*_configuration["RabbitMQ:VirtualHost"] ?? */ "parking",
             //UserName = _configuration["RabbitMQ:UserName"] ?? "controller_app",
@@ -79,8 +79,8 @@ public class RabbitMqTicketConsumer : BackgroundService
                         var ticket = Ticket.CreateFromExternal(
                             message.TicketId,
                             RegistrationNumber.Create(message.LicensePlate),
-                            message.ValidFrom,
-                            message.ValidTo,
+                            message.ValidFrom.UtcDateTime,
+                            message.ValidTo.UtcDateTime,
                             message.Provider,
                             message.ParkingZone);
 

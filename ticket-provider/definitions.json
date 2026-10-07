@@ -1,0 +1,141 @@
+{
+  "vhosts": [
+    {
+      "name": "parking"
+    }
+  ],
+  "users": [
+    {
+      "name": "admin",
+      "password": "ADMIN123",
+      "tags": ["administrator"]
+    },
+    {
+      "name": "provider_simulator",
+      "password": "PROVIDER123",
+      "tags": []
+    },
+    {
+      "name": "controller_app",
+      "password": "CONTROLLER123",
+      "tags": []
+    }
+  ],
+  "permissions": [
+    {
+      "user": "admin",
+      "vhost": "parking",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "provider_simulator",
+      "vhost": "parking",
+      "configure": "^$",
+      "write": "^parking\\.tickets\\..*",
+      "read": "^$"
+    },
+    {
+      "user": "controller_app",
+      "vhost": "parking",
+      "configure": "^parking\\..*",
+      "write": "^parking\\..*",
+      "read": "^parking\\..*"
+    }
+  ],
+  "exchanges": [
+    {
+      "name": "parking.tickets.topic",
+      "vhost": "parking",
+      "type": "topic",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "parking.tickets.dlx",
+      "vhost": "parking",
+      "type": "fanout",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "parking.tickets.retry-exchange",
+      "vhost": "parking",
+      "type": "fanout",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    }
+  ],
+  "queues": [
+    {
+      "name": "parking.controller-sync",
+      "vhost": "parking",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-dead-letter-exchange": "parking.tickets.dlx"
+      }
+    },
+    {
+      "name": "parking.tickets.retry",
+      "vhost": "parking",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-message-ttl": 30000,
+        "x-dead-letter-exchange": "parking.tickets.topic",
+        "x-dead-letter-routing-key": "ticket.purchase.retry"
+      }
+    },
+    {
+      "name": "parking.tickets.dlq",
+      "vhost": "parking",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-message-ttl": 604800000
+      }
+    }
+  ],
+  "bindings": [
+    {
+      "source": "parking.tickets.topic",
+      "vhost": "parking",
+      "destination": "parking.controller-sync",
+      "destination_type": "queue",
+      "routing_key": "ticket.purchase.*",
+      "arguments": {}
+    },
+    {
+      "source": "parking.tickets.topic",
+      "vhost": "parking",
+      "destination": "parking.controller-sync",
+      "destination_type": "queue",
+      "routing_key": "ticket.purchase.retry",
+      "arguments": {}
+    },
+    {
+      "source": "parking.tickets.retry-exchange",
+      "vhost": "parking",
+      "destination": "parking.tickets.retry",
+      "destination_type": "queue",
+      "routing_key": "",
+      "arguments": {}
+    },
+    {
+      "source": "parking.tickets.dlx",
+      "vhost": "parking",
+      "destination": "parking.tickets.dlq",
+      "destination_type": "queue",
+      "routing_key": "",
+      "arguments": {}
+    }
+  ]
+}

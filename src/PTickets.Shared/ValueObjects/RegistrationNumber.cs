@@ -23,7 +23,7 @@ public sealed record RegistrationNumber
         if (compact.Length is < 2 or > 10)
             throw new ArgumentException("Registration number must be between 2 and 10 characters.", nameof(number));
 
-        Value = trimmed;
+        Value = compact;
     }
 
     public static RegistrationNumber Create(string number) => new(number);

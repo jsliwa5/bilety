@@ -12,14 +12,14 @@ public class Street
 
     private Street() { } // EF Core
 
-    public static Street CreateNormalStreet(ZoneId zoneId, string name, PaidParkingSchedule? schedule = null)
+    public static Street CreateNormalStreet(ZoneId zoneId, string name, PaidParkingSchedule? schedule = null, Guid? id = null)
     {
         if (string.IsNullOrWhiteSpace(name))
             throw new ArgumentException("Nazwa ulicy nie może być pusta.", nameof(name));
 
         return new Street
         {
-            Id = StreetId.New(),
+            Id = id.HasValue ? new StreetId(id.Value) : StreetId.New(),
             ZoneId = zoneId,
             Name = name.Trim(),
             RepresentsWholeZone = false,
@@ -27,14 +27,14 @@ public class Street
         };
     }
 
-    public static Street CreateZoneRepresentative(ZoneId zoneId, string zoneName)
+    public static Street CreateZoneRepresentative(ZoneId zoneId, string zoneName, Guid? id = null)
     {
         if (string.IsNullOrWhiteSpace(zoneName))
             throw new ArgumentException("Nazwa strefy nie może być pusta.", nameof(zoneName));
 
         return new Street
         {
-            Id = StreetId.New(),
+            Id = id.HasValue ? new StreetId(id.Value) : StreetId.New(),
             ZoneId = zoneId,
             Name = zoneName.Trim(),
             RepresentsWholeZone = true,
