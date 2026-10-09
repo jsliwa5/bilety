@@ -19,12 +19,12 @@ public class AddViolationHandler : IRequestHandler<AddViolationCommand>
     public async Task Handle(AddViolationCommand request, CancellationToken cancellationToken)
     {
         var inspection = await _repository.GetByIdAsync(new InspectionId(request.InspectionId), cancellationToken)
-            ?? throw new InvalidOperationException("Inspection not found.");
+            ?? throw new PTickets.Modules.Inspections.Domain.Exceptions.InspectionNotFoundException();
 
         var violationTypeId = new ViolationTypeId(request.ViolationTypeId);
         var typeExists = await _violations.ViolationTypeExistsAsync(violationTypeId, cancellationToken);
         if (!typeExists)
-            throw new InvalidOperationException("Violation type does not exist.");
+            throw new PTickets.Modules.Inspections.Domain.Exceptions.ViolationTypeNotFoundException();
 
         inspection.AddVisualViolation(violationTypeId);
         await _repository.SaveChangesAsync(cancellationToken);

@@ -29,10 +29,10 @@ public class StartInspectionHandler : IRequestHandler<StartInspectionCommand, Gu
     public async Task<Guid> Handle(StartInspectionCommand request, CancellationToken cancellationToken)
     {
         var session = await _sessionRepository.GetByIdAsync(new SessionId(request.SessionId), cancellationToken)
-            ?? throw new InvalidOperationException("Session not found.");
+            ?? throw new PTickets.Modules.Inspections.Domain.Exceptions.SessionNotFoundException();
 
         if (session.IsClosed)
-            throw new InvalidOperationException("Session is closed.");
+            throw new PTickets.Modules.Inspections.Domain.Exceptions.SessionAlreadyClosedException();
 
         var wasNoticeIssuedForVehicleToday = await _noticesModule.WasNoticeIssuedForDateAsync(
             new RegistrationNumber(request.RegistrationNumber),
@@ -40,7 +40,7 @@ public class StartInspectionHandler : IRequestHandler<StartInspectionCommand, Gu
             cancellationToken);
 
         if (wasNoticeIssuedForVehicleToday)
-            throw new InvalidOperationException("Notice has already been issued for the vehicle today.");
+            throw new PTickets.Modules.Inspections.Domain.Exceptions.NoticeAlreadyIssuedTodayException();
 
         var inspectionAwaitingForSecondCheck = await _inspectionRepository.GetInspectionAwaitingForSecondCheckAsync(
             new RegistrationNumber(request.RegistrationNumber), DateTime.UtcNow,

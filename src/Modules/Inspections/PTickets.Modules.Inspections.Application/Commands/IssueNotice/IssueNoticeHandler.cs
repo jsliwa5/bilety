@@ -22,13 +22,13 @@ public class IssueNoticeHandler : IRequestHandler<IssueNoticeCommand, Guid>
     public async Task<Guid> Handle(IssueNoticeCommand request, CancellationToken cancellationToken)
     {
         var inspection = await _inspectionRepository.GetByIdAsync(new InspectionId(request.InspectionId), cancellationToken)
-            ?? throw new InvalidOperationException("Inspection not found.");
+            ?? throw new PTickets.Modules.Inspections.Domain.Exceptions.InspectionNotFoundException();
 
         if (inspection.Status != InspectionStatus.PhotosAttached)
-            throw new InvalidOperationException("Must attach photos before issuing a notice.");
+            throw new PTickets.Modules.Inspections.Domain.Exceptions.MissingPhotosForNoticeException();
 
         if (inspection.Violations.Count == 0)
-            throw new InvalidOperationException("No violations found to issue a notice for.");
+            throw new PTickets.Modules.Inspections.Domain.Exceptions.NoViolationsForNoticeException();
 
         decimal totalPenaltyAmount = 0;
         decimal totalSurcharge = 0;

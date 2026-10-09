@@ -21,10 +21,10 @@ public class ConductSecondCheckHandler : IRequestHandler<ConductSecondCheckComma
     public async Task<TicketCheckResultDto> Handle(ConductSecondCheckCommand request, CancellationToken cancellationToken)
     {
         var inspection = await _repository.GetByIdAsync(new InspectionId(request.InspectionId), cancellationToken)
-            ?? throw new InvalidOperationException("Inspection not found.");
+            ?? throw new PTickets.Modules.Inspections.Domain.Exceptions.InspectionNotFoundException();
 
         if (inspection.Status != InspectionStatus.AwaitingSecondCheck)
-            throw new InvalidOperationException("Inspection is not awaiting second check.");
+            throw new PTickets.Modules.Inspections.Domain.Exceptions.InvalidInspectionStateException("Inspection is not awaiting second check.");
 
         var result = await _tickets.CheckRegistrationAsync(
             inspection.RegistrationNumber, 

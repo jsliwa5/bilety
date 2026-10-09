@@ -22,11 +22,11 @@ public class StartSessionHandler : IRequestHandler<StartSessionCommand, Guid>
         
         var inspectorExists = await _inspectorTracking.InspectorExistsAsync(inspectorId, cancellationToken);
         if (!inspectorExists)
-            throw new InvalidOperationException("Inspector does not exist.");
+            throw new PTickets.Modules.Inspections.Domain.Exceptions.InspectorNotFoundException();
             
         var openSession = await _repository.GetOpenSessionForInspectorAsync(inspectorId, cancellationToken);
         if (openSession != null)
-            throw new InvalidOperationException("Inspector already has an open session.");
+            throw new PTickets.Modules.Inspections.Domain.Exceptions.OpenSessionAlreadyExistsException();
 
         var session = Session.Create(inspectorId, DateTime.UtcNow);
         await _repository.AddAsync(session, cancellationToken);

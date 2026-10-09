@@ -16,7 +16,7 @@ public class ApproveInspectionHandler : IRequestHandler<ApproveInspectionCommand
     public async Task Handle(ApproveInspectionCommand request, CancellationToken cancellationToken)
     {
         var inspection = await _repository.GetByIdAsync(new InspectionId(request.InspectionId), cancellationToken)
-            ?? throw new InvalidOperationException("Inspection not found.");
+            ?? throw new PTickets.Modules.Inspections.Domain.Exceptions.InspectionNotFoundException();
 
         inspection.Approve();
         await _repository.SaveChangesAsync(cancellationToken);

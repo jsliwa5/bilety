@@ -80,7 +80,7 @@ public class Inspection
         {
             if (_photoIds.Count == 0)
             {
-                throw new InvalidOperationException("First check photos must be attached before conducting second check.");
+                throw new PTickets.Modules.Inspections.Domain.Exceptions.MissingFirstCheckPhotosException();
             }
 
             SecondCheckResult = result;
@@ -98,7 +98,7 @@ public class Inspection
         }
         else
         {
-            throw new InvalidOperationException("Ticket cannot be checked when inspection is already approved or violation already found!");
+            throw new PTickets.Modules.Inspections.Domain.Exceptions.InvalidInspectionStateException("Ticket cannot be checked when inspection is already approved or violation already found!");
         }
     }
 
@@ -126,7 +126,7 @@ public class Inspection
         }
         else
         {
-            throw new InvalidOperationException("Cannot add visual violation when inspection is already approved or violation already found!");
+            throw new PTickets.Modules.Inspections.Domain.Exceptions.InvalidInspectionStateException("Cannot add visual violation when inspection is already approved or violation already found!");
         }
     }
 
@@ -142,11 +142,11 @@ public class Inspection
     public void AttachPhotos(List<FileId> fileIds)
     {
         if (fileIds == null || fileIds.Count == 0)
-            throw new ArgumentException("At least one photo must be provided.", nameof(fileIds));
+            throw new PTickets.Modules.Inspections.Domain.Exceptions.NoPhotosProvidedException();
 
         if (Status != InspectionStatus.AwaitingSecondCheck && Status != InspectionStatus.ViolationFound)
         {
-            throw new InvalidOperationException("Photos can only be attached when awaiting second check or when a violation is found.");
+            throw new PTickets.Modules.Inspections.Domain.Exceptions.InvalidInspectionStateException("Photos can only be attached when awaiting second check or when a violation is found.");
         }
 
         _photoIds.AddRange(fileIds);
@@ -165,7 +165,7 @@ public class Inspection
     public void Approve()
     {
         if (Violations.Count > 0)
-            throw new InvalidOperationException("Cannot approve an inspection with violations.");
+            throw new PTickets.Modules.Inspections.Domain.Exceptions.CannotApproveInspectionWithViolationsException();
 
         Status = InspectionStatus.Approved;
     }

@@ -16,10 +16,10 @@ public class CloseSessionHandler : IRequestHandler<CloseSessionCommand>
     public async Task Handle(CloseSessionCommand request, CancellationToken cancellationToken)
     {
         var session = await _repository.GetByIdAsync(new SessionId(request.SessionId), cancellationToken)
-            ?? throw new InvalidOperationException("Session not found.");
+            ?? throw new PTickets.Modules.Inspections.Domain.Exceptions.SessionNotFoundException();
 
         if (session.IsClosed)
-            throw new InvalidOperationException("Session is already closed.");
+            throw new PTickets.Modules.Inspections.Domain.Exceptions.SessionAlreadyClosedException();
 
         session.Close(DateTime.UtcNow);
         await _repository.SaveChangesAsync(cancellationToken);

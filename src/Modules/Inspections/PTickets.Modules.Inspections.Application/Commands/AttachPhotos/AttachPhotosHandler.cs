@@ -19,7 +19,7 @@ public class AttachPhotosHandler : IRequestHandler<AttachPhotosCommand>
     public async Task Handle(AttachPhotosCommand request, CancellationToken cancellationToken)
     {
         var inspection = await _repository.GetByIdAsync(new InspectionId(request.InspectionId), cancellationToken)
-            ?? throw new InvalidOperationException("Inspection not found.");
+            ?? throw new PTickets.Modules.Inspections.Domain.Exceptions.InspectionNotFoundException();
 
         var fileIds = request.FileIds.Select(id => new FileId(id)).ToList();
         inspection.AttachPhotos(fileIds);

@@ -28,7 +28,7 @@ public class ResidentCard
     {
         if (validFrom >= validTo)
         {
-            throw new ArgumentException("ValidTo must be greater than ValidFrom.");
+            throw new PTickets.Modules.Tickets.Domain.Exceptions.InvalidResidentCardDatesException();
         }
         
         return new ResidentCard(Guid.NewGuid(), registrationNumber, streetId, validFrom, validTo, DateTime.UtcNow);

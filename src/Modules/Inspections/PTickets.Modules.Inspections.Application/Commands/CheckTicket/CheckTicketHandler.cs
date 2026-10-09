@@ -19,7 +19,7 @@ public class CheckTicketHandler : IRequestHandler<CheckTicketCommand, TicketChec
     public async Task<TicketCheckResultDto> Handle(CheckTicketCommand request, CancellationToken cancellationToken)
     {
         var inspection = await _repository.GetByIdAsync(new InspectionId(request.InspectionId), cancellationToken)
-            ?? throw new InvalidOperationException("Inspection not found.");
+            ?? throw new PTickets.Modules.Inspections.Domain.Exceptions.InspectionNotFoundException();
 
         var result = await _tickets.CheckRegistrationAsync(
             inspection.RegistrationNumber, 

@@ -16,10 +16,10 @@
 //    public async Task Handle(SelectStreetAndZoneCommand request, CancellationToken cancellationToken)
 //    {
 //        var session = await _repository.GetByIdAsync(new SessionId(request.SessionId), cancellationToken)
-//            ?? throw new InvalidOperationException("Session not found.");
+//            ?? throw new PTickets.Modules.Inspections.Domain.Exceptions.SessionNotFoundException();
             
 //        if (session.IsClosed)
-//            throw new InvalidOperationException("Session is closed.");
+//            throw new PTickets.Modules.Inspections.Domain.Exceptions.SessionAlreadyClosedException();
 
 //        session.SelectStreetAndZone(new ZoneId(request.ZoneId), new StreetId(request.StreetId));
 //        await _repository.SaveChangesAsync(cancellationToken);
