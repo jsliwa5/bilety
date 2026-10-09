@@ -1,3 +1,4 @@
-namespace PTickets.Modules.Violations.Application.Dtos;
+namespace PTickets.Modules.Violations.SetPenaltyAmount;
 
 public record SetPenaltyAmountRequest(decimal Amount, DateTime EffectiveFrom);
+

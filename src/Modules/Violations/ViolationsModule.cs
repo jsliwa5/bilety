@@ -1,14 +1,16 @@
 namespace PTickets.Modules.Violations;
 
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using PTickets.Modules.Violations.Application.Services;
-using PTickets.Modules.Violations.Application;
 using PTickets.Modules.Violations.Contracts;
-using PTickets.Modules.Violations.Endpoints;
-using PTickets.Modules.Violations.Infrastructure.Persistence;
+using PTickets.Modules.Violations.CreateViolationType;
+using PTickets.Modules.Violations.GetAllViolationTypes;
+using PTickets.Modules.Violations.SetPenaltyAmount;
+using PTickets.Modules.Violations.CreateSurchargeTier;
+using PTickets.Modules.Violations.GetAllSurchargeTiers;
 
 public static class ViolationsModule
 {
@@ -27,7 +29,13 @@ public static class ViolationsModule
 
     public static IEndpointRouteBuilder MapViolationsEndpoints(this IEndpointRouteBuilder app)
     {
-        ViolationsEndpoints.MapViolationsEndpoints(app);
+        var group = app.MapGroup("/api");
+        CreateViolationTypeEndpoint.Map(group);
+        GetAllViolationTypesEndpoint.Map(group);
+        SetPenaltyAmountEndpoint.Map(group);
+        CreateSurchargeTierEndpoint.Map(group);
+        GetAllSurchargeTiersEndpoint.Map(group);
+        
         return app;
     }
 }

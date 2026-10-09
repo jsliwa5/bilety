@@ -1,9 +1,9 @@
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Moq;
-using PTickets.Modules.Violations.Application.Services;
-using PTickets.Modules.Violations.Domain;
-using PTickets.Modules.Violations.Infrastructure.Persistence;
+using PTickets.Modules.Violations;
+using PTickets.Modules.Violations.Common.Data;
+using PTickets.Modules.Violations;
 using PTickets.Shared;
 using PTickets.Shared.Abstractions;
 using Xunit;

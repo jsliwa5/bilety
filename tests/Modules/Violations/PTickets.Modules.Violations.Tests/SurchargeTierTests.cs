@@ -1,6 +1,6 @@
 namespace PTickets.Modules.Violations.Tests;
 
-using PTickets.Modules.Violations.Domain;
+using PTickets.Modules.Violations.Common.Data;
 using PTickets.Shared;
 
 public class SurchargeTierTests

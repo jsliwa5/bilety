@@ -1,7 +1,7 @@
-namespace PTickets.Modules.Violations.Application.Services;
+namespace PTickets.Modules.Violations;
 
 using Microsoft.EntityFrameworkCore;
-using PTickets.Modules.Violations.Infrastructure.Persistence;
+using PTickets.Modules.Violations;
 using PTickets.Shared;
 using PTickets.Shared.Abstractions;
 

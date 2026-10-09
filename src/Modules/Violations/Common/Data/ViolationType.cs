@@ -1,4 +1,4 @@
-namespace PTickets.Modules.Violations.Domain;
+namespace PTickets.Modules.Violations.Common.Data;
 
 using PTickets.Shared;
 

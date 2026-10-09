@@ -1,7 +1,7 @@
-namespace PTickets.Modules.Violations.Infrastructure.Persistence;
+namespace PTickets.Modules.Violations;
 
 using Microsoft.EntityFrameworkCore;
-using PTickets.Modules.Violations.Domain;
+using PTickets.Modules.Violations.Common.Data;
 using PTickets.Shared;
 
 public class ViolationsDbContext : DbContext

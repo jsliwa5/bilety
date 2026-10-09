@@ -69,7 +69,7 @@ if (app.Environment.IsDevelopment())
 
     // EnsureCreated for each module's DbContext
     sp.GetRequiredService<ZonesDbContext>().Database.EnsureCreated();
-    sp.GetRequiredService<PTickets.Modules.Violations.Infrastructure.Persistence.ViolationsDbContext>().Database.EnsureCreated();
+    sp.GetRequiredService<PTickets.Modules.Violations.ViolationsDbContext>().Database.EnsureCreated();
     sp.GetRequiredService<PTickets.Modules.Inspections.Infrastructure.Persistence.InspectionsDbContext>().Database.EnsureCreated();
     sp.GetRequiredService<NoticesDbContext>().Database.EnsureCreated();
     sp.GetRequiredService<PTickets.Modules.Notifications.Infrastructure.Persistence.NotificationsDbContext>().Database.EnsureCreated();
