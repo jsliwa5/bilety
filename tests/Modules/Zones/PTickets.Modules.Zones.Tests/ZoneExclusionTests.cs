@@ -1,6 +1,6 @@
-namespace PTickets.Modules.Zones.Tests;
+﻿namespace PTickets.Modules.Zones.Tests;
 
-using PTickets.Modules.Zones.Data;
+using PTickets.Modules.Zones.Common.Data;
 using PTickets.Shared;
 
 public class ZoneExclusionTests
@@ -87,3 +87,4 @@ public class ZoneExclusionTests
         Assert.True(exclusion.IsActiveAt(endDate));
     }
 }
+

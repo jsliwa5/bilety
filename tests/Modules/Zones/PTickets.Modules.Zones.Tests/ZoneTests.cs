@@ -1,6 +1,6 @@
-namespace PTickets.Modules.Zones.Tests;
+﻿namespace PTickets.Modules.Zones.Tests;
 
-using PTickets.Modules.Zones.Data;
+using PTickets.Modules.Zones.Common.Data;
 using PTickets.Shared;
 
 public class ZoneTests
@@ -61,11 +61,11 @@ public class ZoneTests
     {
         var zone = Zone.CreateMultiStreet("Strefa A", null);
 
-        var street = zone.AddStreet("Marszałkowska", null);
+        var street = zone.AddStreet("MarszaĹ‚kowska", null);
 
         Assert.Single(zone.Streets);
         Assert.Contains(street, zone.Streets);
-        Assert.Equal("Marszałkowska", street.Name);
+        Assert.Equal("MarszaĹ‚kowska", street.Name);
         Assert.Equal(zone.Id, street.ZoneId);
         Assert.False(street.RepresentsWholeZone);
     }
@@ -93,3 +93,4 @@ public class ZoneTests
         Assert.Equal("Remont", exclusion.Reason);
     }
 }
+

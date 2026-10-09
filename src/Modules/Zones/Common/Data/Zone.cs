@@ -1,5 +1,6 @@
-namespace PTickets.Modules.Zones.Data;
+﻿namespace PTickets.Modules.Zones.Common.Data;
 
+using PTickets.Modules.Zones.Common.Exceptions;
 using PTickets.Shared;
 
 public class Zone
@@ -20,7 +21,7 @@ public class Zone
     public static Zone CreateSingle(string name, PaidParkingSchedule? schedule = null, Guid? id = null, Guid? streetId = null)
     {
         if (string.IsNullOrWhiteSpace(name))
-            throw new ArgumentException("Nazwa strefy nie może być pusta.", nameof(name));
+            throw new InvalidZoneNameException();
 
         var zone = new Zone
         {
@@ -37,7 +38,7 @@ public class Zone
     public static Zone CreateMultiStreet(string name, PaidParkingSchedule? schedule = null, Guid? id = null)
     {
         if (string.IsNullOrWhiteSpace(name))
-            throw new ArgumentException("Nazwa strefy nie może być pusta.", nameof(name));
+            throw new InvalidZoneNameException();
 
         return new Zone
         {
@@ -53,13 +54,13 @@ public class Zone
         {
             ZoneType.Single => CreateSingle(name, schedule, id, streetId),
             ZoneType.MultiStreet => CreateMultiStreet(name, schedule, id),
-            _ => throw new ArgumentOutOfRangeException(nameof(type), type, "Nieznany typ strefy.")
+            _ => throw new InvalidZoneTypeException()
         };
 
     public Street AddStreet(string name, PaidParkingSchedule? schedule = null, Guid? id = null)
     {
         if (Type == ZoneType.Single)
-            throw new InvalidOperationException("Nie można dodawać nowych ulic do pojedynczej strefy (Single).");
+            throw new CannotAddStreetToSingleZoneException();
 
         var street = Street.CreateNormalStreet(Id, name, schedule, id);
         _streets.Add(street);
@@ -73,4 +74,5 @@ public class Zone
         return exclusion;
     }
 }
+
 

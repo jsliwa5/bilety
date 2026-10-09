@@ -1,9 +1,10 @@
-using Microsoft.AspNetCore.Routing;
+﻿using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using PTickets.Shared;
-using PTickets.Modules.Zones.Data;
+using PTickets.Modules.Zones.Common.Data;
 using Microsoft.AspNetCore.Http;
+using PTickets.Modules.Zones.Common.Exceptions;
 
 namespace PTickets.Modules.Zones.CreateZoneExclusion;
 
@@ -18,7 +19,7 @@ public static class CreateZoneExclusionEndpoint
                 .FirstOrDefaultAsync(z => z.Id == new ZoneId(zoneId), ct);
 
             if (zone is null)
-                return Results.NotFound("Zone with given Id not found");
+                throw new ZoneNotFoundException();
 
             var newExclusion = zone.AddExclusion(
                 request.StartDate,
@@ -33,3 +34,4 @@ public static class CreateZoneExclusionEndpoint
         });
     }
 }
+

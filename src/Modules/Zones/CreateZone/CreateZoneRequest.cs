@@ -1,6 +1,6 @@
-namespace PTickets.Modules.Zones.CreateZone;
+﻿namespace PTickets.Modules.Zones.CreateZone;
 
-using PTickets.Modules.Zones.Data;
+using PTickets.Modules.Zones.Common.Data;
 
 public record CreateZoneRequest(
     string Name, 
@@ -8,3 +8,4 @@ public record CreateZoneRequest(
     TimeOnly StartTime,
     TimeOnly EndTime,
     DayOfWeek[] PaidDays);
+

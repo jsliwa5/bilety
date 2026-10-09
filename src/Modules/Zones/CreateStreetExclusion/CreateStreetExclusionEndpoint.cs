@@ -3,7 +3,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using PTickets.Shared;
 using Microsoft.AspNetCore.Http;
-using PTickets.Modules.Zones.Data;
+using PTickets.Modules.Zones.Common.Data;
+using PTickets.Modules.Zones.Common.Exceptions;
 
 namespace PTickets.Modules.Zones.CreateStreetExclusion;
 
@@ -15,7 +16,7 @@ public static class CreateStreetExclusionEndpoint
         {
             var streetExists = await dbContext.Streets.AnyAsync(s => s.Id == new StreetId(streetId), ct);
             if (!streetExists)
-                return Results.NotFound();
+                throw new StreetNotFoundException();
 
             var newStreetExclusion = StreetExclusion.Create(
                     new StreetId(streetId),
@@ -32,3 +33,4 @@ public static class CreateStreetExclusionEndpoint
         });
     }
 }
+

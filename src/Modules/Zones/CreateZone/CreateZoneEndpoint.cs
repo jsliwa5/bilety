@@ -1,9 +1,10 @@
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using PTickets.Modules.Zones.Contracts.Events;
-using PTickets.Modules.Zones.Data;
+using PTickets.Modules.Zones.Common.Data;
+using PTickets.Modules.Zones.Common.Exceptions;
 
 namespace PTickets.Modules.Zones.CreateZone;
 
@@ -15,7 +16,7 @@ public static class CreateZoneEndpoint
         {
             if (!Enum.IsDefined(typeof(ZoneType), request.Type))
             {
-                return Results.BadRequest(new { Error = $"Nieprawidłowy typ strefy: {request.Type}" });
+                throw new InvalidZoneTypeException();
             }
 
             var newZone = Zone.Create(
@@ -41,3 +42,4 @@ public static class CreateZoneEndpoint
 
 
 }
+

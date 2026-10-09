@@ -1,5 +1,6 @@
-namespace PTickets.Modules.Zones.Data;
+﻿namespace PTickets.Modules.Zones.Common.Data;
 
+using PTickets.Modules.Zones.Common.Exceptions;
 using PTickets.Shared;
 
 public class StreetExclusion
@@ -15,10 +16,10 @@ public class StreetExclusion
     public static StreetExclusion Create(StreetId streetId, DateTime startDate, DateTime endDate, string reason)
     {
         if (startDate >= endDate)
-            throw new ArgumentException("Data początkowa musi być wcześniejsza niż data końcowa.", nameof(startDate));
+            throw new InvalidExclusionDatesException();
 
         if (string.IsNullOrWhiteSpace(reason))
-            throw new ArgumentException("Powód wyłączenia nie może być pusty.", nameof(reason));
+            throw new EmptyExclusionReasonException();
 
         return new StreetExclusion
         {
@@ -32,3 +33,4 @@ public class StreetExclusion
 
     public bool IsActiveAt(DateTime dt) => dt >= StartDate && dt <= EndDate;
 }
+

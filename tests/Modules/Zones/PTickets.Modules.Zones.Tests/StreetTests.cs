@@ -1,6 +1,6 @@
-namespace PTickets.Modules.Zones.Tests;
+﻿namespace PTickets.Modules.Zones.Tests;
 
-using PTickets.Modules.Zones.Data;
+using PTickets.Modules.Zones.Common.Data;
 using PTickets.Shared;
 
 public class StreetTests
@@ -10,11 +10,11 @@ public class StreetTests
     {
         var zoneId = ZoneId.New();
 
-        var street = Street.CreateZoneRepresentative(zoneId, "Marszałkowska");
+        var street = Street.CreateZoneRepresentative(zoneId, "MarszaĹ‚kowska");
 
         Assert.NotEqual(default, street.Id);
         Assert.Equal(zoneId, street.ZoneId);
-        Assert.Equal("Marszałkowska", street.Name);
+        Assert.Equal("MarszaĹ‚kowska", street.Name);
         Assert.True(street.RepresentsWholeZone);
         Assert.Null(street.PaidParkingSchedule);
     }
@@ -24,11 +24,11 @@ public class StreetTests
     {
         var zoneId = ZoneId.New();
 
-        var street = Street.CreateNormalStreet(zoneId, "Floriańska", null);
+        var street = Street.CreateNormalStreet(zoneId, "FloriaĹ„ska", null);
 
         Assert.NotEqual(default, street.Id);
         Assert.Equal(zoneId, street.ZoneId);
-        Assert.Equal("Floriańska", street.Name);
+        Assert.Equal("FloriaĹ„ska", street.Name);
         Assert.False(street.RepresentsWholeZone);
         Assert.Null(street.PaidParkingSchedule);
     }
@@ -49,7 +49,7 @@ public class StreetTests
     {
         var zoneId = ZoneId.New();
         var schedule = new PaidParkingSchedule(new TimeOnly(8, 0), new TimeOnly(18, 0), [DayOfWeek.Monday]);
-        var street = Street.CreateNormalStreet(zoneId, "Marszałkowska", schedule);
+        var street = Street.CreateNormalStreet(zoneId, "MarszaĹ‚kowska", schedule);
 
         var mondayMidday = new DateTime(2026, 8, 31, 12, 0, 0); // Monday 12:00
         var mondayNight = new DateTime(2026, 8, 31, 20, 0, 0);  // Monday 20:00
@@ -64,10 +64,11 @@ public class StreetTests
     public void IsPaidAt_WithoutSchedule_ShouldReturnFalse()
     {
         var zoneId = ZoneId.New();
-        var street = Street.CreateNormalStreet(zoneId, "Floriańska", null);
+        var street = Street.CreateNormalStreet(zoneId, "FloriaĹ„ska", null);
 
         var mondayMidday = new DateTime(2026, 8, 31, 12, 0, 0);
 
         Assert.False(street.IsPaidAt(mondayMidday));
     }
 }
+

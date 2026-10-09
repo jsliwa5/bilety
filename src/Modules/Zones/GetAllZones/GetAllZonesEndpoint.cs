@@ -1,11 +1,11 @@
-using Microsoft.AspNetCore.Routing;
+﻿using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Builder;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using PTickets.Modules.Zones.Data;
+using PTickets.Modules.Zones.Common.Data;
 
 namespace PTickets.Modules.Zones.GetAllZones;
 
@@ -57,3 +57,4 @@ public static class GetAllZonesEndpoint
         );
     }
 }
+

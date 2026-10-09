@@ -1,6 +1,6 @@
-namespace PTickets.Modules.Zones.GetAllZones;
+﻿namespace PTickets.Modules.Zones.GetAllZones;
 
-using PTickets.Modules.Zones.Data;
+using PTickets.Modules.Zones.Common.Data;
 
 public record ZoneResponse(
     Guid Id,
@@ -19,3 +19,4 @@ public record ScheduleResponse(
     TimeOnly StartTime,
     TimeOnly EndTime,
     DayOfWeek[] PaidDays);
+

@@ -1,4 +1,6 @@
-namespace PTickets.Modules.Zones.Data;
+﻿namespace PTickets.Modules.Zones.Common.Data;
+
+using PTickets.Modules.Zones.Common.Exceptions;
 
 public record PaidParkingSchedule
 {
@@ -11,7 +13,7 @@ public record PaidParkingSchedule
     public PaidParkingSchedule(TimeOnly startTime, TimeOnly endTime, DayOfWeek[]? paidDays)
     {
         if (startTime >= endTime)
-            throw new ArgumentException("Czas rozpoczęcia musi być wcześniejszy niż czas zakończenia.", nameof(startTime));
+            throw new InvalidParkingScheduleException();
 
         StartTime = startTime;
         EndTime = endTime;
@@ -27,3 +29,4 @@ public record PaidParkingSchedule
         return IsPaidDay(dateTime.DayOfWeek) && IsWithinTimeRange(TimeOnly.FromDateTime(dateTime));
     }
 }
+

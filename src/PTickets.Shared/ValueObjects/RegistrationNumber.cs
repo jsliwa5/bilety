@@ -12,16 +12,16 @@ public sealed record RegistrationNumber
     public RegistrationNumber(string number)
     {
         if (string.IsNullOrWhiteSpace(number))
-            throw new ArgumentException("Registration number cannot be empty.", nameof(number));
+            throw new InvalidRegistrationNumberException("Registration number cannot be empty.");
 
         var trimmed = number.Trim().ToUpperInvariant();
 
         if (!AllowedCharsRegex.IsMatch(trimmed))
-            throw new ArgumentException("Registration number contains invalid characters.", nameof(number));
+            throw new InvalidRegistrationNumberException("Registration number contains invalid characters.");
 
         var compact = trimmed.Replace(" ", string.Empty).Replace("-", string.Empty);
         if (compact.Length is < 2 or > 10)
-            throw new ArgumentException("Registration number must be between 2 and 10 characters.", nameof(number));
+            throw new InvalidRegistrationNumberException("Registration number must be between 2 and 10 characters.");
 
         Value = compact;
     }

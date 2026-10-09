@@ -1,6 +1,6 @@
-namespace PTickets.Modules.Zones.Tests;
+﻿namespace PTickets.Modules.Zones.Tests;
 
-using PTickets.Modules.Zones.Data;
+using PTickets.Modules.Zones.Common.Data;
 
 public class PaidParkingScheduleTests
 {
@@ -121,3 +121,4 @@ public class PaidParkingScheduleTests
         Assert.False(schedule.IsPaidDay(DayOfWeek.Sunday));
     }
 }
+

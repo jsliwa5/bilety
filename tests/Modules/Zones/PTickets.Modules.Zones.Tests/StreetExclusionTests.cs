@@ -1,6 +1,6 @@
-namespace PTickets.Modules.Zones.Tests;
+﻿namespace PTickets.Modules.Zones.Tests;
 
-using PTickets.Modules.Zones.Data;
+using PTickets.Modules.Zones.Common.Data;
 using PTickets.Shared;
 
 public class StreetExclusionTests
@@ -11,7 +11,7 @@ public class StreetExclusionTests
         var streetId = StreetId.New();
         var startDate = new DateTime(2026, 9, 1, 0, 0, 0);
         var endDate = new DateTime(2026, 9, 10, 23, 59, 59);
-        var reason = "Awaria wodociągowa";
+        var reason = "Awaria wodociÄ…gowa";
 
         var exclusion = StreetExclusion.Create(streetId, startDate, endDate, reason);
 
@@ -87,3 +87,4 @@ public class StreetExclusionTests
         Assert.True(exclusion.IsActiveAt(endDate));
     }
 }
+

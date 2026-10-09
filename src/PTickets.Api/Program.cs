@@ -8,8 +8,12 @@ using PTickets.Modules.Tickets;
 using PTickets.Modules.Violations;
 using PTickets.Modules.Zones;
 using PTickets.Shared.Abstractions;
+using PTickets.Api.ExceptionHandling;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -54,6 +58,8 @@ builder.Services.AddNotificationsModule(builder.Configuration);
 builder.Services.AddFileStorageModule(builder.Configuration);
 
 var app = builder.Build();
+
+app.UseExceptionHandler();
 
 // Auto-create databases (dev only)
 if (app.Environment.IsDevelopment())

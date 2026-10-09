@@ -1,4 +1,4 @@
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Builder;
@@ -8,7 +8,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using PTickets.Modules.Zones.Contracts.Events;
-using PTickets.Modules.Zones.Data;
+using PTickets.Modules.Zones.Common.Data;
+using PTickets.Modules.Zones.Common.Exceptions;
 
 namespace PTickets.Modules.Zones.CreateStreet;
 
@@ -24,7 +25,7 @@ public static class CreateStreetEndpoint
 
             if (zone == null)
             {
-                return Results.BadRequest("Zone not found");
+                throw new ZoneNotFoundException();
             }
 
             PaidParkingSchedule? schedule = null;
@@ -38,15 +39,7 @@ public static class CreateStreetEndpoint
                 );
             }
 
-            Street newStreet;
-            try
-            {
-                newStreet = zone.AddStreet(request.Name, schedule);
-            }
-            catch (InvalidOperationException ex)
-            {
-                return Results.BadRequest(new { Error = ex.Message });
-            }
+            var newStreet = zone.AddStreet(request.Name, schedule);
 
             await dbContext.SaveChangesAsync(ct);
 
@@ -56,3 +49,4 @@ public static class CreateStreetEndpoint
         });
     }
 }
+

@@ -1,8 +1,8 @@
-namespace PTickets.Modules.Zones;
+﻿namespace PTickets.Modules.Zones;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using PTickets.Modules.Zones.Data;
+using PTickets.Modules.Zones.Common.Data;
 using PTickets.Shared;
 
 public class ZonesDbContext(DbContextOptions<ZonesDbContext> options) : DbContext(options)
@@ -135,3 +135,4 @@ public class ZonesDbContext(DbContextOptions<ZonesDbContext> options) : DbContex
         });
     }
 }
+
