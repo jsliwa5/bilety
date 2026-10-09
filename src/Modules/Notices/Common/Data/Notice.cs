@@ -1,7 +1,8 @@
-using PTickets.Shared;
+﻿using PTickets.Shared;
 using PTickets.Shared.ValueObjects;
+using PTickets.Modules.Notices.Common.Exceptions;
 
-namespace PTickets.Modules.Notices.Data;
+namespace PTickets.Modules.Notices.Common.Data;
 
 public class Notice
 {
@@ -35,7 +36,7 @@ public class Notice
     {
         if (Status != NoticeStatus.Issued)
         {
-            throw new InvalidOperationException($"Cannot pay notice with status {Status}. Only notices in Issued status can be paid.");
+            throw new CannotPayNoticeException($"Cannot pay notice with status {Status}. Only notices in Issued status can be paid.");
         }
 
         Status = NoticeStatus.Paid;
@@ -45,10 +46,12 @@ public class Notice
     {
         if (Status != NoticeStatus.Issued)
         {
-            throw new InvalidOperationException($"Cannot cancel notice with status {Status}. Only notices in Issued status can be cancelled.");
+            throw new CannotCancelNoticeException($"Cannot cancel notice with status {Status}. Only notices in Issued status can be cancelled.");
         }
 
         Status = NoticeStatus.Cancelled;
     }
 }
+
+
 

@@ -1,7 +1,7 @@
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using PTickets.Modules.InspectorTracking.Data;
+using PTickets.Modules.InspectorTracking.Common.Data;
 using PTickets.Shared;
 
 namespace PTickets.Modules.InspectorTracking.AddInspector;
@@ -21,12 +21,6 @@ public static class AddInspectorEndpoint
         InspectorTrackingDbContext dbContext,
         CancellationToken ct)
     {
-        if (string.IsNullOrWhiteSpace(request.FirstName))
-            return Results.BadRequest("Imię inspektora nie może być puste.");
-
-        if (string.IsNullOrWhiteSpace(request.LastName))
-            return Results.BadRequest("Nazwisko inspektora nie może być puste.");
-
         var inspector = Inspector.Create(request.FirstName, request.LastName);
 
         await dbContext.Inspectors.AddAsync(inspector, ct);
@@ -36,3 +30,5 @@ public static class AddInspectorEndpoint
         return Results.Created($"/api/inspectors/{inspector.Id.Value}", response);
     }
 }
+
+

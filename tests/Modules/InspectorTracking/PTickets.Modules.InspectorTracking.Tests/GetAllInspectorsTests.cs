@@ -1,10 +1,10 @@
-namespace PTickets.Modules.InspectorTracking.Tests;
+﻿namespace PTickets.Modules.InspectorTracking.Tests;
 
 using FluentAssertions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using PTickets.Modules.InspectorTracking.Data;
+using PTickets.Modules.InspectorTracking.Common.Data;
 using PTickets.Modules.InspectorTracking.GetAllInspectors;
 using PTickets.Shared;
 
@@ -77,3 +77,4 @@ public class GetAllInspectorsTests : IDisposable
         item2.ZoneId.Should().Be(zoneId.Value);
     }
 }
+

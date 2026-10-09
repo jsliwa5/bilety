@@ -1,6 +1,6 @@
-using MediatR;
+﻿using MediatR;
 using PTickets.Modules.Inspections.Contracts.Events;
-using PTickets.Modules.Notices.Data;
+using PTickets.Modules.Notices.Common.Data;
 
 namespace PTickets.Modules.Notices.IssueNotice;
 
@@ -28,3 +28,4 @@ public class NoticeIssuedEventHandler : INotificationHandler<NoticeIssuedEvent>
         await _dbContext.SaveChangesAsync(cancellationToken);
     }
 }
+

@@ -1,6 +1,7 @@
-﻿using PTickets.Shared;
+﻿using PTickets.Modules.InspectorTracking.Common.Exceptions;
+using PTickets.Shared;
 
-namespace PTickets.Modules.InspectorTracking.Data;
+namespace PTickets.Modules.InspectorTracking.Common.Data;
 
 internal class Inspector
 {
@@ -45,20 +46,20 @@ internal class Inspector
     public static Inspector Create(string firstName, string lastName)
     {
         if (string.IsNullOrWhiteSpace(firstName))
-            throw new ArgumentException("Imię inspektora nie może być puste.", nameof(firstName));
+            throw new InvalidInspectorFirstNameException();
         if (string.IsNullOrWhiteSpace(lastName))
-            throw new ArgumentException("Nazwisko inspektora nie może być puste.", nameof(lastName));
+            throw new InvalidInspectorLastNameException();
         return new Inspector(firstName.Trim(), lastName.Trim());
     }
 
     public static Inspector Restore(InspectorId id, string firstName, string lastName, bool assignedToZone, ZoneId? zoneId, IEnumerable<LocationLog> locationLogs, IEnumerable<InspectionLog> inspectionLogs)
     {
         if (id.Value == Guid.Empty)
-            throw new ArgumentException("Id inspektora nie może być puste.", nameof(id));
+            throw new InvalidInspectorIdException();
         if (string.IsNullOrWhiteSpace(firstName))
-            throw new ArgumentException("Imię inspektora nie może być puste.", nameof(firstName));
+            throw new InvalidInspectorFirstNameException();
         if (string.IsNullOrWhiteSpace(lastName))
-            throw new ArgumentException("Nazwisko inspektora nie może być puste.", nameof(lastName));
+            throw new InvalidInspectorLastNameException();
         return new Inspector(id, firstName.Trim(), lastName.Trim(), assignedToZone, zoneId, locationLogs, inspectionLogs);
     }
 
@@ -77,17 +78,19 @@ internal class Inspector
     public void RegisterInspectionAttempt(InspectionLog inspectionLog)
     {
         if (inspectionLog == null)
-            throw new ArgumentNullException(nameof(inspectionLog));
+            throw new MissingInspectionLogException();
         _inspectionAttempts.Add(inspectionLog);
     }
 
     public void RegisterLocationLog(LocationLog locationLog)
     {
         if (locationLog == null)
-            throw new ArgumentNullException(nameof(locationLog));
+            throw new MissingLocationLogException();
         _locationLogs.Add(locationLog);
     }
 
 
 
 }
+
+

@@ -1,5 +1,5 @@
-using Microsoft.EntityFrameworkCore;
-using PTickets.Modules.Notices.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using PTickets.Modules.Notices.Common.Data;
 using PTickets.Shared;
 using PTickets.Shared.ValueObjects;
 
@@ -27,3 +27,4 @@ public class NoticesDbContext : DbContext
         });
     }
 }
+

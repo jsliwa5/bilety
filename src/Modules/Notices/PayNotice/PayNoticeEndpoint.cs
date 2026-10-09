@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using PTickets.Modules.Notices.Data;
+using PTickets.Modules.Notices.Common.Data;
+using PTickets.Modules.Notices.Common.Exceptions;
 using PTickets.Shared;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,20 +17,14 @@ public static class PayNoticeEndpoint
             var notice = await dbContext.Notices.FirstOrDefaultAsync(n => n.Id == new NoticeId(id), ct);
             if (notice is null)
             {
-                return Results.NotFound();
+                throw new NoticeNotFoundException();
             }
 
-            try
-            {
-                notice.MarkAsPaid();
-            }
-            catch (InvalidOperationException ex)
-            {
-                return Results.BadRequest(ex.Message);
-            }
+            notice.MarkAsPaid();
 
             await dbContext.SaveChangesAsync(ct);
             return Results.NoContent();
         });
     }
 }
+

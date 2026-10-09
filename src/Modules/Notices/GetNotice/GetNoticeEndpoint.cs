@@ -3,7 +3,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using PTickets.Shared;
-using PTickets.Modules.Notices.Data;
+using PTickets.Modules.Notices.Common.Data;
+using PTickets.Modules.Notices.Common.Exceptions;
 using PTickets.Modules.Notices.Contracts;
 
 namespace PTickets.Modules.Notices.GetNotice;
@@ -18,7 +19,7 @@ public static class GetNoticeEndpoint
 
             if (notice is null)
             {
-                return Results.NotFound();
+                throw new NoticeNotFoundException();
             }
 
             var noticeDto = new NoticeDto(
@@ -33,3 +34,4 @@ public static class GetNoticeEndpoint
         });
     }
 }
+

@@ -1,7 +1,7 @@
-namespace PTickets.Modules.InspectorTracking;
+﻿namespace PTickets.Modules.InspectorTracking;
 
 using Microsoft.EntityFrameworkCore;
-using PTickets.Modules.InspectorTracking.Data;
+using PTickets.Modules.InspectorTracking.Common.Data;
 using PTickets.Shared;
 using System.Reflection.Emit;
 
@@ -15,7 +15,7 @@ internal class InspectorTrackingDbContext(DbContextOptions<InspectorTrackingDbCo
     {
         base.OnModelCreating(modelBuilder);
 
-        // Izolacja bazy: moduł dostaje własny schemat
+        // Izolacja bazy: moduĹ‚ dostaje wĹ‚asny schemat
         modelBuilder.HasDefaultSchema("inspector_tracking");
 
         modelBuilder.Entity<Inspector>(builder =>
@@ -35,7 +35,7 @@ internal class InspectorTrackingDbContext(DbContextOptions<InspectorTrackingDbCo
                     value => value.HasValue ? new ZoneId(value.Value) : null)
                 .IsRequired(false);
 
-            // Powiązania 1:N z backing fields i shadow property klucza obcego
+            // PowiÄ…zania 1:N z backing fields i shadow property klucza obcego
             builder.HasMany(i => i.InspectionAttempts)
                 .WithOne()
                 .HasForeignKey("InspectorId")

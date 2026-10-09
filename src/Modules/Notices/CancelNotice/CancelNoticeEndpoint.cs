@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
-using PTickets.Modules.Notices.Data;
+using PTickets.Modules.Notices.Common.Data;
+using PTickets.Modules.Notices.Common.Exceptions;
 using PTickets.Shared;
 
 namespace PTickets.Modules.Notices.CancelNotice;
@@ -15,20 +16,14 @@ public static class CancelNoticeEndpoint
             var notice = await dbContext.Notices.FirstOrDefaultAsync(n => n.Id == new NoticeId(id), ct);
             if (notice is null)
             {
-                return Results.NotFound();
+                throw new NoticeNotFoundException();
             }
 
-            try
-            {
-                notice.Cancel();
-            }
-            catch (InvalidOperationException ex)
-            {
-                return Results.BadRequest(ex.Message);
-            }
+            notice.Cancel();
 
             await dbContext.SaveChangesAsync(ct);
             return Results.NoContent();
         });
     }
 }
+

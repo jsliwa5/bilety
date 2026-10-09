@@ -1,4 +1,4 @@
-namespace PTickets.Modules.Notices.Data;
+﻿namespace PTickets.Modules.Notices.Common.Data;
 
 public enum NoticeStatus
 {
@@ -8,3 +8,4 @@ public enum NoticeStatus
     Appealed,
     SentToDebtCollection
 }
+

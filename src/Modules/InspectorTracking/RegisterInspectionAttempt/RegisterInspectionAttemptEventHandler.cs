@@ -1,6 +1,6 @@
-using MediatR;
+﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using PTickets.Modules.InspectorTracking.Data;
+using PTickets.Modules.InspectorTracking.Common.Data;
 using PTickets.Shared;
 using PTickets.Modules.Inspections.Contracts.Events;
 
@@ -34,4 +34,5 @@ internal class RegisterInspectionAttemptEventHandler(InspectorTrackingDbContext 
         await db.SaveChangesAsync(ct);
     }
 }
+
 

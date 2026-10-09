@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
+using PTickets.Modules.InspectorTracking.Common.Exceptions;
 using PTickets.Modules.Zones.Contracts;
 using PTickets.Shared;
 
@@ -36,12 +37,12 @@ public static class AssignToZoneEndpoint
             .FirstOrDefaultAsync(i => i.Id == new InspectorId(inspectorId), ct);
 
         if (inspector is null)
-            return Results.NotFound("Inspektor nie został znaleziony.");
+            throw new InspectorNotFoundException();
 
         var zoneId = new ZoneId(request.ZoneId);
         var zoneExists = await zonesModule.ZoneExistsAsync(zoneId, ct);
         if (!zoneExists)
-            return Results.BadRequest("Podana strefa nie istnieje.");
+            throw new InvalidZoneAssignmentException();
 
         inspector.AssignToZone(zoneId);
         await dbContext.SaveChangesAsync(ct);
@@ -58,7 +59,7 @@ public static class AssignToZoneEndpoint
             .FirstOrDefaultAsync(i => i.Id == new InspectorId(inspectorId), ct);
 
         if (inspector is null)
-            return Results.NotFound("Inspektor nie został znaleziony.");
+            throw new InspectorNotFoundException();
 
         inspector.UnassignFromZone();
         await dbContext.SaveChangesAsync(ct);

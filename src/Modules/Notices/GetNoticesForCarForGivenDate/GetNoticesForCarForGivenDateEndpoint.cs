@@ -2,7 +2,8 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using PTickets.Modules.Notices.Data;
+using PTickets.Modules.Notices.Common.Data;
+using PTickets.Modules.Notices.Common.Exceptions;
 using PTickets.Modules.Notices.Contracts;
 using PTickets.Shared.ValueObjects;
 
@@ -24,7 +25,7 @@ public static class GetNoticesForCarForGivenDateEndpoint
 
             if (!notices.Any())
             {
-                return Results.NotFound();
+                throw new NoticeNotFoundException();
             }
 
             var noticeDtos = notices.Select(n => new NoticeDto(
@@ -39,4 +40,5 @@ public static class GetNoticesForCarForGivenDateEndpoint
         });
     }
 }
+
 

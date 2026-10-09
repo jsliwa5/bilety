@@ -1,6 +1,6 @@
 ﻿using PTickets.Shared;
 
-namespace PTickets.Modules.InspectorTracking.Data;
+namespace PTickets.Modules.InspectorTracking.Common.Data;
 
 internal record InspectionLog
 {
