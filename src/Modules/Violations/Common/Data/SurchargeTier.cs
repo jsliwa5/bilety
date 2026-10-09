@@ -1,3 +1,4 @@
+using PTickets.Modules.Violations.Common.Exceptions;
 namespace PTickets.Modules.Violations.Common.Data;
 
 using PTickets.Shared;
@@ -15,17 +16,17 @@ public class SurchargeTier
     {
         if (minMinutes < 0)
         {
-            throw new ArgumentOutOfRangeException(nameof(minMinutes), "MinMinutes must be greater than or equal to 0.");
+            throw new InvalidSurchargeTierMinMinutesException();
         }
 
         if (amount <= 0)
         {
-            throw new ArgumentOutOfRangeException(nameof(amount), "Amount must be greater than 0.");
+            throw new InvalidSurchargeTierAmountException();
         }
 
         if (maxMinutes.HasValue && maxMinutes.Value <= minMinutes)
         {
-            throw new ArgumentException("MaxMinutes must be greater than MinMinutes.", nameof(maxMinutes));
+            throw new InvalidSurchargeTierMaxMinutesException();
         }
 
         return new SurchargeTier

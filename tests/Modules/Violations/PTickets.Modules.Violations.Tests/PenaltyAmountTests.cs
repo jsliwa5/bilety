@@ -25,15 +25,15 @@ public class PenaltyAmountTests
     [InlineData(0)]
     [InlineData(-0.01)]
     [InlineData(-100)]
-    public void Create_WithZeroOrNegativeAmount_ThrowsArgumentOutOfRangeException(decimal amount)
+    public void Create_WithZeroOrNegativeAmount_ThrowsInvalidPenaltyAmountException(decimal amount)
     {
         var violationTypeId = ViolationTypeId.New();
         var effectiveFrom = DateTime.UtcNow;
 
-        var exception = Assert.Throws<ArgumentOutOfRangeException>(() =>
+        var exception = Assert.Throws<PTickets.Modules.Violations.Common.Exceptions.InvalidPenaltyAmountException>(() =>
             PenaltyAmount.Create(violationTypeId, amount, effectiveFrom));
 
-        Assert.Equal("amount", exception.ParamName);
+
     }
 
     [Fact]

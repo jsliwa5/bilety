@@ -37,9 +37,9 @@ public class ViolationTypeTests
     [InlineData("")]
     [InlineData("   ")]
     [InlineData(null)]
-    public void Create_WithEmptyOrWhitespaceOrNullName_ThrowsArgumentException(string? name)
+    public void Create_WithEmptyOrWhitespaceOrNullName_ThrowsInvalidViolationTypeNameException(string? name)
     {
-        Assert.ThrowsAny<ArgumentException>(() => ViolationType.Create(name!));
+        Assert.Throws<PTickets.Modules.Violations.Common.Exceptions.InvalidViolationTypeNameException>(() => ViolationType.Create(name!));
     }
 
     [Fact]

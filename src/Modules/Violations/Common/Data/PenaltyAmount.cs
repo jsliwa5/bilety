@@ -1,3 +1,4 @@
+using PTickets.Modules.Violations.Common.Exceptions;
 namespace PTickets.Modules.Violations.Common.Data;
 
 using PTickets.Shared;
@@ -15,7 +16,7 @@ public class PenaltyAmount
     {
         if (amount <= 0)
         {
-            throw new ArgumentOutOfRangeException(nameof(amount), "Penalty amount must be greater than zero.");
+            throw new InvalidPenaltyAmountException();
         }
 
         return new PenaltyAmount

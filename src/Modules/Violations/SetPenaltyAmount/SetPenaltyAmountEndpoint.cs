@@ -17,7 +17,7 @@ public static class SetPenaltyAmountEndpoint
             var exists = await dbContext.ViolationTypes.AnyAsync(v => v.Id == violationTypeId, ct);
             if (!exists)
             {
-                return Results.NotFound(new { message = $"Violation type with ID {id} was not found." });
+                throw new PTickets.Modules.Violations.Common.Exceptions.ViolationTypeNotFoundException(id);
             }
 
             var penaltyAmount = PenaltyAmount.Create(violationTypeId, request.Amount, request.EffectiveFrom);

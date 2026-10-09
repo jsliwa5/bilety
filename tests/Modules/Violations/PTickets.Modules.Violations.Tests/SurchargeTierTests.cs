@@ -32,36 +32,36 @@ public class SurchargeTierTests
     [Theory]
     [InlineData(-1)]
     [InlineData(-10)]
-    public void Create_WithNegativeMinMinutes_ThrowsArgumentOutOfRangeException(int minMinutes)
+    public void Create_WithNegativeMinMinutes_ThrowsCustomException(int minMinutes)
     {
-        var exception = Assert.Throws<ArgumentOutOfRangeException>(() =>
+        var exception = Assert.Throws<PTickets.Modules.Violations.Common.Exceptions.InvalidSurchargeTierMinMinutesException>(() =>
             SurchargeTier.Create(minMinutes, 30, 20.00m));
 
-        Assert.Equal("minMinutes", exception.ParamName);
+
     }
 
     [Theory]
     [InlineData(0)]
     [InlineData(-0.01)]
     [InlineData(-50)]
-    public void Create_WithZeroOrNegativeAmount_ThrowsArgumentOutOfRangeException(decimal amount)
+    public void Create_WithZeroOrNegativeAmount_ThrowsCustomException(decimal amount)
     {
-        var exception = Assert.Throws<ArgumentOutOfRangeException>(() =>
+        var exception = Assert.Throws<PTickets.Modules.Violations.Common.Exceptions.InvalidSurchargeTierAmountException>(() =>
             SurchargeTier.Create(0, 30, amount));
 
-        Assert.Equal("amount", exception.ParamName);
+
     }
 
     [Theory]
     [InlineData(30, 30)]
     [InlineData(30, 29)]
     [InlineData(30, 0)]
-    public void Create_WithMaxMinutesLessThanOrEqualToMinMinutes_ThrowsArgumentException(int minMinutes, int maxMinutes)
+    public void Create_WithMaxMinutesLessThanOrEqualToMinMinutes_ThrowsCustomException(int minMinutes, int maxMinutes)
     {
-        var exception = Assert.Throws<ArgumentException>(() =>
+        var exception = Assert.Throws<PTickets.Modules.Violations.Common.Exceptions.InvalidSurchargeTierMaxMinutesException>(() =>
             SurchargeTier.Create(minMinutes, maxMinutes, 20.00m));
 
-        Assert.Equal("maxMinutes", exception.ParamName);
+
     }
 
     [Theory]

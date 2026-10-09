@@ -15,7 +15,10 @@ public class ViolationType
 
     public static ViolationType Create(string name, string? description = null)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            throw new PTickets.Modules.Violations.Common.Exceptions.InvalidViolationTypeNameException();
+        }
 
         return new ViolationType
         {
