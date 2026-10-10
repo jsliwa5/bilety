@@ -20,7 +20,8 @@ public static class SetPenaltyAmountEndpoint
                 throw new PTickets.Modules.Violations.Common.Exceptions.ViolationTypeNotFoundException(id);
             }
 
-            var penaltyAmount = PenaltyAmount.Create(violationTypeId, request.Amount, request.EffectiveFrom);
+            var effectiveFrom = DateTime.SpecifyKind(request.EffectiveFrom, DateTimeKind.Utc);
+            var penaltyAmount = PenaltyAmount.Create(violationTypeId, request.Amount, effectiveFrom);
             dbContext.PenaltyAmounts.Add(penaltyAmount);
             await dbContext.SaveChangesAsync(ct);
 

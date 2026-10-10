@@ -49,7 +49,7 @@ internal class ViolationsModuleFacade : IViolationsModule
                 .Select(p => p.Amount)
                 .FirstOrDefault();
 
-            return new ViolationTypeDto(v.Id, v.Name, v.Description, currentPenalty);
+            return new ViolationTypeDto(v.Id.Value, v.Name, v.Description, currentPenalty);
         }).ToList();
     }
 }

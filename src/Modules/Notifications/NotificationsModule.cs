@@ -15,10 +15,10 @@ public static class NotificationsModule
         var connectionString = configuration.GetConnectionString("Notifications")
             ?? configuration.GetConnectionString("NotificationsModule")
             ?? configuration.GetConnectionString("DefaultConnection")
-            ?? "Data Source=ptickets.db";
+            ?? "Host=localhost;Database=tickets_db;Username=tickets_user;Password=tickets_password";
 
         services.AddDbContext<NotificationsDbContext>(options =>
-            options.UseSqlite(connectionString));
+            options.UseNpgsql(connectionString));
 
         services.AddSingleton<ISmsGateway, MockSmsGateway>();
 

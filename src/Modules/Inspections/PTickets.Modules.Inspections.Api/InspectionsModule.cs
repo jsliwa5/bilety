@@ -16,7 +16,7 @@ public static class InspectionsModule
     public static IServiceCollection AddInspectionsModule(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDbContext<InspectionsDbContext>(options =>
-            options.UseSqlite(configuration.GetConnectionString("InspectionsDb")));
+            options.UseNpgsql(configuration.GetConnectionString("InspectionsDb")));
 
         services.AddScoped<IInspectionRepository, InspectionRepository>();
         services.AddScoped<ISessionRepository, SessionRepository>();

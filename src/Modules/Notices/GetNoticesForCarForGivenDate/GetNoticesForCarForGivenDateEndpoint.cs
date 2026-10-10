@@ -16,7 +16,7 @@ public static class GetNoticesForCarForGivenDateEndpoint
         app.MapGet("/api/notices/car/{registrationNumber}/date/{date:datetime}", async (string registrationNumber, DateTime date, NoticesDbContext dbContext, CancellationToken ct) =>
         {
             var regNum = new RegistrationNumber(registrationNumber);
-            var day = date.Date;
+            var day = DateTime.SpecifyKind(date.Date, DateTimeKind.Utc);
             var nextDay = day.AddDays(1);
 
             var notices = await dbContext.Notices

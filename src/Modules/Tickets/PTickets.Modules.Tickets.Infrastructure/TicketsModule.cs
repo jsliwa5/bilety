@@ -17,9 +17,9 @@ public static class TicketsModule
     {
         var connectionString = configuration.GetConnectionString("TicketsConnection")
             ?? configuration.GetConnectionString("DefaultConnection")
-            ?? "Data Source=ptickets.db";
+            ?? "Host=localhost;Database=tickets_db;Username=tickets_user;Password=tickets_password";
         services.AddDbContext<TicketsDbContext>(options =>
-            options.UseSqlite(connectionString));
+            options.UseNpgsql(connectionString));
         services.AddScoped<ITicketRepository, EfTicketRepository>();
         services.AddScoped<IResidentCardRepository, EfResidentCardRepository>();
         services.AddScoped<IStreetZoneMappingRepository, EfStreetZoneMappingRepository>();

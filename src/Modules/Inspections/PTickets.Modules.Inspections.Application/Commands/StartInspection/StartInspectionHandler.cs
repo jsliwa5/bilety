@@ -4,6 +4,7 @@ using PTickets.Shared;
 using PTickets.Modules.Inspections.Contracts.Events;
 using PTickets.Shared.ValueObjects;
 using PTickets.Modules.Notices.Contracts;
+using PTickets.Modules.Inspections.Domain.Exceptions;
 
 namespace PTickets.Modules.Inspections.Application.Commands.StartInspection;
 
@@ -29,10 +30,10 @@ public class StartInspectionHandler : IRequestHandler<StartInspectionCommand, Gu
     public async Task<Guid> Handle(StartInspectionCommand request, CancellationToken cancellationToken)
     {
         var session = await _sessionRepository.GetByIdAsync(new SessionId(request.SessionId), cancellationToken)
-            ?? throw new PTickets.Modules.Inspections.Domain.Exceptions.SessionNotFoundException();
+            ?? throw new SessionNotFoundException();
 
         if (session.IsClosed)
-            throw new PTickets.Modules.Inspections.Domain.Exceptions.SessionAlreadyClosedException();
+            throw new SessionAlreadyClosedException();
 
         var wasNoticeIssuedForVehicleToday = await _noticesModule.WasNoticeIssuedForDateAsync(
             new RegistrationNumber(request.RegistrationNumber),
@@ -40,7 +41,7 @@ public class StartInspectionHandler : IRequestHandler<StartInspectionCommand, Gu
             cancellationToken);
 
         if (wasNoticeIssuedForVehicleToday)
-            throw new PTickets.Modules.Inspections.Domain.Exceptions.NoticeAlreadyIssuedTodayException();
+            throw new NoticeAlreadyIssuedTodayException();
 
         var inspectionAwaitingForSecondCheck = await _inspectionRepository.GetInspectionAwaitingForSecondCheckAsync(
             new RegistrationNumber(request.RegistrationNumber), DateTime.UtcNow,

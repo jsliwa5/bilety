@@ -83,12 +83,16 @@ export default function ViolationTypes() {
               </tr>
             </thead>
             <tbody>
-              {types.map(t => (
-                <tr key={t.id} className="border-b">
-                  <td className="py-2">{t.name}</td>
-                  <td className="py-2">{t.penaltyAmount ? `${t.penaltyAmount} PLN` : 'Not set'}</td>
-                </tr>
-              ))}
+              {types.map(t => {
+                const id = typeof t.id === 'object' && t.id !== null ? t.id.value : t.id;
+                const penalty = t.currentPenaltyAmount ?? t.penaltyAmount;
+                return (
+                  <tr key={id} className="border-b">
+                    <td className="py-2">{t.name}</td>
+                    <td className="py-2">{penalty ? `${penalty} PLN` : 'Not set'}</td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         )}

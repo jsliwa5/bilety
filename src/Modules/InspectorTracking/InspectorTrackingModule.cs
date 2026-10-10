@@ -15,9 +15,9 @@ public static class InspectorTrackingModule
     {
         var connectionString = config.GetConnectionString("InspectorTrackingConnection")
             ?? config.GetConnectionString("DefaultConnection")
-            ?? "Data Source=ptickets.db";
+            ?? "Host=localhost;Database=tickets_db;Username=tickets_user;Password=tickets_password";
         services.AddDbContext<InspectorTrackingDbContext>(options =>
-            options.UseSqlite(connectionString));
+            options.UseNpgsql(connectionString));
 
         services.AddScoped<IInspectorTrackingModule, InspectorTrackingModuleFacade>();
 

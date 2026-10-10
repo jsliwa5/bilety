@@ -17,9 +17,9 @@ public static class ZonesModule
     {
         var connectionString = config.GetConnectionString("ZonesConnection")
             ?? config.GetConnectionString("DefaultConnection")
-            ?? "Data Source=ptickets.db";
+            ?? "Host=localhost;Database=tickets_db;Username=tickets_user;Password=tickets_password";
         services.AddDbContext<ZonesDbContext>(options =>
-            options.UseSqlite(connectionString));
+            options.UseNpgsql(connectionString));
 
         services.AddScoped<IZonesModule, ZonesModuleFacade>();
 

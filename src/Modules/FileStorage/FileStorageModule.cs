@@ -14,9 +14,9 @@ public static class FileStorageModule
     {
         var connectionString = configuration.GetConnectionString("FileStorageConnection")
             ?? configuration.GetConnectionString("DefaultConnection")
-            ?? "Data Source=ptickets.db";
+            ?? "Host=localhost;Database=tickets_db;Username=tickets_user;Password=tickets_password";
         services.AddDbContext<FileStorageDbContext>(options =>
-            options.UseSqlite(connectionString));
+            options.UseNpgsql(connectionString));
 
         services.AddSingleton<IFileStorageService, LocalFileStorageService>();
         services.AddScoped<IFileStorageModule, FileStorageModuleFacade>();

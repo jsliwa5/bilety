@@ -18,9 +18,9 @@ public static class ViolationsModule
     {
         var connectionString = config.GetConnectionString("ViolationsConnection")
             ?? config.GetConnectionString("DefaultConnection")
-            ?? "Data Source=ptickets.db";
+            ?? "Host=localhost;Database=tickets_db;Username=tickets_user;Password=tickets_password";
         services.AddDbContext<ViolationsDbContext>(options =>
-            options.UseSqlite(connectionString));
+            options.UseNpgsql(connectionString));
         services.AddScoped<PenaltyCalculationService>();
         services.AddScoped<IViolationsModule, ViolationsModuleFacade>();
 

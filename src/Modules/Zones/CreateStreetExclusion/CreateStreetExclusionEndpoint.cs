@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using PTickets.Shared;
@@ -18,10 +18,12 @@ public static class CreateStreetExclusionEndpoint
             if (!streetExists)
                 throw new StreetNotFoundException();
 
+            var startDate = DateTime.SpecifyKind(request.StartDate, DateTimeKind.Utc);
+            var endDate = DateTime.SpecifyKind(request.EndDate, DateTimeKind.Utc);
             var newStreetExclusion = StreetExclusion.Create(
                     new StreetId(streetId),
-                    request.StartDate,
-                    request.EndDate,
+                    startDate,
+                    endDate,
                     request.Reason
                 );
 

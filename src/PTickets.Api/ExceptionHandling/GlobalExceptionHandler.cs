@@ -33,6 +33,23 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IE
             return true;
         }
 
+        if (exception is BadHttpRequestException badRequestEx)
+        {
+            logger.LogWarning(exception, "Bad HTTP request: {Message}", badRequestEx.Message);
+
+            httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
+            await httpContext.Response.WriteAsJsonAsync(new ProblemDetails
+            {
+                Status = StatusCodes.Status400BadRequest,
+                Type = "BadHttpRequest",
+                Title = "Nieprawidłowe żądanie HTTP",
+                Detail = badRequestEx.Message,
+                Instance = httpContext.Request.Path
+            }, cancellationToken);
+
+            return true;
+        }
+
         logger.LogError(exception, "Unhandled system exception occurred: {Message}", exception.Message);
 
         httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;

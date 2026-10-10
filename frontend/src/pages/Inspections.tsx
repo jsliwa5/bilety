@@ -31,7 +31,7 @@ export default function Inspections() {
   const [ticketResult, setTicketResult] = useState<any>(null);
   const [secondCheckResult, setSecondCheckResult] = useState<any>(null);
   const [notice, setNotice] = useState<any>(null);
-  const [existingNotices, setExistingNotices] = useState<any[]>([]);
+
 
   useEffect(() => {
     const loadData = async () => {
@@ -71,7 +71,7 @@ export default function Inspections() {
     setTicketResult(null);
     setSecondCheckResult(null);
     setNotice(null);
-    setExistingNotices([]);
+
   };
 
   const startSession = async () => {
@@ -130,16 +130,7 @@ export default function Inspections() {
         setInspectionPhase('first-check');
       }
       
-      // Fetch existing notices for today
-      try {
-        const todayStr = new Date().toISOString().split('T')[0];
-        const noticesRes = await api.get(`/notices/car/${regNumber}/date/${todayStr}`);
-        setExistingNotices(noticesRes.data);
-      } catch (err: any) {
-        if (err.response?.status !== 404) {
-          console.error("Failed to check existing notices:", err);
-        }
-      }
+
 
     } catch (e: any) {
       console.error(e);
@@ -181,9 +172,12 @@ export default function Inspections() {
   const addViolation = async () => {
     if (!inspectionId || !selectedViolationTypeId) return;
     try {
+      const vId = typeof selectedViolationTypeId === 'object' && selectedViolationTypeId !== null
+        ? (selectedViolationTypeId as any).value
+        : selectedViolationTypeId;
       await api.post(`/inspections/${inspectionId}/violations`, {
         inspectionId,
-        violationTypeId: selectedViolationTypeId
+        violationTypeId: vId
       });
       await fetchInspectionStatus(inspectionId);
       alert('Violation added!');
@@ -420,29 +414,7 @@ export default function Inspections() {
             </div>
           )}
 
-          {existingNotices.length > 0 && (
-            <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
-              <div className="flex">
-                <div className="flex-shrink-0">
-                  <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                  </svg>
-                </div>
-                <div className="ml-3">
-                  <h3 className="text-sm font-medium text-red-800">
-                    Warning: This vehicle already has {existingNotices.length} notice(s) issued today!
-                  </h3>
-                  <div className="mt-2 text-sm text-red-700">
-                    <ul className="list-disc pl-5 space-y-1">
-                      {existingNotices.map((n, idx) => (
-                        <li key={idx}>Notice ID: {n.id} | Amount: {n.totalAmount} PLN | Time: {new Date(n.issuedAt).toLocaleTimeString()}</li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
+
           
           <div className="space-y-6">
             {/* Ticket Verification */}
@@ -534,7 +506,10 @@ export default function Inspections() {
                   disabled={!canAddViolation}
                 >
                   <option value="">Select Violation Type</option>
-                  {violationTypes.map(v => <option key={v.id} value={v.id}>{v.name}</option>)}
+                  {violationTypes.map(v => {
+                    const id = typeof v.id === 'object' && v.id !== null ? v.id.value : v.id;
+                    return <option key={id} value={id}>{v.name}</option>;
+                  })}
                 </select>
               </div>
               <button 

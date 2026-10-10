@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using PTickets.Shared;
@@ -21,9 +21,11 @@ public static class CreateZoneExclusionEndpoint
             if (zone is null)
                 throw new ZoneNotFoundException();
 
+            var startDate = DateTime.SpecifyKind(request.StartDate, DateTimeKind.Utc);
+            var endDate = DateTime.SpecifyKind(request.EndDate, DateTimeKind.Utc);
             var newExclusion = zone.AddExclusion(
-                request.StartDate,
-                request.EndDate,
+                startDate,
+                endDate,
                 request.Reason
             );
 

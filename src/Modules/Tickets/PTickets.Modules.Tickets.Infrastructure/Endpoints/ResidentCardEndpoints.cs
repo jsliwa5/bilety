@@ -19,8 +19,8 @@ public static class ResidentCardEndpoints
             var command = new IssueResidentCardCommand(
                 RegistrationNumber.Create(request.RegistrationNumber),
                 new StreetId(request.StreetId),
-                request.ValidFrom,
-                request.ValidTo);
+                DateTime.SpecifyKind(request.ValidFrom, DateTimeKind.Utc),
+                DateTime.SpecifyKind(request.ValidTo, DateTimeKind.Utc));
 
             var id = await mediator.Send(command);
             return Results.Ok(new { Id = id });

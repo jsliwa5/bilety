@@ -15,7 +15,7 @@ public static class NoticesModule
     public static IServiceCollection AddNoticesModule(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDbContext<NoticesDbContext>(options =>
-            options.UseSqlite(configuration.GetConnectionString("NoticesModule")));
+            options.UseNpgsql(configuration.GetConnectionString("NoticesModule")));
       
         services.AddScoped<INoticesModule, NoticeFacade>();
 
