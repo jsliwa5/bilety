@@ -9,6 +9,7 @@ using PTickets.Modules.Violations;
 using PTickets.Modules.Zones;
 using PTickets.Shared.Abstractions;
 using PTickets.Api.ExceptionHandling;
+using PTickets.Api.HealthChecks;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -56,6 +57,7 @@ builder.Services.AddInspectionsModule(builder.Configuration);
 builder.Services.AddNoticesModule(builder.Configuration);
 builder.Services.AddNotificationsModule(builder.Configuration);
 builder.Services.AddFileStorageModule(builder.Configuration);
+builder.Services.AddCustomHealthChecks(builder.Configuration);
 
 var app = builder.Build();
 
@@ -106,5 +108,6 @@ app.MapTicketsEndpoints();
 app.MapInspectionsEndpoints();
 app.MapNoticesEndpoints();
 app.MapNotificationsEndpoints();
+app.MapCustomHealthChecks();
 
 app.Run();
