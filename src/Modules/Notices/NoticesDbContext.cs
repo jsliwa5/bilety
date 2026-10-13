@@ -24,7 +24,9 @@ public class NoticesDbContext : DbContext
             b.Property(x => x.PenaltyAmount);
             b.Property(x => x.Surcharge);
             b.Property(x => x.Status).HasConversion<string>();
+            b.Property(x => x.SyncedAt).IsRequired(false);
+
+            b.HasIndex(x => x.SyncedAt);
         });
     }
 }
-

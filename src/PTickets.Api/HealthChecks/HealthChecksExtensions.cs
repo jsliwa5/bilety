@@ -14,7 +14,7 @@ public static class HealthChecksExtensions
     public static IServiceCollection AddCustomHealthChecks(this IServiceCollection services, IConfiguration configuration)
     {
         var healthChecksBuilder = services.AddHealthChecks();
-
+        
         // 1. PostgreSQL databases health checks
         RegisterDatabaseHealthCheck(healthChecksBuilder, configuration, "ZonesConnection", "postgres-zones");
         RegisterDatabaseHealthCheck(healthChecksBuilder, configuration, "ViolationsConnection", "postgres-violations");
