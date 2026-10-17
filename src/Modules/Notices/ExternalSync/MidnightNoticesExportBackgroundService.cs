@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
@@ -45,7 +45,7 @@ public class MidnightNoticesExportBackgroundService(
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Wszystkie próby Polly zawiodły podczas nocnego eksportu zawiadomień. Rekordy pozostają z SyncedAt = null i zostaną wysłane przy kolejnej próbie.");
+            logger.LogError(ex, "Wszystkie próby Polly zawiodły podczas nocnego eksportu zawiadomień. Wiadomości pozostają w tabeli Outbox i zostaną ponowione przy kolejnej próbie.");
         }
     }
 }

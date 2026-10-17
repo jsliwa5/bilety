@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/external-notices-system/">
+    <Project Path="external-notices-system/ExternalNoticesSystem.Api.csproj" />
+  </Folder>
   <Folder Name="/src/">
     <File Path=".gitignore" />
     <Project Path="src/PTickets.Api/PTickets.Api.csproj" />

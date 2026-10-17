@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
@@ -21,16 +21,29 @@ public static class ExternalSyncEndpoints
 {
     public static void MapExternalSyncEndpoints(this IEndpointRouteBuilder app)
     {
+        // 1. Ręczne wyzwolenie wysyłki Outboxa (zamiast czekania do 24:00)
         app.MapPost("/api/notices/export-daily", async (DailyNoticesExportService exportService, CancellationToken ct) =>
         {
             var exportedCount = await exportService.ExportUnsyncedNoticesAsync(ct);
             return Results.Ok(new
             {
-                message = "Eksport do systemu zewnętrznego zakończony pomyślnie.",
+                message = "Eksport Outbox do systemu zewnętrznego zakończony pomyślnie.",
                 exportedCount
             });
         });
 
+        // 2. Podgląd tabeli Outbox w module Notices
+        app.MapGet("/api/notices/outbox", async (NoticesDbContext dbContext, CancellationToken ct) =>
+        {
+            var messages = await dbContext.OutboxMessages
+                .AsNoTracking()
+                .OrderByDescending(m => m.OccurredAt)
+                .ToListAsync(ct);
+
+            return Results.Ok(messages);
+        });
+
+        // 3. Odbiór Webhooka z systemu zewnętrznego
         app.MapPost("/api/notices/webhook", async (
             HttpContext httpContext,
             [FromBody] NoticeStatusWebhookPayload payload,

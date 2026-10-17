@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Json;
+using System.Net.Http.Json;
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -42,43 +43,55 @@ public class DailyNoticesExportService(
 
         while (!ct.IsCancellationRequested)
         {
-            var unsyncedBatch = await dbContext.Notices
-                .Where(n => n.SyncedAt == null)
-                .OrderBy(n => n.IssuedAt)
+            var pendingMessages = await dbContext.OutboxMessages
+                .Where(m => m.ProcessedAt == null)
+                .OrderBy(m => m.OccurredAt)
                 .Take(BatchSize)
                 .ToListAsync(ct);
 
-            if (unsyncedBatch.Count == 0)
+            if (pendingMessages.Count == 0)
             {
                 break;
             }
 
+            var noticesDto = pendingMessages
+                .Select(m => JsonSerializer.Deserialize<ExternalNoticeItemDto>(m.PayloadJson)!)
+                .ToList();
+
             var now = DateTime.UtcNow;
-            var payload = new ExternalNoticesBatchRequest(
-                Guid.NewGuid(),
-                now,
-                unsyncedBatch.Select(n => new ExternalNoticeItemDto(
-                    n.Id.Value,
-                    n.InspectionId.Value,
-                    n.RegistrationNumber.Value,
-                    n.PenaltyAmount,
-                    n.Surcharge,
-                    n.TotalAmount,
-                    n.Status.ToString(),
-                    n.IssuedAt)).ToList());
+            var batchId = Guid.NewGuid();
+            var payload = new ExternalNoticesBatchRequest(batchId, now, noticesDto);
 
-            var response = await client.PostAsJsonAsync("/api/external/notices/batch", payload, ct);
-            response.EnsureSuccessStatusCode();
-
-            foreach (var notice in unsyncedBatch)
+            try
             {
-                notice.MarkAsSynced(now);
+                logger.LogInformation("[OUTBOX] Wysyłanie paczki {BatchId} ({Count} wiadomości) do systemu zewnętrznego...", batchId, pendingMessages.Count);
+
+                // Żądanie chronione przez Polly (Retry + CircuitBreaker + Timeout)
+                var response = await client.PostAsJsonAsync("/api/external/notices/batch", payload, ct);
+                response.EnsureSuccessStatusCode();
+
+                foreach (var msg in pendingMessages)
+                {
+                    msg.MarkAsProcessed(now);
+                }
+
+                await dbContext.SaveChangesAsync(ct);
+                totalExported += pendingMessages.Count;
+
+                logger.LogInformation("[OUTBOX] Paczka {BatchId} wysłana i oznaczona jako Processed.", batchId);
             }
+            catch (Exception ex)
+            {
+                foreach (var msg in pendingMessages)
+                {
+                    msg.MarkAsFailed(ex.Message);
+                }
 
-            await dbContext.SaveChangesAsync(ct);
-            totalExported += unsyncedBatch.Count;
+                await dbContext.SaveChangesAsync(ct);
 
-            logger.LogInformation("Wysłano paczkę {Count} zawiadomień do systemu zewnętrznego.", unsyncedBatch.Count);
+                logger.LogError(ex, "[OUTBOX] Błąd wysyłki paczki {BatchId} po wyczerpaniu prób Polly.", batchId);
+                throw;
+            }
         }
 
         return totalExported;

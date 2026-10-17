@@ -1,4 +1,4 @@
-﻿using PTickets.Shared;
+using PTickets.Shared;
 using PTickets.Shared.ValueObjects;
 using PTickets.Modules.Notices.Common.Exceptions;
 
@@ -12,10 +12,9 @@ public class Notice
     public DateTime IssuedAt { get; private set; }
     public decimal PenaltyAmount { get; private set; }
     public decimal Surcharge { get; private set; }
-
+    
     public decimal TotalAmount => PenaltyAmount + Surcharge;
     public NoticeStatus Status { get; private set; } = NoticeStatus.Issued;
-    public DateTime? SyncedAt { get; private set; }
 
     private Notice() { }
 
@@ -29,22 +28,14 @@ public class Notice
             PenaltyAmount = penaltyAmount,
             Surcharge = surcharge,
             IssuedAt = issuedAt,
-            Status = NoticeStatus.Issued,
-            SyncedAt = null
+            Status = NoticeStatus.Issued
         };
-    }
-
-    public void MarkAsSynced(DateTime syncedAt)
-    {
-        SyncedAt = syncedAt;
     }
 
     public void MarkAsPaid()
     {
         if (Status != NoticeStatus.Issued && Status != NoticeStatus.SentToDebtCollection)
-        {
             throw new CannotPayNoticeException($"Cannot pay notice with status {Status}.");
-        }
 
         Status = NoticeStatus.Paid;
     }
@@ -52,9 +43,7 @@ public class Notice
     public void Cancel()
     {
         if (Status != NoticeStatus.Issued && Status != NoticeStatus.Appealed)
-        {
             throw new CannotCancelNoticeException($"Cannot cancel notice with status {Status}.");
-        }
 
         Status = NoticeStatus.Cancelled;
     }
@@ -62,9 +51,7 @@ public class Notice
     public void MarkAsAppealed()
     {
         if (Status != NoticeStatus.Issued)
-        {
             throw new InvalidNoticeStatusTransitionException($"Cannot appeal notice with status {Status}. Only Issued notices can be appealed.");
-        }
 
         Status = NoticeStatus.Appealed;
     }
@@ -72,9 +59,7 @@ public class Notice
     public void RejectAppeal()
     {
         if (Status != NoticeStatus.Appealed)
-        {
             throw new InvalidNoticeStatusTransitionException($"Cannot reject appeal for notice with status {Status}.");
-        }
 
         Status = NoticeStatus.Issued;
     }
@@ -82,10 +67,7 @@ public class Notice
     public void SendToDebtCollection()
     {
         if (Status != NoticeStatus.Issued)
-        {
             throw new InvalidNoticeStatusTransitionException($"Cannot send notice with status {Status} to debt collection.");
-        }
-
         Status = NoticeStatus.SentToDebtCollection;
     }
 }

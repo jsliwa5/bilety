@@ -6,5 +6,4 @@ public record NoticeDto(
     string RegistrationNumber,
     decimal TotalAmount,
     DateTime IssuedAt,
-    string Status = "Issued",
-    DateTime? SyncedAt = null);
+    string Status = "Issued");

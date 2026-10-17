@@ -33,7 +33,8 @@ public static class GetNoticesForCarForGivenDateEndpoint
                 n.InspectionId.Value,
                 n.RegistrationNumber.Value,
                 n.TotalAmount,
-                n.IssuedAt
+                n.IssuedAt,
+                n.Status.ToString()
             )).ToList();
 
             return Results.Ok(noticeDtos);

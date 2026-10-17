@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using PTickets.Modules.Notices.Common.Data;
 using PTickets.Shared;
 using PTickets.Shared.ValueObjects;
@@ -10,6 +10,7 @@ public class NoticesDbContext : DbContext
     public NoticesDbContext(DbContextOptions<NoticesDbContext> options) : base(options) { }
 
     public DbSet<Notice> Notices { get; set; } = null!;
+    public DbSet<NoticeOutboxMessage> OutboxMessages { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -24,9 +25,16 @@ public class NoticesDbContext : DbContext
             b.Property(x => x.PenaltyAmount);
             b.Property(x => x.Surcharge);
             b.Property(x => x.Status).HasConversion<string>();
-            b.Property(x => x.SyncedAt).IsRequired(false);
+        });
 
-            b.HasIndex(x => x.SyncedAt);
+        modelBuilder.Entity<NoticeOutboxMessage>(b =>
+        {
+            b.ToTable("OutboxMessages");
+            b.HasKey(x => x.Id);
+            b.Property(x => x.Id).ValueGeneratedNever();
+            b.Property(x => x.Type).IsRequired().HasMaxLength(100);
+            b.Property(x => x.PayloadJson).IsRequired();
+            b.HasIndex(x => x.ProcessedAt);
         });
     }
 }

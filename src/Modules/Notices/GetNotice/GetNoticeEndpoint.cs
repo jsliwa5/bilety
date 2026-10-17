@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -27,7 +27,8 @@ public static class GetNoticeEndpoint
                     notice.InspectionId.Value,
                     notice.RegistrationNumber.Value,
                     notice.TotalAmount,
-                    notice.IssuedAt
+                    notice.IssuedAt,
+                    notice.Status.ToString()
                 );
 
             return Results.Ok(noticeDto);
