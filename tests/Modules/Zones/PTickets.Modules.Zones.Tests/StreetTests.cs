@@ -1,6 +1,7 @@
-﻿namespace PTickets.Modules.Zones.Tests;
+namespace PTickets.Modules.Zones.Tests;
 
 using PTickets.Modules.Zones.Common.Data;
+using PTickets.Modules.Zones.Common.Exceptions;
 using PTickets.Shared;
 
 public class StreetTests
@@ -10,11 +11,11 @@ public class StreetTests
     {
         var zoneId = ZoneId.New();
 
-        var street = Street.CreateZoneRepresentative(zoneId, "MarszaĹ‚kowska");
+        var street = Street.CreateZoneRepresentative(zoneId, "Marszałkowska");
 
         Assert.NotEqual(default, street.Id);
         Assert.Equal(zoneId, street.ZoneId);
-        Assert.Equal("MarszaĹ‚kowska", street.Name);
+        Assert.Equal("Marszałkowska", street.Name);
         Assert.True(street.RepresentsWholeZone);
         Assert.Null(street.PaidParkingSchedule);
     }
@@ -24,11 +25,11 @@ public class StreetTests
     {
         var zoneId = ZoneId.New();
 
-        var street = Street.CreateNormalStreet(zoneId, "FloriaĹ„ska", null);
+        var street = Street.CreateNormalStreet(zoneId, "Floriańska", null);
 
         Assert.NotEqual(default, street.Id);
         Assert.Equal(zoneId, street.ZoneId);
-        Assert.Equal("FloriaĹ„ska", street.Name);
+        Assert.Equal("Floriańska", street.Name);
         Assert.False(street.RepresentsWholeZone);
         Assert.Null(street.PaidParkingSchedule);
     }
@@ -37,11 +38,22 @@ public class StreetTests
     [InlineData(null)]
     [InlineData("")]
     [InlineData("   ")]
-    public void Create_WithEmptyOrWhitespaceName_ShouldThrowArgumentException(string? name)
+    public void Create_WithEmptyOrWhitespaceName_ShouldThrowInvalidStreetNameException(string? name)
     {
         var zoneId = ZoneId.New();
 
-        Assert.Throws<ArgumentException>(() => Street.CreateNormalStreet(zoneId, name!, null));
+        Assert.Throws<InvalidStreetNameException>(() => Street.CreateNormalStreet(zoneId, name!, null));
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("   ")]
+    public void CreateZoneRepresentative_WithEmptyOrWhitespaceName_ShouldThrowInvalidZoneNameException(string? name)
+    {
+        var zoneId = ZoneId.New();
+
+        Assert.Throws<InvalidZoneNameException>(() => Street.CreateZoneRepresentative(zoneId, name!));
     }
 
     [Fact]
@@ -49,7 +61,7 @@ public class StreetTests
     {
         var zoneId = ZoneId.New();
         var schedule = new PaidParkingSchedule(new TimeOnly(8, 0), new TimeOnly(18, 0), [DayOfWeek.Monday]);
-        var street = Street.CreateNormalStreet(zoneId, "MarszaĹ‚kowska", schedule);
+        var street = Street.CreateNormalStreet(zoneId, "Marszałkowska", schedule);
 
         var mondayMidday = new DateTime(2026, 8, 31, 12, 0, 0); // Monday 12:00
         var mondayNight = new DateTime(2026, 8, 31, 20, 0, 0);  // Monday 20:00
@@ -64,7 +76,7 @@ public class StreetTests
     public void IsPaidAt_WithoutSchedule_ShouldReturnFalse()
     {
         var zoneId = ZoneId.New();
-        var street = Street.CreateNormalStreet(zoneId, "FloriaĹ„ska", null);
+        var street = Street.CreateNormalStreet(zoneId, "Floriańska", null);
 
         var mondayMidday = new DateTime(2026, 8, 31, 12, 0, 0);
 

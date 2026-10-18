@@ -1,6 +1,7 @@
-﻿namespace PTickets.Modules.Zones.Tests;
+namespace PTickets.Modules.Zones.Tests;
 
 using PTickets.Modules.Zones.Common.Data;
+using PTickets.Modules.Zones.Common.Exceptions;
 using PTickets.Shared;
 
 public class ZoneExclusionTests
@@ -25,26 +26,26 @@ public class ZoneExclusionTests
     [Theory]
     [InlineData("2026-09-10T12:00:00", "2026-09-10T12:00:00")]
     [InlineData("2026-09-11T12:00:00", "2026-09-10T12:00:00")]
-    public void Create_WithStartDateEqualOrAfterEndDate_ShouldThrowArgumentException(string startStr, string endStr)
+    public void Create_WithStartDateEqualOrAfterEndDate_ShouldThrowInvalidExclusionDatesException(string startStr, string endStr)
     {
         var zoneId = ZoneId.New();
         var startDate = DateTime.Parse(startStr);
         var endDate = DateTime.Parse(endStr);
 
-        Assert.Throws<ArgumentException>(() => ZoneExclusion.Create(zoneId, startDate, endDate, "Remont"));
+        Assert.Throws<InvalidExclusionDatesException>(() => ZoneExclusion.Create(zoneId, startDate, endDate, "Remont"));
     }
 
     [Theory]
     [InlineData(null)]
     [InlineData("")]
     [InlineData("   ")]
-    public void Create_WithEmptyOrWhitespaceReason_ShouldThrowArgumentException(string? reason)
+    public void Create_WithEmptyOrWhitespaceReason_ShouldThrowEmptyExclusionReasonException(string? reason)
     {
         var zoneId = ZoneId.New();
         var startDate = new DateTime(2026, 9, 1);
         var endDate = new DateTime(2026, 9, 10);
 
-        Assert.Throws<ArgumentException>(() => ZoneExclusion.Create(zoneId, startDate, endDate, reason!));
+        Assert.Throws<EmptyExclusionReasonException>(() => ZoneExclusion.Create(zoneId, startDate, endDate, reason!));
     }
 
     [Fact]

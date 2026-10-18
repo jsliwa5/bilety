@@ -1,6 +1,7 @@
-﻿namespace PTickets.Modules.Zones.Tests;
+namespace PTickets.Modules.Zones.Tests;
 
 using PTickets.Modules.Zones.Common.Data;
+using PTickets.Modules.Zones.Common.Exceptions;
 using PTickets.Shared;
 
 public class StreetExclusionTests
@@ -11,7 +12,7 @@ public class StreetExclusionTests
         var streetId = StreetId.New();
         var startDate = new DateTime(2026, 9, 1, 0, 0, 0);
         var endDate = new DateTime(2026, 9, 10, 23, 59, 59);
-        var reason = "Awaria wodociÄ…gowa";
+        var reason = "Awaria wodociągowa";
 
         var exclusion = StreetExclusion.Create(streetId, startDate, endDate, reason);
 
@@ -25,26 +26,26 @@ public class StreetExclusionTests
     [Theory]
     [InlineData("2026-09-10T12:00:00", "2026-09-10T12:00:00")]
     [InlineData("2026-09-11T12:00:00", "2026-09-10T12:00:00")]
-    public void Create_WithStartDateEqualOrAfterEndDate_ShouldThrowArgumentException(string startStr, string endStr)
+    public void Create_WithStartDateEqualOrAfterEndDate_ShouldThrowInvalidExclusionDatesException(string startStr, string endStr)
     {
         var streetId = StreetId.New();
         var startDate = DateTime.Parse(startStr);
         var endDate = DateTime.Parse(endStr);
 
-        Assert.Throws<ArgumentException>(() => StreetExclusion.Create(streetId, startDate, endDate, "Awaria"));
+        Assert.Throws<InvalidExclusionDatesException>(() => StreetExclusion.Create(streetId, startDate, endDate, "Awaria"));
     }
 
     [Theory]
     [InlineData(null)]
     [InlineData("")]
     [InlineData("   ")]
-    public void Create_WithEmptyOrWhitespaceReason_ShouldThrowArgumentException(string? reason)
+    public void Create_WithEmptyOrWhitespaceReason_ShouldThrowEmptyExclusionReasonException(string? reason)
     {
         var streetId = StreetId.New();
         var startDate = new DateTime(2026, 9, 1);
         var endDate = new DateTime(2026, 9, 10);
 
-        Assert.Throws<ArgumentException>(() => StreetExclusion.Create(streetId, startDate, endDate, reason!));
+        Assert.Throws<EmptyExclusionReasonException>(() => StreetExclusion.Create(streetId, startDate, endDate, reason!));
     }
 
     [Fact]

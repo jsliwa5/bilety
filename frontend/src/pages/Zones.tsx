@@ -66,8 +66,7 @@ export default function Zones() {
     if (!selectedZoneId) return;
     try {
       const payload: any = {
-        name: newStreetName,
-        representsWholeZone: false
+        name: newStreetName
       };
 
       if (overrideSchedule) {

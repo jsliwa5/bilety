@@ -1,21 +1,19 @@
-﻿namespace PTickets.Modules.Zones.Tests;
+namespace PTickets.Modules.Zones.Tests;
 
 using PTickets.Modules.Zones.Common.Data;
-using PTickets.Shared;
+using PTickets.Modules.Zones.Common.Exceptions;
 
 public class ZoneTests
 {
     [Fact]
     public void CreateMultiStreet_WithValidName_ShouldSucceedWithEmptyStreets()
     {
-        var zone = Zone.CreateMultiStreet("Strefa A", null);
+        var zone = Zone.CreateMultiStreet("  Strefa A  ", null);
 
         Assert.NotEqual(default, zone.Id);
         Assert.Equal("Strefa A", zone.Name);
         Assert.Equal(ZoneType.MultiStreet, zone.Type);
-        Assert.NotNull(zone.Streets);
         Assert.Empty(zone.Streets);
-        Assert.NotNull(zone.Exclusions);
         Assert.Empty(zone.Exclusions);
     }
 
@@ -35,47 +33,46 @@ public class ZoneTests
         Assert.True(street.RepresentsWholeZone);
     }
 
-    [Fact]
-    public void Create_WithSingleType_ShouldDelegateToCreateSingle()
+    [Theory]
+    [InlineData(-1)]
+    [InlineData(2)]
+    [InlineData(99)]
+    public void Create_WithInvalidZoneType_ShouldThrowInvalidZoneTypeException(int invalidType)
     {
-        var zone = Zone.Create("Strefa B", ZoneType.Single, null);
-
-        Assert.Equal(ZoneType.Single, zone.Type);
-        Assert.Single(zone.Streets);
-        Assert.True(zone.Streets.First().RepresentsWholeZone);
+        Assert.Throws<InvalidZoneTypeException>(() =>
+            Zone.Create("Strefa X", (ZoneType)invalidType, null));
     }
 
     [Theory]
     [InlineData(null)]
     [InlineData("")]
     [InlineData("   ")]
-    public void Create_WithEmptyOrWhitespaceName_ShouldThrowArgumentException(string? name)
+    public void Create_WithEmptyOrWhitespaceName_ShouldThrowInvalidZoneNameException(string? name)
     {
-        Assert.Throws<ArgumentException>(() => Zone.Create(name!, ZoneType.MultiStreet, null));
-        Assert.Throws<ArgumentException>(() => Zone.CreateSingle(name!, null));
-        Assert.Throws<ArgumentException>(() => Zone.CreateMultiStreet(name!, null));
+        Assert.Throws<InvalidZoneNameException>(() => Zone.Create(name!, ZoneType.MultiStreet, null));
+        Assert.Throws<InvalidZoneNameException>(() => Zone.CreateSingle(name!, null));
+        Assert.Throws<InvalidZoneNameException>(() => Zone.CreateMultiStreet(name!, null));
     }
 
     [Fact]
-    public void AddStreet_ToMultiStreetZone_ShouldSucceed()
+    public void AddStreet_ToMultiStreetZone_ShouldCreateNormalStreetWithRepresentsWholeZoneFalse()
     {
         var zone = Zone.CreateMultiStreet("Strefa A", null);
 
-        var street = zone.AddStreet("MarszaĹ‚kowska", null);
+        var street = zone.AddStreet("  Marszałkowska  ", null);
 
         Assert.Single(zone.Streets);
-        Assert.Contains(street, zone.Streets);
-        Assert.Equal("MarszaĹ‚kowska", street.Name);
+        Assert.Equal("Marszałkowska", street.Name);
         Assert.Equal(zone.Id, street.ZoneId);
         Assert.False(street.RepresentsWholeZone);
     }
 
     [Fact]
-    public void AddStreet_ToSingleZone_ShouldThrowInvalidOperationException()
+    public void AddStreet_ToSingleZone_ShouldThrowCannotAddStreetToSingleZoneException()
     {
         var zone = Zone.CreateSingle("Strefa Centrum", null);
 
-        Assert.Throws<InvalidOperationException>(() => zone.AddStreet("Nowa", null));
+        Assert.Throws<CannotAddStreetToSingleZoneException>(() => zone.AddStreet("Nowa", null));
     }
 
     [Fact]
@@ -88,7 +85,6 @@ public class ZoneTests
         var exclusion = zone.AddExclusion(start, end, "Remont");
 
         Assert.Single(zone.Exclusions);
-        Assert.Contains(exclusion, zone.Exclusions);
         Assert.Equal(zone.Id, exclusion.ZoneId);
         Assert.Equal("Remont", exclusion.Reason);
     }

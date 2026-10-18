@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -12,34 +12,37 @@ public static class CreateZoneEndpoint
 {
     public static void MapCreateZoneEndpoint(this IEndpointRouteBuilder app)
     {
-        app.MapPost("api/zones", async (CreateZoneRequest request, ZonesDbContext dbContext, IMediator mediator, CancellationToken ct) =>
-        {
-            if (!Enum.IsDefined(typeof(ZoneType), request.Type))
-            {
-                throw new InvalidZoneTypeException();
-            }
-
-            var newZone = Zone.Create(
-                request.Name,
-                request.Type,
-                new PaidParkingSchedule(request.StartTime, request.EndTime, request.PaidDays)
-            );
-
-            await dbContext.Zones.AddAsync(newZone, ct);
-            await dbContext.SaveChangesAsync(ct);
-
-            await mediator.Publish(new ZoneCreatedEvent(newZone.Id, newZone.Name), ct);
-
-            foreach (var street in newZone.Streets)
-            {
-                await mediator.Publish(new StreetCreatedEvent(street.Id, newZone.Id, street.Name), ct);
-            }
-
-            return Results.Created($"/api/zones/{newZone.Id.Value}", new { Id = newZone.Id.Value });
-        });
+        app.MapPost("api/zones", HandleAsync);
     }
 
+    internal static async Task<IResult> HandleAsync(
+        CreateZoneRequest request,
+        ZonesDbContext dbContext,
+        IMediator mediator,
+        CancellationToken ct)
+    {
+        if (!Enum.IsDefined(typeof(ZoneType), request.Type))
+        {
+            throw new InvalidZoneTypeException();
+        }
 
+        var newZone = Zone.Create(
+            request.Name,
+            request.Type,
+            new PaidParkingSchedule(request.StartTime, request.EndTime, request.PaidDays)
+        );
 
+        await dbContext.Zones.AddAsync(newZone, ct);
+        await dbContext.SaveChangesAsync(ct);
+
+        await mediator.Publish(new ZoneCreatedEvent(newZone.Id, newZone.Name), ct);
+
+        foreach (var street in newZone.Streets)
+        {
+            await mediator.Publish(new StreetCreatedEvent(street.Id, newZone.Id, street.Name), ct);
+        }
+
+        return Results.Created($"/api/zones/{newZone.Id.Value}", new { Id = newZone.Id.Value });
+    }
 }
 
