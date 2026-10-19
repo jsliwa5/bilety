@@ -1,4 +1,4 @@
-﻿using PTickets.Modules.InspectorTracking.Common.Exceptions;
+using PTickets.Modules.InspectorTracking.Common.Exceptions;
 using PTickets.Shared;
 
 namespace PTickets.Modules.InspectorTracking.Common.Data;
@@ -65,6 +65,9 @@ internal class Inspector
 
     public void AssignToZone(ZoneId zoneId)
     {
+        if (zoneId == PTickets.Shared.ZoneId.Empty)
+            throw new InvalidZoneAssignmentException("ZoneId nie może być puste.");
+
         ZoneId = zoneId;
         AssignedToZone = true;
     }

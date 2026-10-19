@@ -26,7 +26,7 @@ public static class AssignToZoneEndpoint
             .Produces(StatusCodes.Status404NotFound);
     }
 
-    private static async Task<IResult> AssignToZone(
+    internal static async Task<IResult> AssignToZone(
         Guid inspectorId,
         AssignToZoneRequest request,
         InspectorTrackingDbContext dbContext,
@@ -50,7 +50,7 @@ public static class AssignToZoneEndpoint
         return Results.NoContent();
     }
 
-    private static async Task<IResult> UnassignFromZone(
+    internal static async Task<IResult> UnassignFromZone(
         Guid inspectorId,
         InspectorTrackingDbContext dbContext,
         CancellationToken ct)

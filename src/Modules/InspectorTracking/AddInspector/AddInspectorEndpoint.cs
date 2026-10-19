@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using PTickets.Modules.InspectorTracking.Common.Data;
@@ -16,7 +16,7 @@ public static class AddInspectorEndpoint
             .Produces(StatusCodes.Status400BadRequest);
     }
 
-    private static async Task<IResult> AddInspector(
+    internal static async Task<IResult> AddInspector(
         AddInspectorRequest request,
         InspectorTrackingDbContext dbContext,
         CancellationToken ct)

@@ -1,4 +1,4 @@
-﻿namespace PTickets.Modules.InspectorTracking;
+namespace PTickets.Modules.InspectorTracking;
 
 using Microsoft.EntityFrameworkCore;
 using PTickets.Modules.InspectorTracking.Common.Data;
@@ -23,6 +23,7 @@ internal class InspectorTrackingDbContext(DbContextOptions<InspectorTrackingDbCo
             builder.ToTable("Inspectors");
             builder.HasKey(i => i.Id);
             builder.Property(i => i.Id)
+                .ValueGeneratedNever()
                 .HasConversion(id => id.Value, value => new InspectorId(value));
 
             builder.Property(i => i.FirstName).IsRequired().HasMaxLength(100);
@@ -35,7 +36,7 @@ internal class InspectorTrackingDbContext(DbContextOptions<InspectorTrackingDbCo
                     value => value.HasValue ? new ZoneId(value.Value) : null)
                 .IsRequired(false);
 
-            // PowiÄ…zania 1:N z backing fields i shadow property klucza obcego
+            // Powiązania 1:N z backing fields i shadow property klucza obcego
             builder.HasMany(i => i.InspectionAttempts)
                 .WithOne()
                 .HasForeignKey("InspectorId")
@@ -58,6 +59,7 @@ internal class InspectorTrackingDbContext(DbContextOptions<InspectorTrackingDbCo
             builder.ToTable("LocationLogs");
             builder.HasKey(l => l.Id);
             builder.Property(l => l.Id)
+                .ValueGeneratedNever()
                 .HasConversion(id => id.Value, value => new LocationLogId(value));
 
             builder.Property(l => l.TimeOfLocation).IsRequired();
@@ -70,6 +72,7 @@ internal class InspectorTrackingDbContext(DbContextOptions<InspectorTrackingDbCo
             builder.ToTable("InspectionLogs");
             builder.HasKey(il => il.Id);
             builder.Property(il => il.Id)
+                .ValueGeneratedNever()
                 .HasConversion(id => id.Value, value => new InspectionLogId(value));
 
             builder.Property(il => il.TimeOfAttempt).IsRequired();
