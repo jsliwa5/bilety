@@ -44,64 +44,67 @@ public static class ExternalSyncEndpoints
         });
 
         // 3. Odbiór Webhooka z systemu zewnętrznego
-        app.MapPost("/api/notices/webhook", async (
-            HttpContext httpContext,
-            [FromBody] NoticeStatusWebhookPayload payload,
-            NoticesDbContext dbContext,
-            IConfiguration configuration,
-            ILoggerFactory loggerFactory,
-            CancellationToken ct) =>
+        app.MapPost("/api/notices/webhook", HandleWebhookAsync);
+    }
+
+    internal static async Task<IResult> HandleWebhookAsync(
+        HttpContext httpContext,
+        [FromBody] NoticeStatusWebhookPayload payload,
+        NoticesDbContext dbContext,
+        IConfiguration configuration,
+        ILoggerFactory loggerFactory,
+        CancellationToken ct)
+    {
+        var logger = loggerFactory.CreateLogger("NoticesWebhook");
+        var expectedKey = configuration["ExternalNoticesSystem:ApiKey"] ?? "secret-webhook-key-123";
+
+        if (!httpContext.Request.Headers.TryGetValue("X-Api-Key", out var providedKey) || providedKey != expectedKey)
         {
-            var logger = loggerFactory.CreateLogger("NoticesWebhook");
-            var expectedKey = configuration["ExternalNoticesSystem:ApiKey"] ?? "secret-webhook-key-123";
+            logger.LogWarning("Odrzucono webhook z nieprawidłowym kluczem X-Api-Key.");
+            return Results.Unauthorized();
+        }
 
-            if (!httpContext.Request.Headers.TryGetValue("X-Api-Key", out var providedKey) || providedKey != expectedKey)
-            {
-                logger.LogWarning("Odrzucono webhook z nieprawidłowym kluczem X-Api-Key.");
-                return Results.Unauthorized();
-            }
+        var notice = await dbContext.Notices
+            .FirstOrDefaultAsync(n => n.Id == new NoticeId(payload.NoticeId), ct);
 
-            var notice = await dbContext.Notices
-                .FirstOrDefaultAsync(n => n.Id == new NoticeId(payload.NoticeId), ct);
+        if (notice is null)
+        {
+            throw new NoticeNotFoundException();
+        }
 
-            if (notice is null)
-            {
-                throw new NoticeNotFoundException();
-            }
+        switch (payload.Action.ToUpperInvariant())
+        {
+            case "PAID":
+                notice.MarkAsPaid();
+                break;
+            case "APPEALED":
+                notice.MarkAsAppealed();
+                break;
+            case "APPEAL_APPROVED":
+            case "CANCELLED":
+                notice.Cancel();
+                break;
+            case "APPEAL_REJECTED":
+                notice.RejectAppeal();
+                break;
+            case "SENT_TO_DEBT_COLLECTION":
+                notice.SendToDebtCollection();
+                break;
+            default:
+                return Results.BadRequest(new { error = $"Nieznana akcja webhooka: {payload.Action}" });
+        }
 
-            switch (payload.Action.ToUpperInvariant())
-            {
-                case "PAID":
-                    notice.MarkAsPaid();
-                    break;
-                case "APPEALED":
-                    notice.MarkAsAppealed();
-                    break;
-                case "APPEAL_APPROVED":
-                case "CANCELLED":
-                    notice.Cancel();
-                    break;
-                case "APPEAL_REJECTED":
-                    notice.RejectAppeal();
-                    break;
-                case "SENT_TO_DEBT_COLLECTION":
-                    notice.SendToDebtCollection();
-                    break;
-                default:
-                    return Results.BadRequest(new { error = $"Nieznana akcja webhooka: {payload.Action}" });
-            }
+        await dbContext.SaveChangesAsync(ct);
 
-            await dbContext.SaveChangesAsync(ct);
+        logger.LogInformation(
+            "Odebrano webhook ({Action}) dla wezwania {NoticeId}. Nowy status w PTickets: {Status}",
+            payload.Action, notice.Id.Value, notice.Status);
 
-            logger.LogInformation(
-                "Odebrano webhook ({Action}) dla wezwania {NoticeId}. Nowy status w PTickets: {Status}",
-                payload.Action, notice.Id.Value, notice.Status);
-
-            return Results.Ok(new
-            {
-                noticeId = notice.Id.Value,
-                newStatus = notice.Status.ToString()
-            });
+        return Results.Ok(new
+        {
+            noticeId = notice.Id.Value,
+            newStatus = notice.Status.ToString()
         });
     }
+}
 }

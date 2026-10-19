@@ -20,6 +20,11 @@ public class Notice
 
     public static Notice Create(NoticeId id, InspectionId inspectionId, RegistrationNumber registrationNumber, decimal penaltyAmount, decimal surcharge, DateTime issuedAt)
     {
+        if (penaltyAmount <= 0)
+            throw new InvalidNoticeAmountException("Kwota kary (PenaltyAmount) musi być większa od zera.");
+        if (surcharge < 0)
+            throw new InvalidNoticeAmountException("Kwota dopłaty (Surcharge) nie może być ujemna.");
+
         return new Notice
         {
             Id = id,

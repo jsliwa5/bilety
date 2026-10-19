@@ -1,3 +1,4 @@
+using PTickets.Modules.Notices.Common.Data;
 using PTickets.Modules.Notices.Contracts;
 using PTickets.Shared.ValueObjects;
 using Microsoft.EntityFrameworkCore;
@@ -19,9 +20,10 @@ public class NoticeFacade : INoticesModule
         var nextDay = day.AddDays(1);
 
         return await _dbContext.Notices.AnyAsync(
-            n => n.RegistrationNumber == registrationNumber 
-                 && n.IssuedAt >= day 
-                 && n.IssuedAt < nextDay, 
+            n => n.RegistrationNumber == registrationNumber
+                 && n.IssuedAt >= day
+                 && n.IssuedAt < nextDay
+                 && n.Status != NoticeStatus.Cancelled,
             cancellationToken);
     }
 }

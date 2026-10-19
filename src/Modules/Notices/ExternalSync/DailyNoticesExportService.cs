@@ -44,7 +44,7 @@ public class DailyNoticesExportService(
         while (!ct.IsCancellationRequested)
         {
             var pendingMessages = await dbContext.OutboxMessages
-                .Where(m => m.ProcessedAt == null)
+                .Where(m => m.ProcessedAt == null && m.RetryCount < 10)
                 .OrderBy(m => m.OccurredAt)
                 .Take(BatchSize)
                 .ToListAsync(ct);
