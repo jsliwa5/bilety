@@ -19,7 +19,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\src\Modules\Notices\PTickets.Modules.Notices.csproj" />
-    <ProjectReference Include="..\..\..\..\PTickets.Modules.Notices.Contracts\PTickets.Modules.Notices.Contracts.csproj" />
+    <ProjectReference Include="..\..\..\..\src\Modules\Notices\PTickets.Modules.Notices.Contracts\PTickets.Modules.Notices.Contracts.csproj" />
     <ProjectReference Include="..\..\..\..\src\Modules\Inspections\PTickets.Modules.Inspections.Contracts\PTickets.Modules.Inspections.Contracts.csproj" />
     <ProjectReference Include="..\..\..\..\src\PTickets.Shared\PTickets.Shared.csproj" />
   </ItemGroup>
