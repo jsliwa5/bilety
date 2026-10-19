@@ -4,6 +4,7 @@ using PTickets.Shared;
 using PTickets.Modules.Inspections.Contracts.Events;
 using PTickets.Shared.ValueObjects;
 using PTickets.Modules.Notices.Contracts;
+using PTickets.Modules.InspectorTracking.Contracts;
 using PTickets.Modules.Inspections.Domain.Exceptions;
 
 namespace PTickets.Modules.Inspections.Application.Commands.StartInspection;
@@ -14,17 +15,20 @@ public class StartInspectionHandler : IRequestHandler<StartInspectionCommand, Gu
     private readonly ISessionRepository _sessionRepository;
     private readonly IMediator _mediator;
     private readonly INoticesModule _noticesModule;
+    private readonly IInspectorTrackingModule _inspectorTracking;
 
     public StartInspectionHandler(
         IInspectionRepository inspectionRepository,
         ISessionRepository sessionRepository,
         IMediator mediator,
-        INoticesModule noticesModule)
+        INoticesModule noticesModule,
+        IInspectorTrackingModule inspectorTracking)
     {
         _inspectionRepository = inspectionRepository;
         _sessionRepository = sessionRepository;
         _mediator = mediator;
         _noticesModule = noticesModule;
+        _inspectorTracking = inspectorTracking;
     }
 
     public async Task<Guid> Handle(StartInspectionCommand request, CancellationToken cancellationToken)
@@ -35,8 +39,15 @@ public class StartInspectionHandler : IRequestHandler<StartInspectionCommand, Gu
         if (session.IsClosed)
             throw new SessionAlreadyClosedException();
 
+        var requestedZoneId = new ZoneId(request.ZoneId);
+        var assignedZoneId = await _inspectorTracking.GetAssignedZoneAsync(session.InspectorId, cancellationToken);
+        if (assignedZoneId.HasValue && assignedZoneId.Value != requestedZoneId)
+            throw new InspectorNotAssignedToZoneException();
+
+        var registrationNumber = new RegistrationNumber(request.RegistrationNumber);
+
         var wasNoticeIssuedForVehicleToday = await _noticesModule.WasNoticeIssuedForDateAsync(
-            new RegistrationNumber(request.RegistrationNumber),
+            registrationNumber,
             DateTime.UtcNow.Date,
             cancellationToken);
 
@@ -44,10 +55,11 @@ public class StartInspectionHandler : IRequestHandler<StartInspectionCommand, Gu
             throw new NoticeAlreadyIssuedTodayException();
 
         var inspectionAwaitingForSecondCheck = await _inspectionRepository.GetInspectionAwaitingForSecondCheckAsync(
-            new RegistrationNumber(request.RegistrationNumber), DateTime.UtcNow,
+            registrationNumber,
+            DateTime.UtcNow,
             cancellationToken);
 
-        Inspection inspection = null;
+        Inspection inspection;
 
         if (inspectionAwaitingForSecondCheck is not null)
         {
@@ -65,8 +77,8 @@ public class StartInspectionHandler : IRequestHandler<StartInspectionCommand, Gu
             inspection = Inspection.Create(
                 session.Id,
                 session.InspectorId,
-                new RegistrationNumber(request.RegistrationNumber),
-                new ZoneId(request.ZoneId),
+                registrationNumber,
+                requestedZoneId,
                 new StreetId(request.StreetId),
                 request.Latitude,
                 request.Longitude,

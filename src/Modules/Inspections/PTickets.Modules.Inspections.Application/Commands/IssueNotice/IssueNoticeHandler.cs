@@ -24,8 +24,11 @@ public class IssueNoticeHandler : IRequestHandler<IssueNoticeCommand, Guid>
         var inspection = await _inspectionRepository.GetByIdAsync(new InspectionId(request.InspectionId), cancellationToken)
             ?? throw new PTickets.Modules.Inspections.Domain.Exceptions.InspectionNotFoundException();
 
-        if (inspection.Status != InspectionStatus.PhotosAttached)
+        if (inspection.Status == InspectionStatus.ViolationFound || inspection.Status == InspectionStatus.AwaitingSecondCheck)
             throw new PTickets.Modules.Inspections.Domain.Exceptions.MissingPhotosForNoticeException();
+
+        if (inspection.Status != InspectionStatus.PhotosAttached)
+            throw new PTickets.Modules.Inspections.Domain.Exceptions.InvalidInspectionStateException($"Cannot issue notice when inspection is in status {inspection.Status}.");
 
         if (inspection.Violations.Count == 0)
             throw new PTickets.Modules.Inspections.Domain.Exceptions.NoViolationsForNoticeException();

@@ -119,6 +119,11 @@ public class Inspection
 
     public void AddVisualViolation(ViolationTypeId typeId)
     {
+        if (typeId == ViolationTypeId.NoTicket)
+        {
+            throw new PTickets.Modules.Inspections.Domain.Exceptions.CannotAddNoTicketManuallyException();
+        }
+
         if (Status == InspectionStatus.AwaitingDecision || Status == InspectionStatus.AwaitingSecondCheck)
         {
             Violations.Add(ViolationEntry.Create(Id, typeId, ViolationSource.Visual));
@@ -158,6 +163,15 @@ public class Inspection
 
     public void MarkNoticeIssued(NoticeId noticeId)
     {
+        if (Status == InspectionStatus.ViolationFound || Status == InspectionStatus.AwaitingSecondCheck)
+            throw new PTickets.Modules.Inspections.Domain.Exceptions.MissingPhotosForNoticeException();
+
+        if (Status != InspectionStatus.PhotosAttached)
+            throw new PTickets.Modules.Inspections.Domain.Exceptions.InvalidInspectionStateException("Cannot issue notice when inspection is in state " + Status);
+
+        if (Violations.Count == 0)
+            throw new PTickets.Modules.Inspections.Domain.Exceptions.NoViolationsForNoticeException();
+
         NoticeId = noticeId;
         Status = InspectionStatus.NoticeIssued;
     }
@@ -166,6 +180,9 @@ public class Inspection
     {
         if (Violations.Count > 0)
             throw new PTickets.Modules.Inspections.Domain.Exceptions.CannotApproveInspectionWithViolationsException();
+
+        if (Status != InspectionStatus.AwaitingDecision && Status != InspectionStatus.Approved)
+            throw new PTickets.Modules.Inspections.Domain.Exceptions.InvalidInspectionStateException("Inspection cannot be manually approved in state " + Status);
 
         Status = InspectionStatus.Approved;
     }
