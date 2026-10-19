@@ -1,5 +1,6 @@
 namespace PTickets.Modules.Tickets.Domain;
 
+using PTickets.Modules.Tickets.Domain.Exceptions;
 using PTickets.Shared;
 using PTickets.Shared.ValueObjects;
 
@@ -30,7 +31,16 @@ public class Ticket
 
     public static Ticket Create(RegistrationNumber reg, StreetId streetId, DateTime validFrom, DateTime validTo, string providerName)
     {
-        return new Ticket(Guid.NewGuid(), reg, streetId, validFrom, validTo, providerName, DateTime.UtcNow);
+        if (streetId == PTickets.Shared.StreetId.Empty)
+            throw new InvalidTicketDataException("StreetId cannot be empty for a street-bound ticket.");
+
+        if (validFrom >= validTo)
+            throw new InvalidTicketDatesException();
+
+        if (string.IsNullOrWhiteSpace(providerName))
+            throw new InvalidTicketDataException("ProviderName cannot be empty.");
+
+        return new Ticket(Guid.NewGuid(), reg, streetId, validFrom, validTo, providerName.Trim(), DateTime.UtcNow);
     }
 
     public static Ticket CreateFromExternal(
@@ -41,13 +51,21 @@ public class Ticket
         string providerName,
         string? parkingZone = null)
     {
-        return new Ticket(Guid.NewGuid(), reg, null, validFrom, validTo, providerName, DateTime.UtcNow)
+        if (string.IsNullOrWhiteSpace(externalTicketId))
+            throw new InvalidTicketDataException("ExternalTicketId cannot be empty.");
+
+        if (validFrom >= validTo)
+            throw new InvalidTicketDatesException();
+
+        if (string.IsNullOrWhiteSpace(providerName))
+            throw new InvalidTicketDataException("ProviderName cannot be empty.");
+
+        return new Ticket(Guid.NewGuid(), reg, null, validFrom, validTo, providerName.Trim(), DateTime.UtcNow)
         {
-            ExternalTicketId = externalTicketId,
-            ParkingZone = parkingZone
+            ExternalTicketId = externalTicketId.Trim(),
+            ParkingZone = string.IsNullOrWhiteSpace(parkingZone) ? null : parkingZone.Trim()
         };
     }
 
     public bool IsValidAt(DateTime dateTime) => dateTime >= ValidFrom && dateTime <= ValidTo;
 }
-

@@ -26,6 +26,10 @@ public class ResidentCard
 
     public static ResidentCard Create(RegistrationNumber registrationNumber, StreetId streetId, DateTime validFrom, DateTime validTo)
     {
+        if (streetId == PTickets.Shared.StreetId.Empty)
+        {
+            throw new PTickets.Modules.Tickets.Domain.Exceptions.InvalidTicketDataException("StreetId cannot be empty for a resident card.");
+        }
         if (validFrom >= validTo)
         {
             throw new PTickets.Modules.Tickets.Domain.Exceptions.InvalidResidentCardDatesException();

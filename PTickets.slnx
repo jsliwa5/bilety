@@ -53,6 +53,9 @@
   <Folder Name="/tests/Modules/Notices/">
     <Project Path="tests/Modules/Notices/PTickets.Modules.Notices.Tests/PTickets.Modules.Notices.Tests.csproj" />
   </Folder>
+  <Folder Name="/tests/Modules/Tickets/">
+    <Project Path="tests/Modules/Tickets/PTickets.Modules.Tickets.Tests/PTickets.Modules.Tickets.Tests.csproj" />
+  </Folder>
   <Folder Name="/tests/Modules/Violations/">
     <Project Path="tests/Modules/Violations/PTickets.Modules.Violations.Tests/PTickets.Modules.Violations.Tests.csproj" />
   </Folder>
