@@ -107,4 +107,3 @@ public static class ExternalSyncEndpoints
         });
     }
 }
-}

@@ -29,6 +29,9 @@ internal class ViolationsModuleFacade : IViolationsModule
     public async Task<decimal> GetPenaltyAmountAsync(ViolationTypeId id, CancellationToken ct)
         => await _penaltyService.GetCurrentPenaltyAmountAsync(id, ct);
 
+    public async Task<decimal> CalculateTotalPenaltyAmountAsync(IEnumerable<ViolationTypeId> ids, CancellationToken ct)
+        => await _penaltyService.CalculateTotalPenaltyAmountAsync(ids, ct);
+
     public async Task<decimal> CalculateSurchargeAsync(int overtimeMinutes, CancellationToken ct)
         => await _penaltyService.CalculateSurchargeAsync(overtimeMinutes, ct);
 

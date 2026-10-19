@@ -42,4 +42,12 @@ public class SurchargeTier
     {
         return overtimeMinutes >= MinMinutes && (!MaxMinutes.HasValue || overtimeMinutes <= MaxMinutes.Value);
     }
+
+    public bool OverlapsWith(SurchargeTier other)
+    {
+        var thisMax = MaxMinutes ?? int.MaxValue;
+        var otherMax = other.MaxMinutes ?? int.MaxValue;
+        return MinMinutes <= otherMax && other.MinMinutes <= thisMax;
+    }
 }
+

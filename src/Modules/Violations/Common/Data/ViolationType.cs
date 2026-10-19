@@ -23,15 +23,16 @@ public class ViolationType
         return new ViolationType
         {
             Id = ViolationTypeId.New(),
-            Name = name,
-            Description = description
+            Name = name.Trim(),
+            Description = description?.Trim()
         };
     }
 
-    public PenaltyAmount AddPenaltyAmount(decimal amount, DateTime effectiveFrom)
+    public PenaltyAmount AddPenaltyAmount(decimal amount, DateTime effectiveFrom, DateTime? currentUtcDate = null)
     {
-        var penalty = PenaltyAmount.Create(Id, amount, effectiveFrom);
+        var penalty = PenaltyAmount.Create(Id, amount, effectiveFrom, currentUtcDate);
         _penaltyAmounts.Add(penalty);
         return penalty;
     }
 }
+

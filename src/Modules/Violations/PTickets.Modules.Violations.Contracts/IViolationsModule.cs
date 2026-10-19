@@ -6,6 +6,8 @@ public interface IViolationsModule
 {
     Task<bool> ViolationTypeExistsAsync(ViolationTypeId id, CancellationToken ct = default);
     Task<decimal> GetPenaltyAmountAsync(ViolationTypeId id, CancellationToken ct = default);
+    Task<decimal> CalculateTotalPenaltyAmountAsync(IEnumerable<ViolationTypeId> ids, CancellationToken ct = default);
     Task<decimal> CalculateSurchargeAsync(int overtimeMinutes, CancellationToken ct = default);
     Task<List<ViolationTypeDto>> GetAllViolationTypesAsync(CancellationToken ct = default);
 }
+

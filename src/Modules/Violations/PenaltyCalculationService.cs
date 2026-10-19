@@ -1,7 +1,6 @@
 namespace PTickets.Modules.Violations;
 
 using Microsoft.EntityFrameworkCore;
-using PTickets.Modules.Violations;
 using PTickets.Shared;
 using PTickets.Shared.Abstractions;
 
@@ -38,4 +37,42 @@ public class PenaltyCalculationService
 
         return penalty?.Amount ?? 0m;
     }
+
+    public async Task<decimal> CalculateTotalPenaltyAmountAsync(
+        IEnumerable<ViolationTypeId> violationTypeIds,
+        CancellationToken cancellationToken = default)
+    {
+        if (violationTypeIds is null)
+            return 0m;
+
+        var idList = violationTypeIds.ToList();
+        if (idList.Count == 0)
+            return 0m;
+
+        var now = _dateTimeProvider?.UtcNow ?? DateTime.UtcNow;
+        var distinctIds = idList.Distinct().ToList();
+
+        var activePenalties = await _dbContext.PenaltyAmounts
+            .AsNoTracking()
+            .Where(p => distinctIds.Contains(p.ViolationTypeId) && p.EffectiveFrom <= now)
+            .ToListAsync(cancellationToken);
+
+        var currentRatesByType = activePenalties
+            .GroupBy(p => p.ViolationTypeId)
+            .ToDictionary(
+                g => g.Key,
+                g => g.OrderByDescending(p => p.EffectiveFrom).First().Amount);
+
+        decimal total = 0m;
+        foreach (var id in idList)
+        {
+            if (currentRatesByType.TryGetValue(id, out var rate))
+            {
+                total += rate;
+            }
+        }
+
+        return total;
+    }
 }
+

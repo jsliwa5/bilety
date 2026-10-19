@@ -12,11 +12,21 @@ public class PenaltyAmount
 
     private PenaltyAmount() { }
 
-    public static PenaltyAmount Create(ViolationTypeId violationTypeId, decimal amount, DateTime effectiveFrom)
+    public static PenaltyAmount Create(
+        ViolationTypeId violationTypeId,
+        decimal amount,
+        DateTime effectiveFrom,
+        DateTime? currentUtcDate = null)
     {
         if (amount <= 0)
         {
             throw new InvalidPenaltyAmountException();
+        }
+
+        var referenceDate = (currentUtcDate ?? DateTime.UtcNow).Date;
+        if (effectiveFrom.Date < referenceDate)
+        {
+            throw new InvalidPenaltyEffectiveDateException();
         }
 
         return new PenaltyAmount
@@ -28,3 +38,4 @@ public class PenaltyAmount
         };
     }
 }
+

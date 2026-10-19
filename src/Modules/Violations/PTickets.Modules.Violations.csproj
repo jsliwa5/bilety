@@ -25,5 +25,9 @@
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="PTickets.Modules.Violations.Tests" />
+  </ItemGroup>
 </Project>
 

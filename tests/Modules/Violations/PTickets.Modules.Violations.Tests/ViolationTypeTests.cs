@@ -62,7 +62,7 @@ public class ViolationTypeTests
     {
         var violationType = ViolationType.Create("No Parking");
         var amount = 100.00m;
-        var effectiveFrom = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        var effectiveFrom = DateTime.UtcNow.Date.AddDays(1);
 
         var penaltyAmount = violationType.AddPenaltyAmount(amount, effectiveFrom);
 
